@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samo_VR — Software Developer</title>
+
+<!-- ── Discoverability basics ── -->
+<meta name="description" content="Samo_VR — Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development. Browse projects, skills, and experience.">
+<meta name="author" content="Samo_VR">
+<link rel="canonical" href="https://samovr.github.io/">
+<meta name="theme-color" content="#0a0a0a">
+
+<!-- Open Graph (Facebook, Discord, LinkedIn, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Samo_VR — Software Developer">
+<meta property="og:description" content="Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development.">
+<meta property="og:url" content="https://samovr.github.io/">
+<meta property="og:site_name" content="Samo_VR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Samo_VR — Software Developer">
+<meta name="twitter:description" content="Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development.">
+
+<!-- Favicon — inline SVG, no external image asset needed -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0a0a'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%237f77dd' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a class="nav-logo" href="#hero">Samo<span>_VR</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-nav-panel" id="mobile-nav-panel">
+  <ul class="mobile-nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</div>
+
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Software Developer</p>
+      <h1 class="hero-name">Samo<span>_VR</span></h1>
+      <p class="hero-bio" id="hero-bio">Senior programmer specializing in <strong>C++ systems programming</strong> and <strong>Lua scripting for Roblox</strong>. I build everything from low-level OpenGL graphics pipelines to game mechanics — with 4+ years shipping real projects.</p>
+      <div class="hero-cta-row">
+        <a class="btn btn-primary" href="#projects">View Projects</a>
+        <a class="btn btn-outline" href="#contact">Get in Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">4<span>+</span></div><div class="stat-label">Years Experience</div></div>
+        <div><div class="stat-num">2</div><div class="stat-label">Core Languages</div></div>
+        <div><div class="stat-num">7<span>M+</span></div><div class="stat-label">Experience Visits</div></div>
+        <div><div class="stat-num">∞</div><div class="stat-label">Lines of Code</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <p class="section-tag">About Me</p>
+    <h2 class="section-title">Who I am</h2>
+    <div class="about-grid" id="about-grid"></div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <p class="section-tag">Tech Stack</p>
+    <h2 class="section-title">Languages & Tools</h2>
+    <div class="skills-grid" id="skills-container"></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <p class="section-tag">Experience</p>
+    <h2 class="section-title">Work History</h2>
+    <div id="experience-container"></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <p class="section-tag">Projects</p>
+    <h2 class="section-title">What I've Built</h2>
+    <div class="project-filter-bar" id="project-filter-bar"></div>
+    <div class="projects-grid" id="projects-container"></div>
+    <p class="project-filter-empty" id="project-filter-empty" style="display:none">No projects match this filter.</p>
+  </div>
+</section>
+
+<!-- Toggleable interactive element: live-typing terminal. Hidden unless
+     enabled from the admin dashboard (Settings → Interactive Elements). -->
+<section id="terminal-section">
+  <div class="container">
+    <p class="section-tag">A Little Easter Egg</p>
+    <h2 class="section-title">Poking Around</h2>
+    <div class="term-window">
+      <div class="term-titlebar">
+        <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+        <span class="term-titlebar-label" id="term-title-label">guest@samo_vr: ~</span>
+      </div>
+      <div class="term-body" id="term-body"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <p class="section-tag" style="justify-content:center">Contact</p>
+      <h2 class="section-title" style="margin-bottom:0">Let's Connect</h2>
+      <p class="contact-tagline">Open to collaborations, freelance work, or just talking about code. Click any link to copy it to clipboard.</p>
+      <div class="contact-links-row" id="contact-links"></div>
+    </div>
+  </div>
+</section>
+
+<footer><span>Samo_VR</span> — Built with code & caffeine · 2026</footer>
+
+<!-- ════════ PROJECT DETAIL MODAL — near-fullscreen, two-pane ════════ -->
+<div class="pd-overlay" id="pd-overlay">
+  <div class="pd-modal" id="pd-modal">
+
+    <!-- LEFT: info column -->
+    <div class="pd-info">
+      <div class="pd-hero" id="pd-hero-section">
+        <div class="pd-hero-glow"></div>
+        <button class="pd-close" id="pd-close-btn" aria-label="Close">✕</button>
+        <div class="pd-icon" id="pd-icon"></div>
+        <div class="pd-title" id="pd-title"></div>
+        <div class="pd-subtitle" id="pd-subtitle"></div>
+      </div>
+      <div class="pd-body">
+        <!-- mobile-only screenshots (rail is hidden under 880px, this shows instead) -->
+        <div id="pd-images-mobile"></div>
+        <div>
+          <div class="pd-section-label">About This Project</div>
+          <div class="pd-desc" id="pd-desc"></div>
+        </div>
+        <div>
+          <div class="pd-section-label">Stack</div>
+          <div class="pd-tags" id="pd-tags"></div>
+        </div>
+        <div id="pd-links-section" style="display:none">
+          <div class="pd-section-label">Links</div>
+          <div class="pd-links" id="pd-links"></div>
+        </div>
+        <div id="pd-tabs-section" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: screenshots gallery rail -->
+    <div class="pd-gallery" id="pd-gallery">
+      <div class="pd-gallery-empty" id="pd-gallery-empty">
+        <div class="pd-gallery-empty-icon">🖼</div>
+        <div>No screenshots for this project yet.</div>
+      </div>
+      <div class="pd-gallery-head" id="pd-gallery-headwrap">
+        <span class="pd-gallery-label">Screenshots</span>
+        <span class="pd-gallery-count" id="pd-gallery-count"></span>
+      </div>
+      <div class="pd-gallery-main" id="pd-gallery-mainwrap">
+        <button class="pd-gallery-nav prev" id="pd-gallery-prev" aria-label="Previous screenshot">‹</button>
+        <img id="pd-gallery-img" src="" alt="Project screenshot">
+        <button class="pd-gallery-nav next" id="pd-gallery-next" aria-label="Next screenshot">›</button>
+      </div>
+      <div class="pd-gallery-thumbs" id="pd-gallery-thumbs"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════ LIGHTBOX (full-res viewer) ════════ -->
+<div class="lb-overlay" id="lb-overlay">
+  <button class="lb-close" id="lb-close-btn" aria-label="Close">✕</button>
+  <button class="lb-nav prev" id="lb-prev-btn" aria-label="Previous">‹</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <button class="lb-nav next" id="lb-next-btn" aria-label="Next">›</button>
+</div>
+
+<script src="js/shared-data.js"></script>
+<script src="js/portfolio.js"></script>
+</body>
+</html>

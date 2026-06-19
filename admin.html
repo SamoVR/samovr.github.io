@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Samo_VR Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════
+     LOGIN
+════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Samo<span>_VR</span> · Admin</div>
+    <div class="login-title">Dashboard</div>
+    <div class="login-sub">Enter your password to continue.</div>
+    <div class="fl">
+      <label for="lpass">Password</label>
+      <input type="password" id="lpass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="err" id="lerr">Incorrect password.</div>
+    <button class="btn btn-primary" id="login-btn" style="margin-top:.5rem">Sign In →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     APP SHELL
+════════════════════════════════════════════ -->
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-logo">Samo<span>_VR</span> · Admin</span>
+    <div class="topbar-right">
+      <a class="topbar-link" href="index.html" target="_blank">↗ View Site</a>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Log Out</button>
+    </div>
+  </div>
+
+  <div class="dash-layout">
+
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-label">Content</div>
+        <button class="sidebar-item active" data-nav="projects"><span class="sidebar-item-icon">⚙</span>Projects</button>
+        <button class="sidebar-item" data-nav="about"><span class="sidebar-item-icon">👤</span>About</button>
+        <button class="sidebar-item" data-nav="skills"><span class="sidebar-item-icon">📊</span>Skills</button>
+        <button class="sidebar-item" data-nav="experience"><span class="sidebar-item-icon">💼</span>Experience</button>
+        <button class="sidebar-item" data-nav="contact"><span class="sidebar-item-icon">📬</span>Contact</button>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-label">Site</div>
+        <button class="sidebar-item" data-nav="interactive"><span class="sidebar-item-icon">✨</span>Interactive</button>
+        <button class="sidebar-item" data-nav="settings"><span class="sidebar-item-icon">🔧</span>Settings</button>
+      </div>
+    </nav>
+
+    <!-- ── CONTENT AREA ── -->
+    <main class="content">
+      <div class="mobile-page-select-wrap">
+        <select id="mobile-page-select">
+          <option value="projects">⚙ Projects</option>
+          <option value="about">👤 About</option>
+          <option value="skills">📊 Skills</option>
+          <option value="experience">💼 Experience</option>
+          <option value="contact">📬 Contact</option>
+          <option value="interactive">✨ Interactive</option>
+          <option value="settings">🔧 Settings</option>
+        </select>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="page active" id="page-projects">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Projects</div>
+            <div class="page-sub">Manage the projects shown on your portfolio.</div>
+          </div>
+          <button class="btn btn-accent btn-sm" id="add-project-btn">+ Add Project</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">All Projects</div>
+          <div id="proj-list"></div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="page" id="page-about">
+        <div class="page-header">
+          <div>
+            <div class="page-title">About</div>
+            <div class="page-sub">Edit the info cards shown in your About section.</div>
+          </div>
+          <button class="btn btn-accent btn-sm" id="add-about-btn">+ Add Card</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">About Cards</div>
+          <div id="about-list"></div>
+        </div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="page" id="page-skills">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Skills</div>
+            <div class="page-sub">Manage skill groups and proficiency levels.</div>
+          </div>
+          <button class="btn btn-accent btn-sm" id="add-sg-btn">+ Add Group</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Skill Groups</div>
+          <div id="skills-list"></div>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="page" id="page-experience">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Experience</div>
+            <div class="page-sub">Your work history timeline.</div>
+          </div>
+          <button class="btn btn-accent btn-sm" id="add-exp-btn">+ Add Entry</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Work History</div>
+          <div id="exp-list"></div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="page" id="page-contact">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Contact Links</div>
+            <div class="page-sub">Links visitors can copy on your contact section. Any characters (quotes, apostrophes, etc.) are safe to use.</div>
+          </div>
+          <button class="btn btn-accent btn-sm" id="add-contact-btn">+ Add Link</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Links</div>
+          <div id="contact-list"></div>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE ELEMENTS -->
+      <div class="page" id="page-interactive">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Interactive Elements</div>
+            <div class="page-sub">Enable or disable optional interactive sections on your portfolio.</div>
+          </div>
+        </div>
+
+        <div class="elcard">
+          <div class="elcard-head">
+            <div>
+              <div class="elcard-name"><span>✨</span> Cursor Constellation</div>
+              <div class="elcard-desc">Animated constellation of floating dots that connect to each other and react to the visitor's cursor with trails and a glow. Rendered on a canvas behind the whole page.</div>
+            </div>
+            <label class="toggle-switch" title="Enable cursor effect">
+              <input type="checkbox" id="cursor-toggle-input">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="elcard">
+          <div class="elcard-head">
+            <div>
+              <div class="elcard-name"><span>🔒</span> Site Lockdown</div>
+              <div class="elcard-desc">Puts a full-screen lock wall over the portfolio. Enforced in JavaScript — cannot be bypassed by disabling CSS or stylesheets. Visitors see your custom message instead of the site.</div>
+            </div>
+            <label class="toggle-switch" title="Enable lockdown">
+              <input type="checkbox" id="lock-toggle-input">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="elcard-config" id="lock-config" style="margin-top:.75rem">
+            <div class="fgroup" style="margin-bottom:.5rem">
+              <label>Lockdown Message</label>
+              <input type="text" id="lock-msg-input" placeholder="This portfolio is currently private. Check back soon.">
+              <div class="fhint">Shown to visitors when the site is locked.</div>
+            </div>
+          </div>
+        </div>
+
+
+        <button type="button" class="btn btn-accent btn-sm" id="term-save-btn" style="margin-top:.25rem; visibility: hidden;">Save All Settings</button>
+
+
+        <div class="elcard">
+          <div class="elcard-head">
+            <div>
+              <div class="elcard-name"><span>⌨</span> Live Terminal</div>
+              <div class="elcard-desc">A typing-animation terminal window that appears as a section on your portfolio. Loops through configurable command/output lines.</div>
+            </div>
+            <label class="toggle-switch" title="Enable terminal section">
+              <input type="checkbox" id="term-toggle-input">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="elcard-config" id="term-config">
+            <div class="fgroup">
+              <label>Window Title</label>
+              <input type="text" id="term-title-input" placeholder="guest@samo_vr: ~">
+              <div class="fhint">Shown in the terminal's fake titlebar.</div>
+            </div>
+
+            <div class="fgroup">
+              <label>Lines</label>
+              <div class="fhint" style="margin-bottom:.6rem">Commands are typed out character-by-character. Output lines appear instantly below them, like a real shell.</div>
+              <div id="term-lines-rows"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="term-add-line-btn" style="margin-top:.5rem">+ Add Line</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAVE ALL — prominent panel at the bottom of the page -->
+        <div class="save-all-bar">
+          <div class="save-all-info">
+            <div class="save-all-title">Save Interactive Settings</div>
+            <div class="save-all-desc">Saves all toggles (cursor, lockdown, terminal) and their config to your portfolio.</div>
+          </div>
+          <button type="button" class="btn btn-accent" id="term-save-btn-bottom">💾 Save All Settings</button>
+        </div>
+
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Settings</div>
+            <div class="page-sub">Password, data export, and reset.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Change Password</div>
+          <div class="grid2" style="gap:1rem">
+            <div class="fgroup" style="margin:0">
+              <label>Current Password</label>
+              <input type="password" id="pcur" placeholder="••••••••">
+            </div>
+            <div></div>
+            <div class="fgroup" style="margin:0">
+              <label>New Password</label>
+              <input type="password" id="pnew" placeholder="Min 6 characters">
+            </div>
+            <div class="fgroup" style="margin:0">
+              <label>Confirm New Password</label>
+              <input type="password" id="pcon" placeholder="••••••••">
+            </div>
+          </div>
+          <div class="err" id="perr"></div>
+          <div class="ok" id="pok">✓ Password updated.</div>
+          <button class="btn btn-accent btn-sm" id="changepass-btn" style="margin-top:1rem">Update Password</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">404 Page</div>
+          <div class="page-sub" style="margin-bottom:1rem">Customize the page visitors see when they hit a broken or missing link. Lives at <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">404.html</code> — GitHub Pages serves this automatically for any unmatched URL.</div>
+          <div class="grid2">
+            <div class="fgroup">
+              <label>Code / Title</label>
+              <input type="text" id="nf-title" placeholder="404">
+            </div>
+            <div class="fgroup">
+              <label>Button Text</label>
+              <input type="text" id="nf-btntext" placeholder="← Back to Home">
+            </div>
+          </div>
+          <div class="fgroup">
+            <label>Heading</label>
+            <input type="text" id="nf-heading" placeholder="Lost in the build folder.">
+          </div>
+          <div class="fgroup">
+            <label>Message</label>
+            <textarea class="fta" id="nf-message" placeholder="The page you're looking for doesn't exist…"></textarea>
+          </div>
+          <div class="fgroup" style="margin-bottom:.5rem">
+            <label>Button Link</label>
+            <input type="text" id="nf-btnlink" placeholder="index.html">
+          </div>
+          <button class="btn btn-accent btn-sm" id="nf-save-btn">Save 404 Page</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Data</div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-name">Export Data</div>
+              <div class="setting-desc">Download all portfolio content as a JSON file for backup.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="export-btn">Export JSON</button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-name">Reset to Defaults</div>
+              <div class="setting-desc">Wipe all changes and restore the original demo content. This cannot be undone.</div>
+            </div>
+            <button class="btn btn-danger btn-sm" id="reset-btn">Reset All</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /dash-layout -->
+</div><!-- /app -->
+
+
+<!-- ════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- PROJECT MODAL -->
+<div class="moverlay" id="pm">
+  <div class="mbox mbox-lg">
+    <div class="mhead">
+      <span class="mhead-title" id="pm-title">Add Project</span>
+      <button class="mclose" data-close-modal="pm">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="pm-idx">
+
+      <div class="grid2">
+        <div class="fgroup">
+          <label>Project Name</label>
+          <input type="text" id="pm-name" placeholder="e.g. OpenGL Renderer">
+        </div>
+        <div class="fgroup">
+          <label>Status</label>
+          <select id="pm-status">
+            <option value="complete">Complete</option>
+            <option value="wip">In Progress</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ICON PICKER: emoji or uploaded image -->
+      <div class="fgroup">
+        <label>Project Icon</label>
+        <div class="icon-mode-toggle">
+          <button type="button" class="icon-mode-btn active" id="pm-icon-mode-emoji">Emoji</button>
+          <button type="button" class="icon-mode-btn" id="pm-icon-mode-image">Image</button>
+        </div>
+        <div id="pm-icon-emoji-row">
+          <input type="text" id="pm-icon" placeholder="e.g. 🎮" style="width:80px">
+          <div class="fhint">Any emoji or 1–2 characters.</div>
+        </div>
+        <div class="icon-upload-row" id="pm-icon-image-row" style="display:none">
+          <div class="icon-preview" id="pm-icon-preview">
+            <span class="icon-preview-placeholder">No<br>image</span>
+          </div>
+          <div class="icon-upload-zone">
+            <input type="file" id="pm-icon-file" accept="image/*">
+            <div class="icon-upload-zone-label">Click or drag an image · <span>Browse</span></div>
+          </div>
+          <button type="button" class="icon-remove-btn" id="pm-icon-remove-btn" style="display:none">Remove</button>
+        </div>
+      </div>
+
+      <!-- ACCENT COLOR -->
+      <div class="fgroup">
+        <label>Accent Color</label>
+        <div class="color-row">
+          <div class="color-swatch selected" style="background:#7f77dd" data-c="#7f77dd" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#4ade80" data-c="#4ade80" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#fbbf24" data-c="#fbbf24" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#f87171" data-c="#f87171" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#38bdf8" data-c="#38bdf8" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#e879a0" data-c="#e879a0" data-target="pm-color"></div>
+          <div class="color-swatch" style="background:#fb923c" data-c="#fb923c" data-target="pm-color"></div>
+          <input type="color" id="pm-color-picker" value="#7f77dd" data-synctarget="pm-color" title="Custom color">
+          <input type="hidden" id="pm-color" value="#7f77dd">
+        </div>
+        <div class="fhint">Colors the card's glow, border, and icon tint on the portfolio.</div>
+      </div>
+
+      <div class="fgroup">
+        <label>Short Description <span style="color:var(--muted);font-size:10px">(shown on card)</span></label>
+        <input type="text" id="pm-short" placeholder="One-liner for the project card">
+      </div>
+
+      <div class="fgroup">
+        <label>Full Description <span style="color:var(--muted);font-size:10px">(shown in detail modal)</span></label>
+        <div class="rich-wrap">
+          <div class="rich-toolbar" id="pm-tb"></div>
+          <div class="rich-body" id="pm-body" contenteditable="true" data-placeholder="Write a detailed description…"></div>
+        </div>
+        <div class="fhint">Select specific text, then click a color dot to color just that text.</div>
+      </div>
+
+      <div class="grid2">
+        <div class="fgroup">
+          <label>Languages / Stack</label>
+          <input type="text" id="pm-langs" placeholder="C++, OpenGL, GLSL">
+          <div class="fhint">Comma-separated. Shown on the card footer.</div>
+        </div>
+        <div class="fgroup">
+          <label>Tags <span style="color:var(--muted);font-size:10px">(for filtering)</span></label>
+          <input type="text" id="pm-tags" placeholder="e.g. Game Dev, Graphics">
+          <div class="fhint">Comma-separated. Visitors can filter projects by these.</div>
+        </div>
+      </div>
+      <div class="fgroup">
+        <label>Project Link <span style="color:var(--muted);font-size:10px">(optional)</span></label>
+        <input type="text" id="pm-link" placeholder="https://...">
+      </div>
+
+      <!-- SCREENSHOTS -->
+      <div class="fgroup" style="margin-bottom:0">
+        <label>Screenshots</label>
+        <div class="img-drop-zone" id="pm-drop">
+          <input type="file" id="pm-file" accept="image/*" multiple>
+          <div class="img-drop-label">Click or drag images here · <span>Browse files</span> · Max 8</div>
+        </div>
+        <div class="img-grid" id="pm-img-grid"></div>
+        <div class="img-drag-hint" id="pm-drag-hint" style="display:none">Drag thumbnails to reorder</div>
+      </div>
+
+      <!-- SYSTEM TABS -->
+      <div class="fgroup" style="margin-top:1.25rem;margin-bottom:0">
+        <label>System Tabs <span style="color:var(--muted);font-size:10px">(optional — explain subsystems in the project detail window)</span></label>
+        <div class="fhint" style="margin-bottom:.75rem">Each tab becomes a clickable button in the project detail that opens a panel with a description and optional images.</div>
+        <div id="pm-tabs-wrap"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="pm-add-tab-btn" style="margin-top:.5rem">+ Add System Tab</button>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="mcancel" data-close-modal="pm">Cancel</button>
+      <button class="btn btn-accent" id="pm-save-btn">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div class="moverlay" id="am">
+  <div class="mbox mbox-md">
+    <div class="mhead">
+      <span class="mhead-title" id="am-title">Add Card</span>
+      <button class="mclose" data-close-modal="am">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="am-idx">
+      <div class="grid2">
+        <div class="fgroup">
+          <label>Label</label>
+          <input type="text" id="am-label" placeholder="e.g. Background">
+        </div>
+        <div class="fgroup">
+          <label>Width</label>
+          <select id="am-width">
+            <option value="normal">Half width</option>
+            <option value="full">Full width</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgroup" style="margin-bottom:0">
+        <label>Content</label>
+        <div class="rich-wrap">
+          <div class="rich-toolbar" id="am-tb"></div>
+          <div class="rich-body" id="am-body" contenteditable="true" data-placeholder="Write card content…"></div>
+        </div>
+        <div class="fhint">Highlight specific text first, then click a color dot to color just that text.</div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="mcancel" data-close-modal="am">Cancel</button>
+      <button class="btn btn-accent" id="am-save-btn">Save Card</button>
+    </div>
+  </div>
+</div>
+
+<!-- SKILL GROUP MODAL -->
+<div class="moverlay" id="sgm">
+  <div class="mbox mbox-md">
+    <div class="mhead">
+      <span class="mhead-title" id="sgm-title">Add Skill Group</span>
+      <button class="mclose" data-close-modal="sgm">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="sgm-idx">
+      <div class="fgroup">
+        <label>Group Title</label>
+        <input type="text" id="sgm-title-input" placeholder="e.g. Languages">
+      </div>
+      <div class="fgroup" style="margin-bottom:.5rem">
+        <label>Skills</label>
+        <div style="display:grid;grid-template-columns:1fr 70px 32px 40px auto;gap:.5rem;margin-bottom:.35rem;padding:0 2px">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Name</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Level %</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Color</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Bar</span>
+          <span></span>
+        </div>
+        <div id="sgm-rows"></div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="sgm-add-row-btn">+ Add Skill</button>
+    </div>
+    <div class="mfoot">
+      <button class="mcancel" data-close-modal="sgm">Cancel</button>
+      <button class="btn btn-accent" id="sgm-save-btn">Save Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE MODAL -->
+<div class="moverlay" id="expm">
+  <div class="mbox mbox-md">
+    <div class="mhead">
+      <span class="mhead-title" id="expm-title">Add Work Entry</span>
+      <button class="mclose" data-close-modal="expm">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="expm-idx">
+      <div class="grid2">
+        <div class="fgroup">
+          <label>Company / Place</label>
+          <input type="text" id="expm-company" placeholder="e.g. Roblox Studio">
+        </div>
+        <div class="fgroup">
+          <label>Years</label>
+          <input type="text" id="expm-years" placeholder="2020 — Now">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label>Role</label>
+        <input type="text" id="expm-role" placeholder="e.g. Senior Programmer">
+      </div>
+      <div class="fgroup">
+        <label>Description</label>
+        <textarea class="fta" id="expm-desc" placeholder="What you did and built here…"></textarea>
+      </div>
+      <div class="fgroup" style="margin-bottom:0">
+        <label>Tags</label>
+        <input type="text" id="expm-tags" placeholder="Lua, Roblox Studio, Scripting">
+        <div class="fhint">Comma-separated.</div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="mcancel" data-close-modal="expm">Cancel</button>
+      <button class="btn btn-accent" id="expm-save-btn">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="moverlay" id="ctm">
+  <div class="mbox mbox-sm">
+    <div class="mhead">
+      <span class="mhead-title" id="ctm-title">Add Link</span>
+      <button class="mclose" data-close-modal="ctm">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="ctm-idx">
+      <div class="fgroup">
+        <label>Label</label>
+        <input type="text" id="ctm-label" placeholder="e.g. Discord">
+      </div>
+      <div class="fgroup">
+        <label>Value <span style="color:var(--muted);font-size:10px">(URL, username, email — any characters safe)</span></label>
+        <input type="text" id="ctm-value" placeholder="https://... or your@email.com or Username#0000">
+      </div>
+      <div class="fgroup" style="margin-bottom:0">
+        <label>Icon Emoji</label>
+        <input type="text" id="ctm-icon" placeholder="🔗" style="width:70px">
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="mcancel" data-close-modal="ctm">Cancel</button>
+      <button class="btn btn-accent" id="ctm-save-btn">Save Link</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/shared-data.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
