@@ -271,7 +271,7 @@ const DEFAULT = {
     },
     {
       "company": "C++ / OpenGL — Personal Projects",
-      "years": "2021 — Now",
+      "years": "2022 — Now",
       "role": "Systems & Graphics Programmer",
       "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine — a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
       "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git"
@@ -334,6 +334,12 @@ const DEFAULT = {
     "cursorEffect": true,
     "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
+    "scrollReveal": true,
+    "glitchTitle": true,
+    "progressBar": true,
+    "counterAnim": true,
+    "cardImagePreview": true,
+    "konamiEnabled": true,
     "notFound": {
       "title": "404",
       "heading": "Lost in the build folder.",
