@@ -330,7 +330,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "glitchTitle": true,
