@@ -23,9 +23,42 @@ function persist(k) {
 }
 
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════
-function openM(id) { document.getElementById(id).classList.add('open'); }
-function closeM(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click', e => { if (e.target === el) closeM(el.id); }));
+// Dirty-state tracking: set to the modal ID whenever the user makes any
+// change inside a modal. Cleared on save or intentional close.
+let _dirtyModal = null;
+
+function markDirty(modalId) { _dirtyModal = modalId; }
+function clearDirty()       { _dirtyModal = null; }
+
+function openM(id) {
+  clearDirty();
+  document.getElementById(id).classList.add('open');
+  // start listening for any input change inside this modal
+  const el = document.getElementById(id);
+  el._dirtyHandler = () => markDirty(id);
+  el.addEventListener('input',  el._dirtyHandler, true);
+  el.addEventListener('change', el._dirtyHandler, true);
+}
+
+function closeM(id) {
+  const el = document.getElementById(id);
+  if (el._dirtyHandler) {
+    el.removeEventListener('input',  el._dirtyHandler, true);
+    el.removeEventListener('change', el._dirtyHandler, true);
+    el._dirtyHandler = null;
+  }
+  clearDirty();
+  el.classList.remove('open');
+}
+
+// Outside-click: warn if there are unsaved changes
+document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click', e => {
+  if (e.target !== el) return;
+  if (_dirtyModal === el.id) {
+    if (!confirm('You have unsaved changes. Close anyway?')) return;
+  }
+  closeM(el.id);
+}));
 
 // ═══════════════ AUTH ═══════════════
 function doLogin() {
@@ -104,7 +137,7 @@ function buildToolbar(tbId, editorId) {
     // preventDefault on mousedown is the actual fix — keeps the live
     // selection intact through the click
     b.addEventListener('mousedown', e => e.preventDefault());
-    b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); });
+    b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); markDirty(_dirtyModal); });
     tb.appendChild(b);
   });
 
@@ -908,7 +941,13 @@ function wireStaticButtons() {
   document.getElementById('add-exp-btn').addEventListener('click', () => openExpModal(null));
   document.getElementById('add-contact-btn').addEventListener('click', () => openCtModal(null));
 
-  document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', () => closeM(b.dataset.closeModal)));
+  document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.closeModal;
+    if (_dirtyModal === id) {
+      if (!confirm('You have unsaved changes. Close anyway?')) return;
+    }
+    closeM(id);
+  }));
 
   document.getElementById('pm-save-btn').addEventListener('click', saveProject);
   document.getElementById('am-save-btn').addEventListener('click', saveAbout);
@@ -916,17 +955,17 @@ function wireStaticButtons() {
   document.getElementById('expm-save-btn').addEventListener('click', saveExp);
   document.getElementById('ctm-save-btn').addEventListener('click', saveContact);
 
-  document.getElementById('pm-icon-mode-emoji').addEventListener('click', () => setIconMode('emoji'));
-  document.getElementById('pm-icon-mode-image').addEventListener('click', () => setIconMode('image'));
-  document.getElementById('pm-icon-file').addEventListener('change', handleIconUpload);
-  document.getElementById('pm-icon-remove-btn').addEventListener('click', removeIconImage);
-  document.getElementById('pm-file').addEventListener('change', handleImgUpload);
+  document.getElementById('pm-icon-mode-emoji').addEventListener('click', () => { setIconMode('emoji'); markDirty(_dirtyModal); });
+  document.getElementById('pm-icon-mode-image').addEventListener('click', () => { setIconMode('image'); markDirty(_dirtyModal); });
+  document.getElementById('pm-icon-file').addEventListener('change', e => { handleIconUpload(e); markDirty(_dirtyModal); });
+  document.getElementById('pm-icon-remove-btn').addEventListener('click', () => { removeIconImage(); markDirty(_dirtyModal); });
+  document.getElementById('pm-file').addEventListener('change', e => { handleImgUpload(e); markDirty(_dirtyModal); });
 
   document.querySelectorAll('.color-swatch[data-target]').forEach(s => {
-    s.addEventListener('click', () => pickColor(s, s.dataset.target));
+    s.addEventListener('click', () => { pickColor(s, s.dataset.target); markDirty(_dirtyModal); });
   });
   document.querySelectorAll('input[type=color][data-synctarget]').forEach(inp => {
-    inp.addEventListener('input', () => syncColorPicker(inp.dataset.synctarget, inp.value));
+    inp.addEventListener('input', () => { syncColorPicker(inp.dataset.synctarget, inp.value); markDirty(_dirtyModal); });
   });
 }
 

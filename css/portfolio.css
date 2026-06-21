@@ -233,7 +233,7 @@ footer span{color:var(--accent)}
 .pd-images-mobile-grid img{width:100%;height:110px;object-fit:cover;border-radius:var(--r);border:.5px solid var(--border);cursor:pointer;display:block;background:var(--bg3)}
 
 /* ── LIGHTBOX ── */
-.lb-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.95);align-items:center;justify-content:center}
+.lb-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.95);align-items:center;justify-content:center}
 .lb-overlay.open{display:flex}
 .lb-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--r)}
 .lb-close{position:absolute;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.08);border:none;color:var(--text);font-size:20px;width:40px;height:40px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}

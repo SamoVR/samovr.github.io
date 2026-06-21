@@ -5,16 +5,14 @@
 
 // ── STORAGE ──
 const STORE = {
-  _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
   get(k) {
-    if (!this._local) return null;
     try { const v = localStorage.getItem('svr_' + k); return v ? JSON.parse(v) : null; }
     catch { return null; }
   },
   set(k, v) {
-    if (!this._local) return false;
     try { localStorage.setItem('svr_' + k, JSON.stringify(v)); return true; }
     catch (err) {
+      // most likely quota exceeded from large embedded base64 images
       console.error('Storage write failed for key', k, err);
       return false;
     }
@@ -69,7 +67,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "",
+      "link": "https://www.roblox.com/games/10720776665/The-Backrooms-AdySYNC",
       "images": [
         "images/backrooms1.png",
         "images/backrooms2.png",
@@ -105,7 +103,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "complete",
-      "link": "",
+      "link": "https://www.roblox.com/communities/16228589/Artemis-Special-Containment-Procedures-Foundation",
       "images": [
         "images/artemis1.png",
         "images/artemis2.png",
@@ -135,7 +133,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "",
+      "link": "https://www.roblox.com/games/18489578811/Innovation-Inc-Reimagined-HQ-3-0",
       "images": [
         "images/innohq1.png",
         "images/innohq2.png"
