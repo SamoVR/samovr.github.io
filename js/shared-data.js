@@ -4,41 +4,20 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// localStorage is read/written ONLY when on admin.html on localhost.
-// index.html always loads straight from DEFAULT — locally AND on the live
-// site — so pushing a new shared-data.js takes effect everywhere instantly
-// with zero cache issues and nothing to clear.
+// localStorage is completely disabled. The portfolio always loads from DEFAULT.
+// Admin dashboard uses its own in-memory state (see admin.js).
 const STORE = {
-  _active: (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-           && location.pathname.includes('admin'),
-
-  _init() {
-    // Purge any stale svr_* keys everywhere except admin.html on localhost.
-    // Cleans up old data left by previous versions of the site.
-    if (!this._active) {
+  get(k)    { return null; },
+  set(k, v) {
+    // Wipe any stale svr_* keys that may exist from older versions
+    try {
       Object.keys(localStorage)
         .filter(k => k.startsWith('svr_'))
         .forEach(k => localStorage.removeItem(k));
-    }
-  },
-
-  get(k) {
-    if (!this._active) return null;
-    try { const v = localStorage.getItem('svr_' + k); return v ? JSON.parse(v) : null; }
-    catch { return null; }
-  },
-  set(k, v) {
-    if (!this._active) return false;
-    try { localStorage.setItem('svr_' + k, JSON.stringify(v)); return true; }
-    catch (err) {
-      console.error('Storage write failed for key', k, err);
-      return false;
-    }
+    } catch {}
+    return false;
   }
 };
-
-// Must run before any loadState() call
-STORE._init();
 
 // ── DEFAULT CONTENT ──
 const DEFAULT = {
@@ -370,12 +349,12 @@ const DEFAULT = {
   pass: 'SamoLeDev'
 };
 
-// keys that get synced between admin <-> portfolio via localStorage
+// keys used by admin.js in-memory state
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  const stored = STORE.get(k);
-  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
+  // Always load from DEFAULT — localStorage is not used
+  return JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 // ── ESCAPING ──

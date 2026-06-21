@@ -2,25 +2,20 @@
    ADMIN LOGIC — admin.html
    ════════════════════════════════════════════════ */
 
-function loadD(k) {
-  const stored = STORE.get(k);
-  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
-}
-
+// State is purely in-memory. Nothing is read from or written to localStorage.
+// Edit here → Export JSON → paste into shared-data.js → push to Git.
 const state = {
-  pass: STORE.get('pass') || DEFAULT.pass,
-  projects: loadD('projects'),
-  about: loadD('about'),
-  skills: loadD('skills'),
-  experience: loadD('experience'),
-  contact: loadD('contact'),
-  settings: loadD('settings')
+  pass: DEFAULT.pass,
+  projects:   JSON.parse(JSON.stringify(DEFAULT.projects)),
+  about:      JSON.parse(JSON.stringify(DEFAULT.about)),
+  skills:     JSON.parse(JSON.stringify(DEFAULT.skills)),
+  experience: JSON.parse(JSON.stringify(DEFAULT.experience)),
+  contact:    JSON.parse(JSON.stringify(DEFAULT.contact)),
+  settings:   JSON.parse(JSON.stringify(DEFAULT.settings))
 };
 
-function persist(k) {
-  if (k === 'pass') { return STORE.set('pass', state.pass); }
-  return STORE.set(k, state[k]);
-}
+// persist() is now a no-op — state lives in memory only, export via JSON
+function persist(k) { return true; }
 
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════
 // Dirty-state tracking: set to the modal ID whenever the user makes any
