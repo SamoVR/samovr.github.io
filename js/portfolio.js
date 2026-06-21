@@ -584,14 +584,18 @@ function typeSequence(body, lines, i) {
 }
 
 // ═══════════════ CROSS-TAB SYNC FROM ADMIN ═══════════════
-window.addEventListener('storage', e => {
-  if (!e.key || !e.key.startsWith('svr_')) return;
-  const k = e.key.replace('svr_', '');
-  if (state[k] === undefined) return;
-  try { state[k] = e.newValue ? JSON.parse(e.newValue) : JSON.parse(JSON.stringify(DEFAULT[k])); }
-  catch { return; }
-  renderAll();
-});
+// Only active on localhost — on the live site localStorage is read-only/ignored,
+// so this listener would only cause stale data to bleed in from old cached keys.
+if (STORE._local) {
+  window.addEventListener('storage', e => {
+    if (!e.key || !e.key.startsWith('svr_')) return;
+    const k = e.key.replace('svr_', '');
+    if (state[k] === undefined) return;
+    try { state[k] = e.newValue ? JSON.parse(e.newValue) : JSON.parse(JSON.stringify(DEFAULT[k])); }
+    catch { return; }
+    renderAll();
+  });
+}
 
 // ═══════════════ WIRE UP STATIC CONTROLS ═══════════════
 function wireStaticControls() {

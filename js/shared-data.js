@@ -4,20 +4,49 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
+// VERSION: bump this string every time you push a content update to Git.
+// Any visitor whose browser has an older version cached will have their
+// localStorage wiped automatically on next load — they'll always see the
+// latest data from the file instead of a stale cached copy.
+const CACHE_VERSION = '2026-06-21-v1';
+
 const STORE = {
+  _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
+
+  // Wipe all svr_* keys if the stored version doesn't match CACHE_VERSION.
+  // Runs once on load (called below). Safe to call on both local and live —
+  // on live it also clears any legacy keys written before the localhost guard
+  // was added.
+  bustIfStale() {
+    try {
+      if (localStorage.getItem('svr_version') !== CACHE_VERSION) {
+        Object.keys(localStorage)
+          .filter(k => k.startsWith('svr_'))
+          .forEach(k => localStorage.removeItem(k));
+        localStorage.setItem('svr_version', CACHE_VERSION);
+      }
+    } catch { /* storage unavailable — ignore */ }
+  },
+
   get(k) {
+    if (!this._local) return null;
     try { const v = localStorage.getItem('svr_' + k); return v ? JSON.parse(v) : null; }
     catch { return null; }
   },
   set(k, v) {
+    if (!this._local) return false;
     try { localStorage.setItem('svr_' + k, JSON.stringify(v)); return true; }
     catch (err) {
-      // most likely quota exceeded from large embedded base64 images
       console.error('Storage write failed for key', k, err);
       return false;
     }
   }
 };
+
+// Run the stale-cache check immediately on load, before anything else reads
+// from localStorage. On the live site this clears legacy svr_* keys. On
+// localhost it only clears if the version stamp changed (i.e. you bumped it).
+STORE.bustIfStale();
 
 // ── DEFAULT CONTENT ──
 const DEFAULT = {
