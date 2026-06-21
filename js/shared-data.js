@@ -4,28 +4,24 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// VERSION: bump this string every time you push a content update to Git.
-// Any visitor whose browser has an older version cached will have their
-// localStorage wiped automatically on next load — they'll always see the
-// latest data from the file instead of a stale cached copy.
-const CACHE_VERSION = '2026-06-21-v2';
-
+// localStorage is used ONLY on localhost (for admin ↔ index live preview).
+// On the live site, STORE.get() always returns null and STORE.set() is a
+// no-op, so visitors always load straight from DEFAULT — no stale cache,
+// no versioning needed, no manual steps before pushing.
+// Any old svr_* keys left in a visitor's browser from before this fix are
+// wiped automatically the first time they land on a non-localhost page.
 const STORE = {
   _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
 
-  // Wipe all svr_* keys if the stored version doesn't match CACHE_VERSION.
-  // Runs once on load (called below). Safe to call on both local and live —
-  // on live it also clears any legacy keys written before the localhost guard
-  // was added.
-  bustIfStale() {
-    try {
-      if (localStorage.getItem('svr_version') !== CACHE_VERSION) {
-        Object.keys(localStorage)
-          .filter(k => k.startsWith('svr_'))
-          .forEach(k => localStorage.removeItem(k));
-        localStorage.setItem('svr_version', CACHE_VERSION);
-      }
-    } catch { /* storage unavailable — ignore */ }
+  _init() {
+    // On the live site: silently purge any stale svr_* keys left over from
+    // older versions of the site that wrote to localStorage unconditionally.
+    // This runs once and never needs to be touched again.
+    if (!this._local) {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('svr_'))
+        .forEach(k => localStorage.removeItem(k));
+    }
   },
 
   get(k) {
@@ -43,10 +39,8 @@ const STORE = {
   }
 };
 
-// Run the stale-cache check immediately on load, before anything else reads
-// from localStorage. On the live site this clears legacy svr_* keys. On
-// localhost it only clears if the version stamp changed (i.e. you bumped it).
-STORE.bustIfStale();
+// Must run before anything calls loadState()
+STORE._init();
 
 // ── DEFAULT CONTENT ──
 const DEFAULT = {
@@ -359,7 +353,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "glitchTitle": true,
