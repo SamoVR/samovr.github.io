@@ -4,20 +4,18 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// localStorage is used ONLY on localhost (for admin ↔ index live preview).
-// On the live site, STORE.get() always returns null and STORE.set() is a
-// no-op, so visitors always load straight from DEFAULT — no stale cache,
-// no versioning needed, no manual steps before pushing.
-// Any old svr_* keys left in a visitor's browser from before this fix are
-// wiped automatically the first time they land on a non-localhost page.
+// localStorage is read/written ONLY when on admin.html on localhost.
+// index.html always loads straight from DEFAULT — locally AND on the live
+// site — so pushing a new shared-data.js takes effect everywhere instantly
+// with zero cache issues and nothing to clear.
 const STORE = {
-  _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
+  _active: (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+           && location.pathname.includes('admin'),
 
   _init() {
-    // On the live site: silently purge any stale svr_* keys left over from
-    // older versions of the site that wrote to localStorage unconditionally.
-    // This runs once and never needs to be touched again.
-    if (!this._local) {
+    // Purge any stale svr_* keys everywhere except admin.html on localhost.
+    // Cleans up old data left by previous versions of the site.
+    if (!this._active) {
       Object.keys(localStorage)
         .filter(k => k.startsWith('svr_'))
         .forEach(k => localStorage.removeItem(k));
@@ -25,12 +23,12 @@ const STORE = {
   },
 
   get(k) {
-    if (!this._local) return null;
+    if (!this._active) return null;
     try { const v = localStorage.getItem('svr_' + k); return v ? JSON.parse(v) : null; }
     catch { return null; }
   },
   set(k, v) {
-    if (!this._local) return false;
+    if (!this._active) return false;
     try { localStorage.setItem('svr_' + k, JSON.stringify(v)); return true; }
     catch (err) {
       console.error('Storage write failed for key', k, err);
@@ -39,7 +37,7 @@ const STORE = {
   }
 };
 
-// Must run before anything calls loadState()
+// Must run before any loadState() call
 STORE._init();
 
 // ── DEFAULT CONTENT ──
@@ -353,7 +351,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "glitchTitle": true,
