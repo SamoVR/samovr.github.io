@@ -8,7 +8,7 @@
 // Any visitor whose browser has an older version cached will have their
 // localStorage wiped automatically on next load — they'll always see the
 // latest data from the file instead of a stale cached copy.
-const CACHE_VERSION = '2026-06-21-v1';
+const CACHE_VERSION = '2026-06-21-v2';
 
 const STORE = {
   _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
@@ -359,7 +359,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": false,
+    "lockdown": true,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "glitchTitle": true,
