@@ -5,16 +5,14 @@
 
 // ── STORAGE ──
 const STORE = {
-  _local: location.hostname === 'localhost' || location.hostname === '127.0.0.1',
   get(k) {
-    if (!this._local) return null;
     try { const v = localStorage.getItem('svr_' + k); return v ? JSON.parse(v) : null; }
     catch { return null; }
   },
   set(k, v) {
-    if (!this._local) return false;
     try { localStorage.setItem('svr_' + k, JSON.stringify(v)); return true; }
     catch (err) {
+      // most likely quota exceeded from large embedded base64 images
       console.error('Storage write failed for key', k, err);
       return false;
     }
