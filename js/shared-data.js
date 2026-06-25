@@ -341,7 +341,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": false,
+    "lockdown": true,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
