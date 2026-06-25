@@ -209,9 +209,9 @@ footer span{color:var(--accent)}
 .pd-gallery-label{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 .pd-gallery-count{font-family:var(--mono);font-size:11px;color:var(--ac)}
 .pd-gallery-main{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem 1.75rem;min-height:0;position:relative}
-.pd-gallery-main img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--r);cursor:zoom-in;box-shadow:0 20px 40px -16px rgba(0,0,0,.5);transition:transform .2s}
+.pd-gallery-main img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--r);cursor:zoom-in;box-shadow:0 20px 40px -16px rgba(0,0,0,.5);transition:transform .2s;position:relative;z-index:1}
 .pd-gallery-main img:hover{transform:scale(1.012)}
-.pd-gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.55);border:.5px solid var(--border2);color:var(--text);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;backdrop-filter:blur(4px)}
+.pd-gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.55);border:.5px solid var(--border2);color:var(--text);width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s;backdrop-filter:blur(4px);z-index:2}
 .pd-gallery-nav:hover{background:rgba(0,0,0,.8);border-color:var(--ac)}
 .pd-gallery-nav.prev{left:1rem}
 .pd-gallery-nav.next{right:1rem}
@@ -235,9 +235,9 @@ footer span{color:var(--accent)}
 /* ── LIGHTBOX ── */
 .lb-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.95);align-items:center;justify-content:center}
 .lb-overlay.open{display:flex}
-.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--r)}
+.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--r);position:relative;z-index:1}
 .lb-close{position:absolute;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.08);border:none;color:var(--text);font-size:20px;width:40px;height:40px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:none;color:var(--text);font-size:20px;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:none;color:var(--text);font-size:20px;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
 .lb-nav.prev{left:1.5rem}.lb-nav.next{right:1.5rem}
 .lb-nav:hover,.lb-close:hover{background:rgba(255,255,255,.16)}
 
@@ -357,7 +357,6 @@ section, footer { isolation: isolate; }
 .contact-btn,
 h2.section-title,
 .section-tag,
-.hero-stats > div,
 .term-window {
   transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
               transform 0.6s cubic-bezier(0.16,1,0.3,1);
@@ -368,6 +367,30 @@ h2.section-title,
 }
 @media (prefers-reduced-motion: reduce) {
   .sv-hidden { opacity: 1 !important; transform: none !important; }
+}
+
+/* ════════════════════════════════════════════════
+   HERO REVEAL
+   One unified animation for the hero block (eyebrow, name, bio,
+   CTAs, stats, currently-building badge) that plays once after the
+   intro overlay exits. Each item starts hidden+offset via
+   .hero-reveal-item, then JS adds .in with a staggered delay so they
+   slide up into place together rather than each having its own
+   separate effect (old version: name faded on its own, stats counted
+   up from zero on their own — felt disjointed).
+   ════════════════════════════════════════════════ */
+.hero-reveal-item {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
+              transform 0.65s cubic-bezier(0.16,1,0.3,1);
+}
+.hero-reveal-item.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal-item { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* ════════════════════════════════════════════════

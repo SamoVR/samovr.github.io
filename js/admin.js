@@ -2,20 +2,25 @@
    ADMIN LOGIC — admin.html
    ════════════════════════════════════════════════ */
 
-// State is purely in-memory. Nothing is read from or written to localStorage.
-// Workflow: edit in admin → Export JSON → paste into shared-data.js DEFAULT → push.
+function loadD(k) {
+  const stored = STORE.get(k);
+  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
+}
+
 const state = {
-  pass:       DEFAULT.pass,
-  projects:   JSON.parse(JSON.stringify(DEFAULT.projects)),
-  about:      JSON.parse(JSON.stringify(DEFAULT.about)),
-  skills:     JSON.parse(JSON.stringify(DEFAULT.skills)),
-  experience: JSON.parse(JSON.stringify(DEFAULT.experience)),
-  contact:    JSON.parse(JSON.stringify(DEFAULT.contact)),
-  settings:   JSON.parse(JSON.stringify(DEFAULT.settings))
+  pass: STORE.get('pass') || DEFAULT.pass,
+  projects: loadD('projects'),
+  about: loadD('about'),
+  skills: loadD('skills'),
+  experience: loadD('experience'),
+  contact: loadD('contact'),
+  settings: loadD('settings')
 };
 
-// persist() is a no-op — state is in memory only
-function persist(k) { return true; }
+function persist(k) {
+  if (k === 'pass') { return STORE.set('pass', state.pass); }
+  return STORE.set(k, state[k]);
+}
 
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════
 function openM(id) { document.getElementById(id).classList.add('open'); }
@@ -778,17 +783,28 @@ function renderInteractiveElements() {
   // lockdown
   const lt = document.getElementById('lock-toggle-input');
   const lm = document.getElementById('lock-msg-input');
-  if (lt) lt.checked = !!(s.lockdown);
+  const lockEnabled = !!(s.lockdown);
+  if (lt) lt.checked = lockEnabled;
   if (lm) lm.value = s.lockdownMsg || DEFAULT.settings.lockdownMsg;
+  const lockConfig = document.getElementById('lock-config');
+  if (lockConfig) lockConfig.classList.toggle('show', lockEnabled);
 
   // new toggles
   const set = (id, key) => { const el = document.getElementById(id); if (el) el.checked = s[key] !== false; };
   set('scroll-reveal-toggle', 'scrollReveal');
-  set('glitch-toggle',        'glitchTitle');
+  set('hero-reveal-toggle',   'heroReveal');
   set('progress-toggle',      'progressBar');
-  set('counter-toggle',       'counterAnim');
   set('card-preview-toggle',  'cardImagePreview');
   set('konami-toggle',        'konamiEnabled');
+
+  // status badge — explicit on/off toggle, separate from the text content
+  const statusEnabled = s.statusBadgeEnabled !== false;
+  const sbt = document.getElementById('status-badge-toggle');
+  if (sbt) sbt.checked = statusEnabled;
+  const statusConfig = document.getElementById('status-badge-config');
+  if (statusConfig) statusConfig.classList.toggle('show', statusEnabled);
+  const cb = document.getElementById('currently-building-input');
+  if (cb) cb.value = s.currentlyBuilding || '';
 }
 
 function renderTermLineRows() {
@@ -845,11 +861,12 @@ function saveInteractiveElements() {
 
   // new features
   s.scrollReveal    = get('scroll-reveal-toggle');
-  s.glitchTitle     = get('glitch-toggle');
+  s.heroReveal      = get('hero-reveal-toggle');
   s.progressBar     = get('progress-toggle');
-  s.counterAnim     = get('counter-toggle');
   s.cardImagePreview= get('card-preview-toggle');
   s.konamiEnabled   = get('konami-toggle');
+  s.statusBadgeEnabled = get('status-badge-toggle');
+  s.currentlyBuilding = val('currently-building-input');
 
   persist('settings');
   showToast('✓ Settings saved');
@@ -857,6 +874,12 @@ function saveInteractiveElements() {
 
 document.getElementById('term-toggle-input').addEventListener('change', e => {
   document.getElementById('term-config').classList.toggle('show', e.target.checked);
+});
+document.getElementById('status-badge-toggle').addEventListener('change', e => {
+  document.getElementById('status-badge-config').classList.toggle('show', e.target.checked);
+});
+document.getElementById('lock-toggle-input').addEventListener('change', e => {
+  document.getElementById('lock-config').classList.toggle('show', e.target.checked);
 });
 document.getElementById('term-add-line-btn').addEventListener('click', () => addTermLineRow());
 // Both save buttons call the same function

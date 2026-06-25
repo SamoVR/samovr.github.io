@@ -616,17 +616,44 @@ function initProgressBar() {
 }
 
 // ═══════════════ CINEMATIC INTRO ═══════════════
-// Name appears centred on a dark overlay, holds, then slides up
-// into its real position in the hero. Only runs once per session.
+// Name appears centred on a dark overlay, holds, then fades out.
+// Once it's gone, the hero block (eyebrow, name, bio, CTAs, stats,
+// currently-building badge) slides up into place together as a single
+// staggered animation — see initHeroReveal(). Only runs once per session.
 function initIntro() {
-  if (!(state.settings || {}).glitchTitle) return;
-  if (sessionStorage.getItem('svr_intro_done')) return;
+  const heroInner = document.querySelector('.hero-inner');
 
-  const heroName = document.querySelector('h1.hero-name');
-  if (!heroName) return;
+  // Disabled in settings entirely — hero should just be visible immediately,
+  // with no hidden→visible flash at all (so we skip adding the reveal
+  // classes altogether rather than adding-then-instantly-revealing them).
+  if (!(state.settings || {}).heroReveal) {
+    initScrollReveal();
+    initCardImagePreview();
+    return;
+  }
 
-  // Hide the real hero content until intro exits
-  heroName.style.opacity = '0';
+  // Intro already played earlier this session (e.g. navigated back to the
+  // page in the same tab) — show the hero immediately, still using the
+  // reveal classes so it's visually consistent, but with no stagger delay
+  // and no hidden frame first.
+  if (sessionStorage.getItem('svr_intro_done')) {
+    if (heroInner) {
+      const items = Array.from(heroInner.children).filter(el =>
+        el.matches('.hero-eyebrow, .hero-name, .hero-bio, .hero-cta-row, .hero-stats, #currently-building-badge')
+      );
+      items.forEach(el => { el.classList.add('hero-reveal-item', 'in'); el.style.transitionDelay = '0s'; });
+    }
+    initScrollReveal();
+    initCardImagePreview();
+    return;
+  }
+
+  if (!heroInner) return;
+
+  // Hero items stay hidden (via .hero-reveal-item, applied in initHeroReveal)
+  // until the overlay clears — initHeroReveal() adds the hidden state AND
+  // the visible state, so call it now in "armed" (not yet revealed) mode.
+  initHeroReveal(false);
 
   // ── Overlay ──
   const overlay = document.createElement('div');
@@ -685,11 +712,10 @@ function initIntro() {
 
   // ── Timeline ──
   // t=120  line expands
-  // t=250  name fades in
+  // t=260  name fades in
   // t=700  tag fades in
-  // t=1800 hold
-  // t=2100 everything fades out together (overlay opacity→0)
-  // t=2850 overlay removed, hero name fades in
+  // t=2000 everything fades out together (overlay opacity→0)
+  // t=2750 overlay removed, hero reveal animation starts
 
   setTimeout(() => {
     line.style.opacity = '1';
@@ -713,13 +739,48 @@ function initIntro() {
   setTimeout(() => {
     overlay.remove();
     document.body.style.overflow = '';
-    heroName.style.transition = 'opacity 0.5s ease';
-    heroName.style.opacity = '1';
     sessionStorage.setItem('svr_intro_done', '1');
+    initHeroReveal(true); // now actually slide the hero items in
     initScrollReveal();
     initCardImagePreview();
-    initCounterAnim();
   }, 2750);
+}
+
+// ═══════════════ HERO REVEAL (unified slide-in) ═══════════════
+// Replaces the old separate "name fades on its own" + "stats count up on
+// their own" combo with one cohesive animation: every top-level hero piece
+// (eyebrow, name, bio, CTA row, stats, currently-building badge if present)
+// starts offset+invisible, then slides up into place together with a
+// small stagger, right after the intro overlay clears.
+//
+// reveal=false → just mark items hidden+offset (called while the overlay is
+//                still covering the screen, so there's no visible flash)
+// reveal=true  → also add .in on the next frame, sliding everything into
+//                place (called once the overlay has been removed)
+function initHeroReveal(reveal) {
+  const heroInner = document.querySelector('.hero-inner');
+  if (!heroInner) return;
+
+  const items = Array.from(heroInner.children).filter(el =>
+    el.matches('.hero-eyebrow, .hero-name, .hero-bio, .hero-cta-row, .hero-stats, #currently-building-badge')
+  );
+  if (!items.length) return;
+
+  items.forEach((el, i) => {
+    el.classList.add('hero-reveal-item');
+    el.style.transitionDelay = reveal ? (i * 0.09) + 's' : '0s';
+  });
+
+  if (reveal) {
+    // Use a frame delay so the browser registers the hidden state first,
+    // otherwise the transition can get skipped if added+revealed in the
+    // same paint.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        items.forEach(el => el.classList.add('in'));
+      });
+    });
+  }
 }
 
 // ═══════════════ SCROLL-REVEAL ═══════════════
@@ -747,7 +808,7 @@ function initScrollReveal() {
     '.about-card', '.skill-group', '.exp-item',
     '.project-card', '.contact-btn',
     'h2.section-title', '.section-tag',
-    '.hero-stats > div', '.term-window'
+    '.term-window'
   ];
 
   // Save skill bar widths before zeroing
@@ -896,69 +957,6 @@ function triggerKonami() {
 }
 
 // ═══════════════ WIRE STATIC CONTROLS ═══════════════
-
-// ═══════════════ HERO STATS COUNTER ANIMATION ═══════════════
-let _counterObs = null;
-function initCounterAnim() {
-  if (_counterObs) { _counterObs.disconnect(); _counterObs = null; }
-
-  const statEls = document.querySelectorAll('.hero-stats .stat-num');
-  if (!(state.settings || {}).counterAnim) {
-    // Restore originals if feature toggled off
-    statEls.forEach(el => {
-      if (el.dataset.counterOrig) el.innerHTML = el.dataset.counterOrig;
-    });
-    return;
-  }
-
-  statEls.forEach(el => {
-    const raw     = el.textContent.trim();          // "4+", "∞", "2"
-    const numStr  = raw.replace(/[^0-9.]/g, '');    // "4", "", "2"
-    const suffix  = raw.replace(/[0-9.]/g, '');     // "+", "∞", ""
-    const num     = parseFloat(numStr);
-
-    if (!numStr || isNaN(num)) return; // skip ∞ or purely symbolic
-
-    el.dataset.counterOrig   = el.innerHTML; // save for restore
-    el.dataset.counterTarget = num;
-    el.dataset.counterSuffix = suffix;
-    // Start at 0
-    el.innerHTML = '0' + (suffix.replace('+', '') || '');
-  });
-
-  const DURATION = 2600; // ms — slow enough to watch
-
-  const animateEl = (el) => {
-    const target  = parseFloat(el.dataset.counterTarget);
-    const suffix  = el.dataset.counterSuffix || '';
-    const hasPlus = suffix.includes('+');
-    const start   = performance.now();
-
-    const step = (now) => {
-      const t      = Math.min(1, (now - start) / DURATION);
-      // ease-out expo: aggressive at first, crawls to finish
-      const eased  = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-      const cur    = Math.round(target * eased);
-      el.innerHTML = cur + (hasPlus ? '<span>+</span>' : '');
-      if (t < 1) requestAnimationFrame(step);
-      else el.innerHTML = target + (hasPlus ? '<span>+</span>' : suffix);
-    };
-    requestAnimationFrame(step);
-  };
-
-  _counterObs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      _counterObs.unobserve(entry.target);
-      animateEl(entry.target);
-    });
-  }, { threshold: 0.9 }); // wait until almost fully in view
-
-  statEls.forEach(el => {
-    if (el.dataset.counterTarget) _counterObs.observe(el);
-  });
-}
-
 
 // ═══════════════ CARD IMAGE PREVIEW ON HOVER ═══════════════
 // Fix: instead of CSS ::after (which was hidden behind the card background),
@@ -1125,6 +1123,50 @@ function initMobileNav() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) close(); });
 }
 
+// ═══════════════ CURRENTLY BUILDING STATUS ═══════════════
+function renderCurrentlyBuilding() {
+  const existing = document.getElementById('currently-building-badge');
+  if (existing) existing.remove();
+
+  const s = state.settings || {};
+  if (!s.statusBadgeEnabled) return;
+
+  const text = (s.currentlyBuilding || '').trim();
+  if (!text) return; // toggle is on but no text set — nothing to show yet
+
+  const heroCta = document.querySelector('.hero-cta-row');
+  if (!heroCta) return;
+
+  const badge = document.createElement('div');
+  badge.id = 'currently-building-badge';
+  badge.style.cssText = [
+    'display:inline-flex','align-items:center','gap:.55rem',
+    'margin-top:1.1rem',
+    'background:rgba(74,222,128,.07)',
+    'border:.5px solid rgba(74,222,128,.22)',
+    'border-radius:999px',
+    'padding:.35rem .9rem .35rem .6rem',
+    'font-family:var(--mono)','font-size:11.5px',
+    'color:#86efac','width:fit-content','letter-spacing:.01em'
+  ].join(';');
+
+  badge.innerHTML = `
+    <span style="position:relative;display:flex;align-items:center;justify-content:center;width:8px;height:8px;flex-shrink:0">
+      <span style="position:absolute;inset:0;border-radius:50%;background:#4ade80;animation:cb-ping 1.4s cubic-bezier(0,0,.2,1) infinite"></span>
+      <span style="position:relative;width:6px;height:6px;border-radius:50%;background:#4ade80;display:block"></span>
+    </span>
+    <span style="color:#bbf7d0;font-weight:600">${esc(text)}</span>`;
+
+  if (!document.getElementById('cb-ping-style')) {
+    const styleTag = document.createElement('style');
+    styleTag.id = 'cb-ping-style';
+    styleTag.textContent = '@keyframes cb-ping{0%{transform:scale(1);opacity:.7}75%,100%{transform:scale(2.2);opacity:0}}';
+    document.head.appendChild(styleTag);
+  }
+
+  heroCta.insertAdjacentElement('afterend', badge);
+}
+
 function renderAll() {
   checkLockdown();
   renderAbout();
@@ -1134,10 +1176,12 @@ function renderAll() {
   renderProjects();
   renderContact();
   renderTerminal();
+  renderCurrentlyBuilding();
   initCursorEffect();
   initProgressBar();
-  // initScrollReveal / initCardImagePreview / initCounterAnim are called
-  // EITHER by initIntro (after overlay exits) OR directly below if intro is skipped
+  // initHeroReveal / initScrollReveal / initCardImagePreview are all
+  // triggered by initIntro() below, which handles every case (intro
+  // playing, intro skipped this session, intro disabled in settings)
 }
 
 wireStaticControls();
@@ -1148,13 +1192,4 @@ checkLockdown();
 renderAll();
 initScrollspy();
 initKonamiButton();
-
-// Intro runs once per session; if skipped (return visit in same tab)
-// we initialise the reveal features immediately instead
-if (sessionStorage.getItem('svr_intro_done')) {
-  initScrollReveal();
-  initCardImagePreview();
-  initCounterAnim();
-} else {
-  initIntro(); // intro calls the three above after it exits
-}
+initIntro();

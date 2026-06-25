@@ -186,24 +186,11 @@
         <div class="elcard">
           <div class="elcard-head">
             <div>
-              <div class="elcard-name"><span>⚡</span> Intro Animation</div>
-              <div class="elcard-desc">Shows a cinematic intro screen on first visit — your name appears centred on a dark background, then fades out into the portfolio. Plays once per browser tab.</div>
+              <div class="elcard-name"><span>⚡</span> Hero Reveal Animation</div>
+              <div class="elcard-desc">A short cinematic intro plays once per visit (your name appears centred, holds, fades out) — then your name, bio, buttons, and stats all slide up into place together as one animation. Turning this off shows the hero instantly with no intro and no slide-in.</div>
             </div>
-            <label class="toggle-switch" title="Enable intro animation">
-              <input type="checkbox" id="glitch-toggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <div class="elcard">
-          <div class="elcard-head">
-            <div>
-              <div class="elcard-name"><span>📊</span> Stats Counter Animation</div>
-              <div class="elcard-desc">Hero stats (4+, 7M+, etc.) count up from zero with an easing curve when the section scrolls into view. Makes those numbers feel earned.</div>
-            </div>
-            <label class="toggle-switch" title="Enable counter animation">
-              <input type="checkbox" id="counter-toggle">
+            <label class="toggle-switch" title="Enable hero reveal animation">
+              <input type="checkbox" id="hero-reveal-toggle">
               <span class="toggle-slider"></span>
             </label>
           </div>
@@ -245,6 +232,26 @@
               <input type="checkbox" id="konami-toggle">
               <span class="toggle-slider"></span>
             </label>
+          </div>
+        </div>
+
+        <div class="elcard">
+          <div class="elcard-head">
+            <div>
+              <div class="elcard-name"><span>🟢</span> Status Badge</div>
+              <div class="elcard-desc">A small pulsing-dot badge in the hero showing what you're up to right now — a quick signal that you're active.</div>
+            </div>
+            <label class="toggle-switch" title="Enable status badge">
+              <input type="checkbox" id="status-badge-toggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="elcard-config" id="status-badge-config" style="margin-top:.75rem">
+            <div class="fgroup">
+              <label>Status Text</label>
+              <input type="text" id="currently-building-input" placeholder="e.g. Currently scripting">
+              <div class="fhint">Shown as-is next to the green dot. Doesn't need to be a specific project — "Currently scripting" or "Currently tinkering" works fine if you just want to show you're active.</div>
+            </div>
           </div>
         </div>
 

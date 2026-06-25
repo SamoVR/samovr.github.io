@@ -6,17 +6,29 @@
 // ── STORAGE ──
 // localStorage is completely disabled. Portfolio always loads from DEFAULT.
 // Admin keeps state in memory only — edit, export JSON, paste into shared-data.js, push.
+// ── STORAGE ──
+// Reads/writes localStorage under an 'svr_' prefix. This is what lets
+// admin.html and index.html share data on the same machine/browser:
+// admin writes here, the portfolio reads it back on load (and live, via
+// the 'storage' event, if both are open in different tabs).
 const STORE = {
-  get(k)    { return null; },
-  set(k, v) { return false; }
+  get(k) {
+    try {
+      const raw = localStorage.getItem('svr_' + k);
+      return raw === null ? null : JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  },
+  set(k, v) {
+    try {
+      localStorage.setItem('svr_' + k, JSON.stringify(v));
+      return true;
+    } catch {
+      return false; // e.g. storage quota exceeded, or unavailable (private mode in some browsers)
+    }
+  }
 };
-
-// Wipe any stale svr_* keys left in the browser from older versions of the site
-try {
-  Object.keys(localStorage)
-    .filter(k => k.startsWith('svr_'))
-    .forEach(k => localStorage.removeItem(k));
-} catch {}
 
 // ── DEFAULT CONTENT ──
 const DEFAULT = {
@@ -332,11 +344,12 @@ const DEFAULT = {
     "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
-    "glitchTitle": true,
+    "heroReveal": true,
     "progressBar": true,
-    "counterAnim": true,
     "cardImagePreview": true,
     "konamiEnabled": true,
+    "currentlyBuilding": "Currently scripting",
+    "statusBadgeEnabled": true,
     "notFound": {
       "title": "404",
       "heading": "Lost in the build folder.",
@@ -352,7 +365,8 @@ const DEFAULT = {
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  return JSON.parse(JSON.stringify(DEFAULT[k]));
+  const stored = STORE.get(k);
+  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 // ── ESCAPING ──
