@@ -4,20 +4,19 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// localStorage is completely disabled. The portfolio always loads from DEFAULT.
-// Admin dashboard uses its own in-memory state (see admin.js).
+// localStorage is completely disabled. Portfolio always loads from DEFAULT.
+// Admin keeps state in memory only — edit, export JSON, paste into shared-data.js, push.
 const STORE = {
   get(k)    { return null; },
-  set(k, v) {
-    // Wipe any stale svr_* keys that may exist from older versions
-    try {
-      Object.keys(localStorage)
-        .filter(k => k.startsWith('svr_'))
-        .forEach(k => localStorage.removeItem(k));
-    } catch {}
-    return false;
-  }
+  set(k, v) { return false; }
 };
+
+// Wipe any stale svr_* keys left in the browser from older versions of the site
+try {
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('svr_'))
+    .forEach(k => localStorage.removeItem(k));
+} catch {}
 
 // ── DEFAULT CONTENT ──
 const DEFAULT = {
@@ -67,7 +66,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "https://www.roblox.com/games/10720776665/The-Backrooms-AdySYNC",
+      "link": "",
       "images": [
         "images/backrooms1.png",
         "images/backrooms2.png",
@@ -103,7 +102,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "complete",
-      "link": "https://www.roblox.com/communities/16228589/Artemis-Special-Containment-Procedures-Foundation",
+      "link": "",
       "images": [
         "images/artemis1.png",
         "images/artemis2.png",
@@ -133,7 +132,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "https://www.roblox.com/games/18489578811/Innovation-Inc-Reimagined-HQ-3-0",
+      "link": "",
       "images": [
         "images/innohq1.png",
         "images/innohq2.png"
@@ -269,7 +268,7 @@ const DEFAULT = {
     },
     {
       "company": "C++ / OpenGL — Personal Projects",
-      "years": "2022 — Now",
+      "years": "2021 — Now",
       "role": "Systems & Graphics Programmer",
       "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine — a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
       "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git"
@@ -349,11 +348,10 @@ const DEFAULT = {
   pass: 'SamoLeDev'
 };
 
-// keys used by admin.js in-memory state
+// keys used across admin and portfolio
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  // Always load from DEFAULT — localStorage is not used
   return JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 

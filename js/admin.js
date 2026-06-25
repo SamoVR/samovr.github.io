@@ -3,9 +3,9 @@
    ════════════════════════════════════════════════ */
 
 // State is purely in-memory. Nothing is read from or written to localStorage.
-// Edit here → Export JSON → paste into shared-data.js → push to Git.
+// Workflow: edit in admin → Export JSON → paste into shared-data.js DEFAULT → push.
 const state = {
-  pass: DEFAULT.pass,
+  pass:       DEFAULT.pass,
   projects:   JSON.parse(JSON.stringify(DEFAULT.projects)),
   about:      JSON.parse(JSON.stringify(DEFAULT.about)),
   skills:     JSON.parse(JSON.stringify(DEFAULT.skills)),
@@ -14,46 +14,13 @@ const state = {
   settings:   JSON.parse(JSON.stringify(DEFAULT.settings))
 };
 
-// persist() is now a no-op — state lives in memory only, export via JSON
+// persist() is a no-op — state is in memory only
 function persist(k) { return true; }
 
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════
-// Dirty-state tracking: set to the modal ID whenever the user makes any
-// change inside a modal. Cleared on save or intentional close.
-let _dirtyModal = null;
-
-function markDirty(modalId) { _dirtyModal = modalId; }
-function clearDirty()       { _dirtyModal = null; }
-
-function openM(id) {
-  clearDirty();
-  document.getElementById(id).classList.add('open');
-  // start listening for any input change inside this modal
-  const el = document.getElementById(id);
-  el._dirtyHandler = () => markDirty(id);
-  el.addEventListener('input',  el._dirtyHandler, true);
-  el.addEventListener('change', el._dirtyHandler, true);
-}
-
-function closeM(id) {
-  const el = document.getElementById(id);
-  if (el._dirtyHandler) {
-    el.removeEventListener('input',  el._dirtyHandler, true);
-    el.removeEventListener('change', el._dirtyHandler, true);
-    el._dirtyHandler = null;
-  }
-  clearDirty();
-  el.classList.remove('open');
-}
-
-// Outside-click: warn if there are unsaved changes
-document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click', e => {
-  if (e.target !== el) return;
-  if (_dirtyModal === el.id) {
-    if (!confirm('You have unsaved changes. Close anyway?')) return;
-  }
-  closeM(el.id);
-}));
+function openM(id) { document.getElementById(id).classList.add('open'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click', e => { if (e.target === el) closeM(el.id); }));
 
 // ═══════════════ AUTH ═══════════════
 function doLogin() {
@@ -132,7 +99,7 @@ function buildToolbar(tbId, editorId) {
     // preventDefault on mousedown is the actual fix — keeps the live
     // selection intact through the click
     b.addEventListener('mousedown', e => e.preventDefault());
-    b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); markDirty(_dirtyModal); });
+    b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); });
     tb.appendChild(b);
   });
 
@@ -795,21 +762,33 @@ function collectTabs() {
 // enough (an `elcard` pattern) that another interactive element could be
 // added later by following the same shape: a toggle + a config block.
 function renderInteractiveElements() {
-  const enabled = !!(state.settings && state.settings.terminalEnabled);
-  document.getElementById('term-toggle-input').checked = enabled;
-  document.getElementById('term-config').classList.toggle('show', enabled);
-  document.getElementById('term-title-input').value = (state.settings && state.settings.terminalTitle) || DEFAULT.settings.terminalTitle;
+  const s = state.settings || {};
+
+  // terminal
+  const termEnabled = !!(s.terminalEnabled);
+  document.getElementById('term-toggle-input').checked = termEnabled;
+  document.getElementById('term-config').classList.toggle('show', termEnabled);
+  document.getElementById('term-title-input').value = s.terminalTitle || DEFAULT.settings.terminalTitle;
   renderTermLineRows();
 
-  // cursor effect toggle
-  const cursorToggle = document.getElementById('cursor-toggle-input');
-  if (cursorToggle) cursorToggle.checked = !!(state.settings && state.settings.cursorEffect);
+  // cursor
+  const ct = document.getElementById('cursor-toggle-input');
+  if (ct) ct.checked = !!(s.cursorEffect);
 
-  // lockdown toggle + message
-  const lockToggle = document.getElementById('lock-toggle-input');
-  const lockMsg = document.getElementById('lock-msg-input');
-  if (lockToggle) lockToggle.checked = !!(state.settings && state.settings.lockdown);
-  if (lockMsg) lockMsg.value = (state.settings && state.settings.lockdownMsg) || DEFAULT.settings.lockdownMsg;
+  // lockdown
+  const lt = document.getElementById('lock-toggle-input');
+  const lm = document.getElementById('lock-msg-input');
+  if (lt) lt.checked = !!(s.lockdown);
+  if (lm) lm.value = s.lockdownMsg || DEFAULT.settings.lockdownMsg;
+
+  // new toggles
+  const set = (id, key) => { const el = document.getElementById(id); if (el) el.checked = s[key] !== false; };
+  set('scroll-reveal-toggle', 'scrollReveal');
+  set('glitch-toggle',        'glitchTitle');
+  set('progress-toggle',      'progressBar');
+  set('counter-toggle',       'counterAnim');
+  set('card-preview-toggle',  'cardImagePreview');
+  set('konami-toggle',        'konamiEnabled');
 }
 
 function renderTermLineRows() {
@@ -845,25 +824,33 @@ function addTermLineRow(line) {
 }
 
 function saveInteractiveElements() {
-  const enabled = document.getElementById('term-toggle-input').checked;
-  const title = document.getElementById('term-title-input').value || DEFAULT.settings.terminalTitle;
+  const s = state.settings = state.settings || {};
+
+  // terminal
+  s.terminalEnabled = document.getElementById('term-toggle-input').checked;
+  s.terminalTitle   = document.getElementById('term-title-input').value || DEFAULT.settings.terminalTitle;
   const rows = Array.from(document.getElementById('term-lines-rows').querySelectorAll('.term-line-row'));
   const lines = rows.map(r => {
-    const sel = r.querySelector('select'); const inp = r.querySelector('input');
+    const sel = r.querySelector('select'), inp = r.querySelector('input');
     return { type: sel.value, text: inp.value };
   }).filter(l => l.text.trim());
+  s.terminalLines = lines.length ? lines : JSON.parse(JSON.stringify(DEFAULT.settings.terminalLines));
 
-  const cursorEnabled = !!(document.getElementById('cursor-toggle-input') && document.getElementById('cursor-toggle-input').checked);
-  const lockEnabled = !!(document.getElementById('lock-toggle-input') && document.getElementById('lock-toggle-input').checked);
-  const lockMsg = (document.getElementById('lock-msg-input') && document.getElementById('lock-msg-input').value) || DEFAULT.settings.lockdownMsg;
+  // cursor + lockdown
+  const get = id => { const el = document.getElementById(id); return el ? el.checked : false; };
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  s.cursorEffect    = get('cursor-toggle-input');
+  s.lockdown        = get('lock-toggle-input');
+  s.lockdownMsg     = val('lock-msg-input') || DEFAULT.settings.lockdownMsg;
 
-  state.settings = state.settings || {};
-  state.settings.terminalEnabled = enabled;
-  state.settings.terminalTitle = title;
-  state.settings.terminalLines = lines.length ? lines : JSON.parse(JSON.stringify(DEFAULT.settings.terminalLines));
-  state.settings.cursorEffect = cursorEnabled;
-  state.settings.lockdown = lockEnabled;
-  state.settings.lockdownMsg = lockMsg;
+  // new features
+  s.scrollReveal    = get('scroll-reveal-toggle');
+  s.glitchTitle     = get('glitch-toggle');
+  s.progressBar     = get('progress-toggle');
+  s.counterAnim     = get('counter-toggle');
+  s.cardImagePreview= get('card-preview-toggle');
+  s.konamiEnabled   = get('konami-toggle');
+
   persist('settings');
   showToast('✓ Settings saved');
 }
@@ -936,13 +923,7 @@ function wireStaticButtons() {
   document.getElementById('add-exp-btn').addEventListener('click', () => openExpModal(null));
   document.getElementById('add-contact-btn').addEventListener('click', () => openCtModal(null));
 
-  document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', () => {
-    const id = b.dataset.closeModal;
-    if (_dirtyModal === id) {
-      if (!confirm('You have unsaved changes. Close anyway?')) return;
-    }
-    closeM(id);
-  }));
+  document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', () => closeM(b.dataset.closeModal)));
 
   document.getElementById('pm-save-btn').addEventListener('click', saveProject);
   document.getElementById('am-save-btn').addEventListener('click', saveAbout);
@@ -950,17 +931,17 @@ function wireStaticButtons() {
   document.getElementById('expm-save-btn').addEventListener('click', saveExp);
   document.getElementById('ctm-save-btn').addEventListener('click', saveContact);
 
-  document.getElementById('pm-icon-mode-emoji').addEventListener('click', () => { setIconMode('emoji'); markDirty(_dirtyModal); });
-  document.getElementById('pm-icon-mode-image').addEventListener('click', () => { setIconMode('image'); markDirty(_dirtyModal); });
-  document.getElementById('pm-icon-file').addEventListener('change', e => { handleIconUpload(e); markDirty(_dirtyModal); });
-  document.getElementById('pm-icon-remove-btn').addEventListener('click', () => { removeIconImage(); markDirty(_dirtyModal); });
-  document.getElementById('pm-file').addEventListener('change', e => { handleImgUpload(e); markDirty(_dirtyModal); });
+  document.getElementById('pm-icon-mode-emoji').addEventListener('click', () => setIconMode('emoji'));
+  document.getElementById('pm-icon-mode-image').addEventListener('click', () => setIconMode('image'));
+  document.getElementById('pm-icon-file').addEventListener('change', handleIconUpload);
+  document.getElementById('pm-icon-remove-btn').addEventListener('click', removeIconImage);
+  document.getElementById('pm-file').addEventListener('change', handleImgUpload);
 
   document.querySelectorAll('.color-swatch[data-target]').forEach(s => {
-    s.addEventListener('click', () => { pickColor(s, s.dataset.target); markDirty(_dirtyModal); });
+    s.addEventListener('click', () => pickColor(s, s.dataset.target));
   });
   document.querySelectorAll('input[type=color][data-synctarget]').forEach(inp => {
-    inp.addEventListener('input', () => { syncColorPicker(inp.dataset.synctarget, inp.value); markDirty(_dirtyModal); });
+    inp.addEventListener('input', () => syncColorPicker(inp.dataset.synctarget, inp.value));
   });
 }
 

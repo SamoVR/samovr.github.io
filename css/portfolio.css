@@ -341,3 +341,40 @@ footer span{color:var(--accent)}
 /* Stacking contexts — create one on sections so they sit above z-index:0 canvas
    WITHOUT overriding position on fixed elements like nav/.pd-overlay/.lb-overlay */
 section, footer { isolation: isolate; }
+
+/* ════════════════════════════════════════════════
+   SCROLL-REVEAL
+   Elements get .sv-hidden added by JS. Removing it
+   triggers the transition back to natural state.
+   The transition must live ON the element always
+   (not only on .sv-hidden) so the browser can
+   interpolate from the hidden state to natural.
+   ════════════════════════════════════════════════ */
+.about-card,
+.skill-group,
+.exp-item,
+.project-card,
+.contact-btn,
+h2.section-title,
+.section-tag,
+.hero-stats > div,
+.term-window {
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+              transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.sv-hidden {
+  opacity: 0 !important;
+  transform: translateY(26px) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sv-hidden { opacity: 1 !important; transform: none !important; }
+}
+
+/* ════════════════════════════════════════════════
+   CARD IMAGE PREVIEW ON HOVER
+   The .card-bg-preview div is injected by JS as first child.
+   All other card children get z-index:1 via the inline <style>
+   injected by injectCardChildZ() in portfolio.js.
+   ════════════════════════════════════════════════ */
+.project-card { overflow: hidden; } /* clip the bg preview to card bounds */
+

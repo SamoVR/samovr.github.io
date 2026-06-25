@@ -185,7 +185,7 @@ function openPD(i) {
   document.getElementById('pd-icon').innerHTML = renderIconMarkup(p, '💻');
   document.getElementById('pd-title').textContent = p.name;
   const sub = document.getElementById('pd-subtitle');
-  sub.textContent = p.status === 'complete' ? '✓ Complete' : '⏳ In Progress';
+  if (sub) { sub.textContent = p.status === 'complete' ? '✓ Complete' : '⏳ In Progress'; }
 
   const imgs = p.images || [];
   pdGalleryImgs = imgs;
@@ -336,7 +336,7 @@ function openTabModal(tab, ac) {
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'tab-modal-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:2rem';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:2rem';
     overlay.innerHTML = `
       <div id="tab-modal-box" style="background:#111;border:.5px solid rgba(255,255,255,.13);border-radius:14px;width:100%;max-width:580px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:.5px solid rgba(255,255,255,.07)">
@@ -344,8 +344,8 @@ function openTabModal(tab, ac) {
           <button id="tab-modal-close" style="background:#181818;border:.5px solid rgba(255,255,255,.13);color:#888;font-size:15px;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
         </div>
         <div style="overflow-y:auto;flex:1">
-          <div id="tab-modal-desc" style="padding:1.5rem 1.5rem 1rem;font-size:14px;color:#888;line-height:1.85"></div>
           <div id="tab-modal-imgs" style="display:none"></div>
+          <div id="tab-modal-desc" style="padding:1.5rem;font-size:14px;color:#888;line-height:1.85"></div>
         </div>
       </div>`;
     document.body.appendChild(overlay);
@@ -356,14 +356,11 @@ function openTabModal(tab, ac) {
   document.getElementById('tab-modal-title').textContent = tab.title;
   document.getElementById('tab-modal-title').style.color = ac || '#7f77dd';
 
-  // description first, then images below
-  document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
-
   const imgsEl = document.getElementById('tab-modal-imgs');
   const imgs = tab.images || [];
   if (imgs.length) {
     imgsEl.style.display = 'grid';
-    imgsEl.style.cssText = `display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;padding:0 1.5rem 1.25rem`;
+    imgsEl.style.cssText = `display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;padding:1.25rem 1.5rem 0`;
     imgsEl.innerHTML = imgs.map((src, j) => `<div style="border-radius:8px;overflow:hidden;aspect-ratio:16/9;border:.5px solid rgba(255,255,255,.07)"><img src="${esc(src)}" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in" data-imgidx="${j}"></div>`).join('');
     imgsEl.querySelectorAll('img').forEach(img => {
       img.addEventListener('click', () => openLB(imgs, parseInt(img.dataset.imgidx, 10)));
@@ -373,6 +370,7 @@ function openTabModal(tab, ac) {
     imgsEl.innerHTML = '';
   }
 
+  document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
   overlay.style.display = 'flex';
 }
 
@@ -593,7 +591,465 @@ window.addEventListener('storage', e => {
   renderAll();
 });
 
-// ═══════════════ WIRE UP STATIC CONTROLS ═══════════════
+// ═══════════════ PROGRESS BAR ═══════════════
+// ═══════════════ PROGRESS BAR ═══════════════
+function updateProgressBar() {
+  const bar = document.getElementById('progress-bar');
+  if (!bar) return;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (total > 0 ? Math.min(100, (window.scrollY / total) * 100) : 0) + '%';
+}
+function initProgressBar() {
+  let bar = document.getElementById('progress-bar');
+  if (!(state.settings || {}).progressBar) {
+    if (bar) bar.remove();
+    return;
+  }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'progress-bar';
+    bar.style.cssText = 'position:fixed;top:0;left:0;height:2px;width:0%;background:var(--accent);z-index:9998;transition:width .08s linear;pointer-events:none;';
+    document.body.appendChild(bar);
+    window.addEventListener('scroll', updateProgressBar, { passive: true });
+  }
+  updateProgressBar();
+}
+
+// ═══════════════ CINEMATIC INTRO ═══════════════
+// Name appears centred on a dark overlay, holds, then slides up
+// into its real position in the hero. Only runs once per session.
+function initIntro() {
+  if (!(state.settings || {}).glitchTitle) return;
+  if (sessionStorage.getItem('svr_intro_done')) return;
+
+  const heroName = document.querySelector('h1.hero-name');
+  if (!heroName) return;
+
+  // Hide the real hero content until intro exits
+  heroName.style.opacity = '0';
+
+  // ── Overlay ──
+  const overlay = document.createElement('div');
+  overlay.id = 'intro-overlay';
+  overlay.style.cssText = [
+    'position:fixed','inset:0','z-index:10000',
+    'background:#0a0a0a',
+    'display:flex','flex-direction:column',
+    'align-items:center','justify-content:center','gap:1rem',
+    'opacity:1',
+    'transition:opacity 0.7s ease',
+    'pointer-events:all'
+  ].join(';');
+
+  // ── Accent line above name ──
+  const line = document.createElement('div');
+  line.style.cssText = [
+    'width:0px','height:1.5px','background:var(--accent)',
+    'transition:width 0.6s cubic-bezier(0.16,1,0.3,1)',
+    'opacity:0'
+  ].join(';');
+
+  // ── Name ──
+  const nameEl = document.createElement('div');
+  nameEl.innerHTML = 'Samo<span style="color:var(--accent)">_VR</span>';
+  nameEl.style.cssText = [
+    'font-family:"JetBrains Mono",monospace',
+    'font-size:clamp(2.6rem,6vw,5rem)',
+    'font-weight:700',
+    'letter-spacing:-0.025em',
+    'color:#f0f0f0',
+    'opacity:0',
+    'transform:translateY(10px)',
+    'transition:opacity 0.55s ease, transform 0.55s cubic-bezier(0.16,1,0.3,1)'
+  ].join(';');
+
+  // ── Tag line — SEPARATE from name, normal flow ──
+  const tagEl = document.createElement('div');
+  tagEl.textContent = 'Software Developer';
+  tagEl.style.cssText = [
+    'font-family:"JetBrains Mono",monospace',
+    'font-size:11px',
+    'letter-spacing:0.14em',
+    'text-transform:uppercase',
+    'color:var(--accent)',
+    'opacity:0',
+    'transform:translateY(6px)',
+    'transition:opacity 0.4s ease, transform 0.4s ease'
+  ].join(';');
+
+  overlay.appendChild(line);
+  overlay.appendChild(nameEl);
+  overlay.appendChild(tagEl);
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  // ── Timeline ──
+  // t=120  line expands
+  // t=250  name fades in
+  // t=700  tag fades in
+  // t=1800 hold
+  // t=2100 everything fades out together (overlay opacity→0)
+  // t=2850 overlay removed, hero name fades in
+
+  setTimeout(() => {
+    line.style.opacity = '1';
+    line.style.width = '60px';
+  }, 120);
+
+  setTimeout(() => {
+    nameEl.style.opacity = '1';
+    nameEl.style.transform = 'translateY(0)';
+  }, 260);
+
+  setTimeout(() => {
+    tagEl.style.opacity = '1';
+    tagEl.style.transform = 'translateY(0)';
+  }, 700);
+
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+  }, 2000);
+
+  setTimeout(() => {
+    overlay.remove();
+    document.body.style.overflow = '';
+    heroName.style.transition = 'opacity 0.5s ease';
+    heroName.style.opacity = '1';
+    sessionStorage.setItem('svr_intro_done', '1');
+    initScrollReveal();
+    initCardImagePreview();
+    initCounterAnim();
+  }, 2750);
+}
+
+// ═══════════════ SCROLL-REVEAL ═══════════════
+// KEY FIX: removing sv-hidden is enough — the element's natural CSS
+// has no opacity/transform set, so removing the class triggers the
+// transition from hidden→visible. Adding a second class (sv-revealed)
+// while also removing sv-hidden means the browser sees a simultaneous
+// change and skips the transition. Just remove the class.
+let _revealObs   = null;
+let _revealedSet = null;
+
+function initScrollReveal() {
+  if (!_revealedSet) _revealedSet = new WeakSet();
+  if (_revealObs) { _revealObs.disconnect(); _revealObs = null; }
+
+  if (!(state.settings || {}).scrollReveal) {
+    document.querySelectorAll('.sv-hidden').forEach(el => {
+      el.classList.remove('sv-hidden');
+      el.style.transitionDelay = '';
+    });
+    return;
+  }
+
+  const SELS = [
+    '.about-card', '.skill-group', '.exp-item',
+    '.project-card', '.contact-btn',
+    'h2.section-title', '.section-tag',
+    '.hero-stats > div', '.term-window'
+  ];
+
+  // Save skill bar widths before zeroing
+  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+    if (!bar.dataset.revealW) bar.dataset.revealW = bar.style.width || '0%';
+    if (!_revealedSet.has(bar.closest('.skill-group'))) bar.style.width = '0%';
+  });
+
+  const parentGroups = new Map();
+  SELS.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (_revealedSet.has(el)) return;
+      el.classList.add('sv-hidden');
+      const key = el.parentElement || document.body;
+      if (!parentGroups.has(key)) parentGroups.set(key, []);
+      parentGroups.get(key).push(el);
+    });
+  });
+
+  parentGroups.forEach(group => {
+    group.forEach((el, i) => { el.style.transitionDelay = (i * 0.07) + 's'; });
+  });
+
+  _revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      _revealObs.unobserve(el);
+      _revealedSet.add(el);
+      // JUST remove the class — don't add anything. The transition
+      // is defined on .sv-hidden itself so it runs on removal.
+      el.classList.remove('sv-hidden');
+      setTimeout(() => { el.style.transitionDelay = ''; }, 900);
+      el.querySelectorAll('.skill-bar-fill').forEach((bar, bi) => {
+        setTimeout(() => { bar.style.width = bar.dataset.revealW || '0%'; }, 120 + bi * 90);
+      });
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+
+  document.querySelectorAll('.sv-hidden').forEach(el => _revealObs.observe(el));
+}
+
+// ═══════════════ SECRET BUTTON ═══════════════
+// Invisible 14×14px button fixed to bottom-right corner.
+// Hover reveals a tiny accent dot — find it and click it.
+function initKonamiButton() {
+  if (document.getElementById('konami-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'konami-btn';
+  btn.setAttribute('aria-label', 'Easter egg');
+  btn.title = '';
+  // Invisible — just a tiny clickable zone, 16×16px in footer corner
+  btn.style.cssText = [
+    'position:fixed',
+    'bottom:0.6rem',
+    'right:0.7rem',
+    'width:14px',
+    'height:14px',
+    'background:transparent',
+    'border:none',
+    'cursor:default', // default cursor so nothing looks clickable
+    'z-index:500',
+    'padding:0',
+    'opacity:0'       // fully invisible
+  ].join(';');
+  btn.addEventListener('click', () => {
+    if (!(state.settings || {}).konamiEnabled) return;
+    if (_konamiActive) return;
+    triggerKonami();
+  });
+  // Hover: tiny accent dot appears so sharp-eyed visitors can find it
+  btn.addEventListener('mouseenter', () => {
+    btn.style.opacity = '1';
+    btn.style.background = 'var(--accent)';
+    btn.style.borderRadius = '50%';
+    btn.style.cursor = 'pointer';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.opacity = '0';
+    btn.style.background = 'transparent';
+    btn.style.cursor = 'default';
+  });
+  document.body.appendChild(btn);
+}
+
+// triggerKonami — full CRT glitch storm
+let _konamiActive = false;
+function triggerKonami() {
+  _konamiActive = true;
+  const CHARS    = 'アイウエオカキクケコサシスセソタチツ01010101#$@%!?><[]{}|\\';
+  const DURATION = 3000;
+  const FRAME_MS = 38;
+
+  const targets = Array.from(document.querySelectorAll(
+    'h1,h2,h3,.hero-eyebrow,.nav-logo,.section-tag,.project-name,' +
+    '.exp-company,.exp-role,.about-card-label,.skill-group-title,' +
+    '.stat-label,.contact-btn,.footer span,.hero-bio strong'
+  )).filter(el => !el.closest('#lockdown-wall') && el.offsetParent !== null);
+
+  const originals = targets.map(el => ({ el, html: el.innerHTML, text: el.textContent }));
+  const rand      = () => CHARS[Math.floor(Math.random() * CHARS.length)];
+
+  const crt = document.createElement('div');
+  crt.id    = 'konami-crt';
+  crt.style.cssText = [
+    'position:fixed','inset:0','z-index:8999','pointer-events:none',
+    'background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px)',
+    'animation:_crtF 0.07s steps(1) infinite'
+  ].join(';');
+
+  const crtStyle = document.createElement('style');
+  crtStyle.id = 'konami-crt-style';
+  crtStyle.textContent =
+    '@keyframes _crtF{0%{opacity:1}50%{opacity:.85}}' +
+    '@keyframes _kPulse{0%,100%{background:var(--bg)}10%,30%,50%{background:rgba(127,119,221,.07)}20%,40%{background:rgba(127,119,221,.03)}}';
+  document.head.appendChild(crtStyle);
+  document.body.appendChild(crt);
+  document.body.style.animation = '_kPulse 0.5s ease 3';
+
+  showToast('// You found it. 👾', 3200);
+
+  const startT = performance.now();
+  const frame = () => {
+    const progress = Math.min(1, (performance.now() - startT) / DURATION);
+    const resolveP = progress < 0.65 ? 0 : (progress - 0.65) / 0.35;
+    originals.forEach(({ el, text }) => {
+      const revealTo = Math.floor(resolveP * text.length);
+      let out = '';
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (ch === ' ' || ch === '\n' || ch === '\t') { out += ch; continue; }
+        out += i < revealTo ? ch : rand();
+      }
+      el.textContent = out;
+    });
+    if (progress < 1) {
+      setTimeout(frame, FRAME_MS);
+    } else {
+      originals.forEach(({ el, html }) => { el.innerHTML = html; });
+      crt.remove(); crtStyle.remove();
+      document.body.style.animation = '';
+      _konamiActive = false;
+    }
+  };
+  frame();
+}
+
+// ═══════════════ WIRE STATIC CONTROLS ═══════════════
+
+// ═══════════════ HERO STATS COUNTER ANIMATION ═══════════════
+let _counterObs = null;
+function initCounterAnim() {
+  if (_counterObs) { _counterObs.disconnect(); _counterObs = null; }
+
+  const statEls = document.querySelectorAll('.hero-stats .stat-num');
+  if (!(state.settings || {}).counterAnim) {
+    // Restore originals if feature toggled off
+    statEls.forEach(el => {
+      if (el.dataset.counterOrig) el.innerHTML = el.dataset.counterOrig;
+    });
+    return;
+  }
+
+  statEls.forEach(el => {
+    const raw     = el.textContent.trim();          // "4+", "∞", "2"
+    const numStr  = raw.replace(/[^0-9.]/g, '');    // "4", "", "2"
+    const suffix  = raw.replace(/[0-9.]/g, '');     // "+", "∞", ""
+    const num     = parseFloat(numStr);
+
+    if (!numStr || isNaN(num)) return; // skip ∞ or purely symbolic
+
+    el.dataset.counterOrig   = el.innerHTML; // save for restore
+    el.dataset.counterTarget = num;
+    el.dataset.counterSuffix = suffix;
+    // Start at 0
+    el.innerHTML = '0' + (suffix.replace('+', '') || '');
+  });
+
+  const DURATION = 2600; // ms — slow enough to watch
+
+  const animateEl = (el) => {
+    const target  = parseFloat(el.dataset.counterTarget);
+    const suffix  = el.dataset.counterSuffix || '';
+    const hasPlus = suffix.includes('+');
+    const start   = performance.now();
+
+    const step = (now) => {
+      const t      = Math.min(1, (now - start) / DURATION);
+      // ease-out expo: aggressive at first, crawls to finish
+      const eased  = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+      const cur    = Math.round(target * eased);
+      el.innerHTML = cur + (hasPlus ? '<span>+</span>' : '');
+      if (t < 1) requestAnimationFrame(step);
+      else el.innerHTML = target + (hasPlus ? '<span>+</span>' : suffix);
+    };
+    requestAnimationFrame(step);
+  };
+
+  _counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      _counterObs.unobserve(entry.target);
+      animateEl(entry.target);
+    });
+  }, { threshold: 0.9 }); // wait until almost fully in view
+
+  statEls.forEach(el => {
+    if (el.dataset.counterTarget) _counterObs.observe(el);
+  });
+}
+
+
+// ═══════════════ CARD IMAGE PREVIEW ON HOVER ═══════════════
+// Fix: instead of CSS ::after (which was hidden behind the card background),
+// we inject a real positioned <div> as the first child of the card.
+// The card gets position:relative; all other children get z-index:1
+// via a CSS rule in portfolio.css so they sit above the preview layer.
+function initCardImagePreview() {
+  // Clean up any previously injected previews
+  document.querySelectorAll('.card-bg-preview').forEach(p => p.remove());
+  if (!(state.settings || {}).cardImagePreview) return;
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    const pidx = parseInt(card.dataset.pidx, 10);
+    if (isNaN(pidx)) return;
+    const p = state.projects[pidx];
+    if (!p || !p.images || !p.images[0]) return;
+
+    // Create overlay div
+    const bg = document.createElement('div');
+    bg.className = 'card-bg-preview';
+    bg.setAttribute('aria-hidden', 'true');
+    bg.style.cssText = [
+      'position:absolute', 'inset:0', 'border-radius:inherit',
+      'pointer-events:none', 'z-index:0',
+      'background-size:cover', 'background-position:center',
+      'background-repeat:no-repeat',
+      // image set here — not via ::after so it's always available
+      'background-image:url(' + JSON.stringify(p.images[0]) + ')',
+      'opacity:0',
+      'transition:opacity 0.4s ease',
+      'filter:brightness(0.28) saturate(0.6)'
+    ].join(';');
+
+    // card must be position:relative
+    const cs = getComputedStyle(card);
+    if (cs.position === 'static') card.style.position = 'relative';
+
+    card.insertBefore(bg, card.firstChild);
+
+    card.addEventListener('mouseenter', () => { bg.style.opacity = '1'; });
+    card.addEventListener('mouseleave', () => { bg.style.opacity = '0'; });
+  });
+}
+
+// Ensure card children sit above the bg preview layer
+// (injected once, tiny — no class collision risk)
+(function injectCardChildZ() {
+  const id = 'card-child-z';
+  if (document.getElementById(id)) return;
+  const s = document.createElement('style');
+  s.id = id;
+  s.textContent = '.project-card > *:not(.card-bg-preview){position:relative;z-index:1}';
+  document.head.appendChild(s);
+})();
+
+// ═══════════════ SKIP TO CONTENT LINK ═══════════════
+function initSkipLink() {
+  if (document.getElementById('skip-link')) return;
+  const a = document.createElement('a');
+  a.id = 'skip-link';
+  a.href = '#about';
+  a.textContent = 'Skip to content';
+  a.style.cssText = [
+    'position:fixed','top:-100px','left:1rem','z-index:99999',
+    'background:var(--accent)','color:#fff','padding:10px 18px',
+    'border-radius:var(--r,8px)','font-family:var(--mono)','font-size:13px',
+    'text-decoration:none','transition:top .2s','font-weight:700'
+  ].join(';');
+  a.addEventListener('focus', () => { a.style.top = '1rem'; });
+  a.addEventListener('blur',  () => { a.style.top = '-100px'; });
+  document.body.prepend(a);
+}
+
+// ═══════════════ CUSTOM SCROLLBAR ═══════════════
+function initCustomScrollbar() {
+  const id = 'custom-scrollbar-style';
+  if (document.getElementById(id)) return;
+  const s = document.createElement('style');
+  s.id = id;
+  s.textContent = [
+    '::-webkit-scrollbar{width:5px;height:5px}',
+    '::-webkit-scrollbar-track{background:#070707}',
+    '::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}',
+    '::-webkit-scrollbar-thumb:hover{background:#9189e8}',
+    '*{scrollbar-width:thin;scrollbar-color:var(--accent) #070707}'
+  ].join('');
+  document.head.appendChild(s);
+}
+
+
+// ═══════════════ WIRE STATIC CONTROLS ═══════════════
 function wireStaticControls() {
   document.getElementById('pd-overlay').addEventListener('click', e => {
     if (e.target.id === 'pd-overlay') closePD();
@@ -612,13 +1068,13 @@ function wireStaticControls() {
       if (e.key === 'Escape') { closeTabModal(); return; }
     }
     if (document.getElementById('lb-overlay').classList.contains('open')) {
-      if (e.key === 'Escape') closeLB();
-      if (e.key === 'ArrowLeft') lbNav(-1);
-      if (e.key === 'ArrowRight') lbNav(1);
-      return;
+      if (e.key === 'Escape') { closeLB(); return; }
+      if (e.key === 'ArrowLeft') { lbNav(-1); return; }
+      if (e.key === 'ArrowRight') { lbNav(1); return; }
     }
     if (document.getElementById('pd-overlay').classList.contains('open')) {
-      if (e.key === 'Escape') closePD();
+      if (e.key === 'Escape') { closePD(); return; }
+      // NOTE: do NOT return after arrow keys here — let konami listener also see them
       if (e.key === 'ArrowLeft') pdGalleryNav(-1);
       if (e.key === 'ArrowRight') pdGalleryNav(1);
     }
@@ -679,10 +1135,26 @@ function renderAll() {
   renderContact();
   renderTerminal();
   initCursorEffect();
+  initProgressBar();
+  // initScrollReveal / initCardImagePreview / initCounterAnim are called
+  // EITHER by initIntro (after overlay exits) OR directly below if intro is skipped
 }
 
 wireStaticControls();
 initMobileNav();
+initSkipLink();
+initCustomScrollbar();
 checkLockdown();
 renderAll();
 initScrollspy();
+initKonamiButton();
+
+// Intro runs once per session; if skipped (return visit in same tab)
+// we initialise the reveal features immediately instead
+if (sessionStorage.getItem('svr_intro_done')) {
+  initScrollReveal();
+  initCardImagePreview();
+  initCounterAnim();
+} else {
+  initIntro(); // intro calls the three above after it exits
+}
