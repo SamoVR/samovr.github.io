@@ -39,9 +39,9 @@ const DEFAULT = {
       "status": "wip",
       "link": "https://github.com/SamoVR/SamosCircus2/tree/master/RenderEngine",
       "images": [
-        "images/rift3.webp",
+        "images/rift5.webp",
         "images/rift4.webp",
-        "images/rift5.webp"
+        "images/rift3.webp"
       ],
       "tabs": [
         {
