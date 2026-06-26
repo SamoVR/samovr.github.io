@@ -4,29 +4,22 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// localStorage is completely disabled. Portfolio always loads from DEFAULT.
-// Admin keeps state in memory only — edit, export JSON, paste into shared-data.js, push.
-// ── STORAGE ──
-// Reads/writes localStorage under an 'svr_' prefix. This is what lets
-// admin.html and index.html share data on the same machine/browser:
-// admin writes here, the portfolio reads it back on load (and live, via
-// the 'storage' event, if both are open in different tabs).
+// localStorage is completely disabled. The portfolio always loads from DEFAULT.
+// Admin dashboard uses its own in-memory state (see admin.js). This is
+// intentional: admin is a live local preview tool only. Nothing you do in
+// admin ever persists across a refresh, and nothing ever reaches a deployed
+// site's visitors — to actually change what's live on GitHub Pages, edit
+// the DEFAULT object below directly and push that.
 const STORE = {
-  get(k) {
-    try {
-      const raw = localStorage.getItem('svr_' + k);
-      return raw === null ? null : JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  },
+  get(k)    { return null; },
   set(k, v) {
+    // Wipe any stale svr_* keys that may exist from older versions
     try {
-      localStorage.setItem('svr_' + k, JSON.stringify(v));
-      return true;
-    } catch {
-      return false; // e.g. storage quota exceeded, or unavailable (private mode in some browsers)
-    }
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('svr_'))
+        .forEach(k => localStorage.removeItem(k));
+    } catch {}
+    return false;
   }
 };
 
@@ -78,7 +71,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "",
+      "link": "https://www.roblox.com/games/10720776665/The-Backrooms-AdySYNC",
       "images": [
         "images/backrooms1.png",
         "images/backrooms2.png",
@@ -114,7 +107,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "complete",
-      "link": "",
+      "link": "https://www.roblox.com/communities/16228589/Artemis-Special-Containment-Procedures-Foundation",
       "images": [
         "images/artemis1.png",
         "images/artemis2.png",
@@ -144,7 +137,7 @@ const DEFAULT = {
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "link": "",
+      "link": "https://www.roblox.com/games/18489578811/Innovation-Inc-Reimagined-HQ-3-0",
       "images": [
         "images/innohq1.png",
         "images/innohq2.png"
@@ -280,7 +273,7 @@ const DEFAULT = {
     },
     {
       "company": "C++ / OpenGL — Personal Projects",
-      "years": "2021 — Now",
+      "years": "2022 — Now",
       "role": "Systems & Graphics Programmer",
       "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine — a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
       "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git"
@@ -341,7 +334,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
@@ -365,8 +358,11 @@ const DEFAULT = {
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  const stored = STORE.get(k);
-  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
+  // Always load from DEFAULT — localStorage is not used. See the STORE
+  // comment above for why: admin.html is a local-only live preview tool,
+  // and this keeps the portfolio's behavior identical whether it's opened
+  // on localhost or on the deployed site.
+  return JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 // ── ESCAPING ──

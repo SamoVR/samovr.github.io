@@ -185,7 +185,7 @@ function openPD(i) {
   document.getElementById('pd-icon').innerHTML = renderIconMarkup(p, '💻');
   document.getElementById('pd-title').textContent = p.name;
   const sub = document.getElementById('pd-subtitle');
-  if (sub) { sub.textContent = p.status === 'complete' ? '✓ Complete' : '⏳ In Progress'; }
+  sub.textContent = p.status === 'complete' ? '✓ Complete' : '⏳ In Progress';
 
   const imgs = p.images || [];
   pdGalleryImgs = imgs;
@@ -344,8 +344,8 @@ function openTabModal(tab, ac) {
           <button id="tab-modal-close" style="background:#181818;border:.5px solid rgba(255,255,255,.13);color:#888;font-size:15px;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
         </div>
         <div style="overflow-y:auto;flex:1">
+          <div id="tab-modal-desc" style="padding:1.5rem 1.5rem 1rem;font-size:14px;color:#888;line-height:1.85"></div>
           <div id="tab-modal-imgs" style="display:none"></div>
-          <div id="tab-modal-desc" style="padding:1.5rem;font-size:14px;color:#888;line-height:1.85"></div>
         </div>
       </div>`;
     document.body.appendChild(overlay);
@@ -356,11 +356,14 @@ function openTabModal(tab, ac) {
   document.getElementById('tab-modal-title').textContent = tab.title;
   document.getElementById('tab-modal-title').style.color = ac || '#7f77dd';
 
+  // description first, then images below
+  document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
+
   const imgsEl = document.getElementById('tab-modal-imgs');
   const imgs = tab.images || [];
   if (imgs.length) {
     imgsEl.style.display = 'grid';
-    imgsEl.style.cssText = `display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;padding:1.25rem 1.5rem 0`;
+    imgsEl.style.cssText = `display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;padding:0 1.5rem 1.25rem`;
     imgsEl.innerHTML = imgs.map((src, j) => `<div style="border-radius:8px;overflow:hidden;aspect-ratio:16/9;border:.5px solid rgba(255,255,255,.07)"><img src="${esc(src)}" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in" data-imgidx="${j}"></div>`).join('');
     imgsEl.querySelectorAll('img').forEach(img => {
       img.addEventListener('click', () => openLB(imgs, parseInt(img.dataset.imgidx, 10)));
@@ -370,7 +373,6 @@ function openTabModal(tab, ac) {
     imgsEl.innerHTML = '';
   }
 
-  document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
   overlay.style.display = 'flex';
 }
 
@@ -1072,7 +1074,6 @@ function wireStaticControls() {
     }
     if (document.getElementById('pd-overlay').classList.contains('open')) {
       if (e.key === 'Escape') { closePD(); return; }
-      // NOTE: do NOT return after arrow keys here — let konami listener also see them
       if (e.key === 'ArrowLeft') pdGalleryNav(-1);
       if (e.key === 'ArrowRight') pdGalleryNav(1);
     }
