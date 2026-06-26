@@ -930,7 +930,7 @@ function triggerKonami() {
   document.body.appendChild(crt);
   document.body.style.animation = '_kPulse 0.5s ease 3';
 
-  showToast('// You found it. 👾', 3200);
+  showToast('// ya just found an easter egg 👾', 3200);
 
   const startT = performance.now();
   const frame = () => {
