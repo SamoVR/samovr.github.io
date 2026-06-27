@@ -2,17 +2,16 @@
    ADMIN LOGIC — admin.html
    ════════════════════════════════════════════════ */
 
-// State is purely in-memory. Nothing is read from or written to
-// localStorage — see the STORE comment in shared-data.js. loadD() still
-// goes through STORE.get() for structural consistency, but since that
-// always returns null, this always falls back to a fresh copy of DEFAULT.
+// loadD() goes through STORE.get(), falling back to a fresh copy of
+// DEFAULT if nothing's been saved yet (e.g. this is the very first load
+// since the last refresh — see the STORE comment in shared-data.js).
 function loadD(k) {
   const stored = STORE.get(k);
   return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 const state = {
-  pass: DEFAULT.pass,
+  pass: STORE.get('pass') || DEFAULT.pass,
   projects: loadD('projects'),
   about: loadD('about'),
   skills: loadD('skills'),
@@ -21,12 +20,14 @@ const state = {
   settings: loadD('settings')
 };
 
-// Always reports success: by the time persist() is called, the caller has
-// already updated the in-memory `state` object directly, which is the only
-// copy that exists. There's nothing further to "save" — this just keeps
-// the call site (and its "✓ Saved" toast) working without every caller
-// needing to know that storage is intentionally disabled.
-function persist(k) { return true; }
+// Writes the in-memory state out to localStorage so other open tabs (i.e.
+// index.html on localhost) pick it up live via the 'storage' event. This
+// is what makes the admin → portfolio live preview work. Refreshing any
+// tab wipes it all again — see the STORE comment in shared-data.js.
+function persist(k) {
+  if (k === 'pass') return STORE.set('pass', state.pass);
+  return STORE.set(k, state[k]);
+}
 
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════
 // ═══════════════ MODAL OPEN/CLOSE ═══════════════

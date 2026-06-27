@@ -4,22 +4,53 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// localStorage is completely disabled. The portfolio always loads from DEFAULT.
-// Admin dashboard uses its own in-memory state (see admin.js). This is
-// intentional: admin is a live local preview tool only. Nothing you do in
-// admin ever persists across a refresh, and nothing ever reaches a deployed
-// site's visitors — to actually change what's live on GitHub Pages, edit
-// the DEFAULT object below directly and push that.
+// Real localStorage, used ONLY as a live-preview relay between admin.html
+// and index.html while both are open on localhost in the same browser.
+// Editing something in admin updates index instantly (via the 'storage'
+// event) without needing to refresh either page.
+//
+// Refreshing ANY tab wipes all svr_* data for every tab — nothing you do
+// in admin ever survives a reload, by design. But opening a brand-new tab
+// (without refreshing) does NOT wipe anything, so it can pick up whatever
+// the other tab already saved — that's what makes the live preview work.
+//
+// The trick: sessionStorage is per-tab and survives a reload of that same
+// tab, but a genuinely new tab always starts with empty sessionStorage.
+// So "this tab's sessionStorage already has our marker" reliably means
+// "this is a reload of a tab that was already running," and that's the
+// only case that should trigger the wipe.
+//
+// A visitor on the deployed GitHub Pages site never has admin open, so
+// there's nothing for them to inherit either way — they always see
+// DEFAULT. To make a change actually go live for visitors, edit the
+// DEFAULT object below directly and push that — this storage layer is a
+// same-session local preview tool only, not a publishing mechanism.
+try {
+  const isReload = sessionStorage.getItem('svr_tab_alive') !== null;
+  sessionStorage.setItem('svr_tab_alive', '1');
+  if (isReload) {
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('svr_'))
+      .forEach(k => localStorage.removeItem(k));
+  }
+} catch {}
+
 const STORE = {
-  get(k)    { return null; },
-  set(k, v) {
-    // Wipe any stale svr_* keys that may exist from older versions
+  get(k) {
     try {
-      Object.keys(localStorage)
-        .filter(k => k.startsWith('svr_'))
-        .forEach(k => localStorage.removeItem(k));
-    } catch {}
-    return false;
+      const raw = localStorage.getItem('svr_' + k);
+      return raw === null ? null : JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  },
+  set(k, v) {
+    try {
+      localStorage.setItem('svr_' + k, JSON.stringify(v));
+      return true;
+    } catch {
+      return false; // e.g. quota exceeded, or storage unavailable (private mode in some browsers)
+    }
   }
 };
 
@@ -358,11 +389,8 @@ const DEFAULT = {
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  // Always load from DEFAULT — localStorage is not used. See the STORE
-  // comment above for why: admin.html is a local-only live preview tool,
-  // and this keeps the portfolio's behavior identical whether it's opened
-  // on localhost or on the deployed site.
-  return JSON.parse(JSON.stringify(DEFAULT[k]));
+  const stored = STORE.get(k);
+  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 // ── ESCAPING ──
