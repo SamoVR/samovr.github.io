@@ -4,54 +4,22 @@
    ════════════════════════════════════════════════ */
 
 // ── STORAGE ──
-// Real localStorage, used ONLY as a live-preview relay between admin.html
-// and index.html while both are open on localhost in the same browser.
-// Editing something in admin updates index instantly (via the 'storage'
-// event) without needing to refresh either page.
-//
-// Refreshing ANY tab wipes all svr_* data for every tab — nothing you do
-// in admin ever survives a reload, by design. But opening a brand-new tab
-// (without refreshing) does NOT wipe anything, so it can pick up whatever
-// the other tab already saved — that's what makes the live preview work.
-//
-// The trick: sessionStorage is per-tab and survives a reload of that same
-// tab, but a genuinely new tab always starts with empty sessionStorage.
-// So "this tab's sessionStorage already has our marker" reliably means
-// "this is a reload of a tab that was already running," and that's the
-// only case that should trigger the wipe.
-//
-// A visitor on the deployed GitHub Pages site never has admin open, so
-// there's nothing for them to inherit either way — they always see
-// DEFAULT. To make a change actually go live for visitors, edit the
-// DEFAULT object below directly and push that — this storage layer is a
-// same-session local preview tool only, not a publishing mechanism.
-//
-try {
-  const isReload = sessionStorage.getItem('svr_tab_alive') !== null;
-  sessionStorage.setItem('svr_tab_alive', '1');
-  if (isReload) {
-    Object.keys(localStorage)
-      .filter(k => k.startsWith('svr_'))
-      .forEach(k => localStorage.removeItem(k));
-  }
-} catch {}
-
+// localStorage is completely disabled. The portfolio always loads from DEFAULT.
+// Admin dashboard uses its own in-memory state (see admin.js). This is
+// intentional: admin is a live local preview tool only. Nothing you do in
+// admin ever persists across a refresh, and nothing ever reaches a deployed
+// site's visitors — to actually change what's live on GitHub Pages, edit
+// the DEFAULT object below directly and push that.
 const STORE = {
-  get(k) {
-    try {
-      const raw = localStorage.getItem('svr_' + k);
-      return raw === null ? null : JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  },
+  get(k)    { return null; },
   set(k, v) {
+    // Wipe any stale svr_* keys that may exist from older versions
     try {
-      localStorage.setItem('svr_' + k, JSON.stringify(v));
-      return true;
-    } catch {
-      return false; // e.g. quota exceeded, or storage unavailable (private mode in some browsers)
-    }
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('svr_'))
+        .forEach(k => localStorage.removeItem(k));
+    } catch {}
+    return false;
   }
 };
 
@@ -61,8 +29,8 @@ const DEFAULT = {
     {
       "name": "RIFT | Render Engine",
       "icon": "🎮",
-      "iconType": "emoji",
-      "iconImg": "",
+      "iconType": "image",
+      "iconImg": "images/riftlogo.png",
       "accentColor": "#7f77dd",
       "shortDesc": "A custom 3D scene editor and real-time renderer built entirely in C++ using OpenGL.",
       "fullDesc": "Originally started as a school project, <font color=\"#7f77dd\">RIFT </font>grew into a fully-featured render engine and scene editor. Built solo in <font color=\"#38bdf8\">C++</font> using <font color=\"#38bdf8\">OpenGL</font>, <font color=\"#38bdf8\">ImGui</font>, <font color=\"#38bdf8\">json</font>, and <font color=\"#38bdf8\">stbimage</font>. Features include a scene hierarchy, transform controls (position/rotation/scale), texture mapping, animation timeline with keyframe curves, scene save/load, and a property inspector panel. Every system was written from scratch — this was about understanding how engines work, not just using one.",
@@ -95,8 +63,8 @@ const DEFAULT = {
     {
       "name": "The Backrooms | AdySYNC",
       "icon": "🔦",
-      "iconType": "emoji",
-      "iconImg": "",
+      "iconType": "image",
+      "iconImg": "images/backroomslogo.webp",
       "accentColor": "#fbbf24",
       "shortDesc": "A Roblox horror experience with a full suite of hand-built game systems.",
       "fullDesc": "An ongoing <font color=\"#38bdf8\">Roblox </font>horror game where I serve as <font color=\"#4ade80\">Lead Programmer</font>. I designed and built the entire backend system architecture: a physics-based <font color=\"#fbbf24\">Generator System</font> with dynamic fuel consumption,<font color=\"#fbbf24\"> fan physics</font>, and<font color=\"#fbbf24\"> real-time status screens</font>; a <font color=\"#fbbf24\">LightSystem</font> supporting global and area-specific blackouts via CollectionService; a modular<font color=\"#fbbf24\"> TimeDoor System</font> for interval-based door logic; a <font color=\"#fbbf24\">Protocol System</font> with layered authorization (username, team, group-rank); and a <font color=\"#fbbf24\">terminal framework </font>fully integrated with the CMDR command library. Every system is <font color=\"#f87171\">modular</font>, <font color=\"#f87171\">well-commented</font>, and <font color=\"#f87171\">built to be extended without touching core logic</font>.",
@@ -115,15 +83,17 @@ const DEFAULT = {
           "title": "Generator System",
           "desc": "The Generator System manages area-specific power through attribute-tagged generator objects (ID, Area, Enabled, FuelLevel). Dynamic fuel consumption scales with fan activity. Includes real-time status screens with color-coded fuel indicators (Normal / Danger / Critical), smooth fan acceleration physics, gas-can refueling with a polished UI, and a dev dashboard for live monitoring.",
           "images": [
-            "images/backrooms7.png"
+            "images/backrooms9.png"
           ]
         },
         {
-          "title": "Protocol & Terminal Systems",
-          "desc": "A centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.",
+          "title": "Terminal System",
+          "desc": "CMDR framework restyled and reprogrammed to fit the new Terminal usage & UI. Together with this, a progress line has been added into the CMDR framework which was fully custom and built by myself.\n\nFeatures: \nA centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.\n\nAn organized remote control system for doors around the map, which handles various door types. System does all checks on the server, ensuring no external access (exploiters). Safe-checks are also present and prevent the player from controlling doors that are busy (opening/closing) or broken.\n\n<a href=\"https://youtu.be/IFKqM6eMltk\">Video Showcase</a>",
           "images": [
             "images/backrooms5.png",
-            "images/backrooms6.png"
+            "images/backrooms6.png",
+            "images/backrooms7.png",
+            "images/backrooms8.png"
           ]
         }
       ]
@@ -131,8 +101,8 @@ const DEFAULT = {
     {
       "name": "SCPF | Artemis",
       "icon": "🧬",
-      "iconType": "emoji",
-      "iconImg": "",
+      "iconType": "image",
+      "iconImg": "images/artemislogo.webp",
       "accentColor": "#8f6200",
       "shortDesc": "Actor developer and programmer on a large-scale SCP Foundation Roblox experience.",
       "fullDesc": "Contributed to <font color=\"#7f77dd\">Vistrim's SCPF: Artemis</font> as both an <font color=\"#4ade80\">Actor Developer</font> and a <font color=\"#4ade80\">core programmer</font>. Scripted and integrated a large roster of <font color=\"#fbbf24\">SCP entities</font> — including<font color=\"#fbbf24\"> SCP-610-1 (\"Flesh that Hates\")</font> and several others — and built or contributed to systems including <font color=\"#fbbf24\">Mining</font>, <font color=\"#fbbf24\">Infection</font>, <font color=\"#fbbf24\">Fire</font>, <font color=\"#fbbf24\">Fall Damage</font>, <font color=\"#fbbf24\">Ambience</font>, <font color=\"#fbbf24\">Area</font>, and <font color=\"#fbbf24\">Cloak</font>. The <font color=\"#fbbf24\">Fall Damage</font> system uses Y-coordinate delta tracking with configurable thresholds (15–110 studs), a <font color=\"#f87171\">server-authoritative architecture to prevent exploits</font>, and a client-side kneeling animation trigger for major impacts.",
@@ -161,8 +131,8 @@ const DEFAULT = {
     {
       "name": "Innovation HQ 3.0",
       "icon": "🏢",
-      "iconType": "emoji",
-      "iconImg": "",
+      "iconType": "image",
+      "iconImg": "images/innohqlogo.png",
       "accentColor": "#38bdf8",
       "shortDesc": "Lead Programmer on an ongoing Roblox project spanning scripted events through full game systems.",
       "fullDesc": "Serving as <font color=\"#4ade80\">Lead Programmer</font> on<font color=\"#7f77dd\"> Innovation HQ 3.0 </font>since May 2024. Responsible for the scripting architecture across the project, ranging from simple scripted events to complete systems including the <font color=\"#fbbf24\">Door System</font>, <font color=\"#fbbf24\">Infection System</font>, and <font color=\"#fbbf24\">Nametag System</font>. The project is actively in development — systems are built with <font color=\"#f87171\">modularity </font>and <font color=\"#f87171\">extensibility </font>as a priority.",
@@ -366,7 +336,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
@@ -384,14 +354,17 @@ const DEFAULT = {
     }
   },
   pass: 'SamoLeDev'
-};
+}
 
 // keys used across admin and portfolio
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  const stored = STORE.get(k);
-  return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
+  // Always load from DEFAULT — localStorage is not used. See the STORE
+  // comment above for why: admin.html is a local-only live preview tool,
+  // and this keeps the portfolio's behavior identical whether it's opened
+  // on localhost or on the deployed site.
+  return JSON.parse(JSON.stringify(DEFAULT[k]));
 }
 
 // ── ESCAPING ──
