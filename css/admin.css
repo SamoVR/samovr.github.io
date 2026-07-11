@@ -14,8 +14,8 @@ body{font-size:14px;line-height:1.6;min-height:100vh}
 .fl{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem}
 .fl label{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
 
-input[type=password],input[type=text],input[type=number],textarea,select{width:100%;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s}
-input[type=password]:focus,input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:var(--accent)}
+input[type=password],input[type=text],input[type=number],input[type=url],textarea,select{width:100%;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s}
+input[type=password]:focus,input[type=text]:focus,input[type=number]:focus,input[type=url]:focus,textarea:focus,select:focus{border-color:var(--accent)}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23888' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.04em;padding:9px 18px;border-radius:var(--r);cursor:pointer;border:none;transition:all .2s}

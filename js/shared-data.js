@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════
-   SHARED DATA — single source of truth
+   SHARED DATA - single source of truth
    Used by both portfolio.js and admin.js
    ════════════════════════════════════════════════ */
 
@@ -8,7 +8,7 @@
 // Admin dashboard uses its own in-memory state (see admin.js). This is
 // intentional: admin is a live local preview tool only. Nothing you do in
 // admin ever persists across a refresh, and nothing ever reaches a deployed
-// site's visitors — to actually change what's live on GitHub Pages, edit
+// site's visitors, to actually change what's live on GitHub Pages, edit
 // the DEFAULT object below directly and push that.
 const STORE = {
   get(k)    { return null; },
@@ -33,7 +33,7 @@ const DEFAULT = {
       "iconImg": "images/riftlogo.png",
       "accentColor": "#7f77dd",
       "shortDesc": "A custom 3D scene editor and real-time renderer built entirely in C++ using OpenGL.",
-      "fullDesc": "Originally started as a school project, <font color=\"#7f77dd\">RIFT </font>grew into a fully-featured render engine and scene editor. Built solo in <font color=\"#38bdf8\">C++</font> using <font color=\"#38bdf8\">OpenGL</font>, <font color=\"#38bdf8\">ImGui</font>, <font color=\"#38bdf8\">json</font>, and <font color=\"#38bdf8\">stbimage</font>. Features include a scene hierarchy, transform controls (position/rotation/scale), texture mapping, animation timeline with keyframe curves, scene save/load, and a property inspector panel. Every system was written from scratch — this was about understanding how engines work, not just using one.",
+      "fullDesc": "Originally started as a school project, <font color=\"#7f77dd\">RIFT </font>grew into a fully-featured render engine and scene editor. Built solo in <font color=\"#38bdf8\">C++</font> using <font color=\"#38bdf8\">OpenGL</font>, <font color=\"#38bdf8\">ImGui</font>, <font color=\"#38bdf8\">json</font>, and <font color=\"#38bdf8\">stbimage</font>. Features include a scene hierarchy, transform controls (position/rotation/scale), texture mapping, animation timeline with keyframe curves, scene save/load, and a property inspector panel. Every system was written from scratch, this was about understanding how engines work, not just using one.",
       "langs": "C++, OpenGL, GLSL, ImGui",
       "tags": "Graphics, Tools",
       "status": "wip",
@@ -46,7 +46,7 @@ const DEFAULT = {
       "tabs": [
         {
           "title": "Scene Editor",
-          "desc": "The editor exposes a full scene hierarchy with an object list panel, a 3D viewport, and a property inspector. Objects can be added, duplicated, or removed at runtime. Each object holds its own transform, texture reference, and name — all editable live.",
+          "desc": "The editor exposes a full scene hierarchy with an object list panel, a 3D viewport, and a property inspector. Objects can be added, duplicated, or removed at runtime. Each object holds its own transform, texture reference, and name, all editable live.",
           "images": [
             "images/rift2.webp"
           ]
@@ -88,7 +88,8 @@ const DEFAULT = {
         },
         {
           "title": "Terminal System",
-          "desc": "CMDR framework restyled and reprogrammed to fit the new Terminal usage & UI. Together with this, a progress line has been added into the CMDR framework which was fully custom and built by myself.\n\nFeatures: \nA centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.\n\nAn organized remote control system for doors around the map, which handles various door types. System does all checks on the server, ensuring no external access (exploiters). Safe-checks are also present and prevent the player from controlling doors that are busy (opening/closing) or broken.\n\n<a href=\"https://youtu.be/IFKqM6eMltk\">Video Showcase</a>",
+          "desc": "CMDR framework restyled and reprogrammed to fit the new Terminal usage & UI. Together with this, a progress line has been added into the CMDR framework which was fully custom and built by myself.\n\nFeatures: \nA centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.\n\nAn organized remote control system for doors around the map, which handles various door types. System does all checks on the server, ensuring no external access (exploiters). Safe-checks are also present and prevent the player from controlling doors that are busy (opening/closing) or broken.",
+          "videoUrl": "https://youtu.be/IFKqM6eMltk",
           "images": [
             "images/backrooms5.png",
             "images/backrooms6.png",
@@ -105,7 +106,7 @@ const DEFAULT = {
       "iconImg": "images/artemislogo.webp",
       "accentColor": "#8f6200",
       "shortDesc": "Actor developer and programmer on a large-scale SCP Foundation Roblox experience.",
-      "fullDesc": "Contributed to <font color=\"#7f77dd\">Vistrim's SCPF: Artemis</font> as both an <font color=\"#4ade80\">Actor Developer</font> and a <font color=\"#4ade80\">core programmer</font>. Scripted and integrated a large roster of <font color=\"#fbbf24\">SCP entities</font> — including<font color=\"#fbbf24\"> SCP-610-1 (\"Flesh that Hates\")</font> and several others — and built or contributed to systems including <font color=\"#fbbf24\">Mining</font>, <font color=\"#fbbf24\">Infection</font>, <font color=\"#fbbf24\">Fire</font>, <font color=\"#fbbf24\">Fall Damage</font>, <font color=\"#fbbf24\">Ambience</font>, <font color=\"#fbbf24\">Area</font>, and <font color=\"#fbbf24\">Cloak</font>. The <font color=\"#fbbf24\">Fall Damage</font> system uses Y-coordinate delta tracking with configurable thresholds (15–110 studs), a <font color=\"#f87171\">server-authoritative architecture to prevent exploits</font>, and a client-side kneeling animation trigger for major impacts.",
+      "fullDesc": "Contributed to <font color=\"#7f77dd\">Vistrim's SCPF: Artemis</font> as both an <font color=\"#4ade80\">Actor Developer</font> and a <font color=\"#4ade80\">core programmer</font>. Scripted and integrated a large roster of <font color=\"#fbbf24\">SCP entities</font>, including<font color=\"#fbbf24\"> SCP-610-1 (\"Flesh that Hates\")</font> and several others, and built or contributed to systems including <font color=\"#fbbf24\">Mining</font>, <font color=\"#fbbf24\">Infection</font>, <font color=\"#fbbf24\">Fire</font>, <font color=\"#fbbf24\">Fall Damage</font>, <font color=\"#fbbf24\">Ambience</font>, <font color=\"#fbbf24\">Area</font>, and <font color=\"#fbbf24\">Cloak</font>. The <font color=\"#fbbf24\">Fall Damage</font> system uses Y-coordinate delta tracking with configurable thresholds (15–110 studs), a <font color=\"#f87171\">server-authoritative architecture to prevent exploits</font>, and a client-side kneeling animation trigger for major impacts.",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "complete",
@@ -135,7 +136,7 @@ const DEFAULT = {
       "iconImg": "images/innohqlogo.png",
       "accentColor": "#38bdf8",
       "shortDesc": "Lead Programmer on an ongoing Roblox project spanning scripted events through full game systems.",
-      "fullDesc": "Serving as <font color=\"#4ade80\">Lead Programmer</font> on<font color=\"#7f77dd\"> Innovation HQ 3.0 </font>since May 2024. Responsible for the scripting architecture across the project, ranging from simple scripted events to complete systems including the <font color=\"#fbbf24\">Door System</font>, <font color=\"#fbbf24\">Infection System</font>, and <font color=\"#fbbf24\">Nametag System</font>. The project is actively in development — systems are built with <font color=\"#f87171\">modularity </font>and <font color=\"#f87171\">extensibility </font>as a priority.",
+      "fullDesc": "Serving as <font color=\"#4ade80\">Lead Programmer</font> on<font color=\"#7f77dd\"> Innovation HQ 3.0 </font>since May 2024. Responsible for the scripting architecture across the project, ranging from simple scripted events to complete systems including the <font color=\"#fbbf24\">Door System</font>, <font color=\"#fbbf24\">Infection System</font>, and <font color=\"#fbbf24\">Nametag System</font>. The project is actively in development, systems are built with <font color=\"#f87171\">modularity </font>and <font color=\"#f87171\">extensibility </font>as a priority.",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
@@ -150,7 +151,7 @@ const DEFAULT = {
   "about": [
     {
       "label": "Background",
-      "content": "I'm a software developer with 4+ years of experience across two domains: native C++ application development with OpenGL, and Lua scripting on the Roblox platform. I'm currently studying Computer Science, where C++ is my primary language — with Kotlin on the horizon. I care deeply about writing clean, performant, well-documented code, and I don't ship something until it's done properly &amp; fully.",
+      "content": "I'm a software developer with 4+ years of experience across two domains: native C++ application development with OpenGL, and Lua scripting on the Roblox platform. I'm currently studying Computer Science, where C++ is my primary language, with Kotlin on the horizon. I care deeply about writing clean, performant, well-documented code, and I don't ship something until it's done properly &amp; fully.",
       "width": "full"
     },
     {
@@ -254,30 +255,30 @@ const DEFAULT = {
   "experience": [
     {
       "company": "The Backrooms | AdySYNC",
-      "years": "2025 — Now",
-      "role": "Programmer — Roblox",
-      "desc": "Serving as a programmer on an ambitious Roblox horror experience. Designed and built a suite of core game systems from the ground up — including a physics-based Generator System with dynamic fuel consumption and fan mechanics, a modular LightSystem for area-specific blackout events, a TimeDoor System, a Protocol System with layered authorization, and a terminal framework integrated with the CMDR command library. Each system is designed to be modular, well-documented, and easily extendable.",
+      "years": "2025 - Now",
+      "role": "Programmer - Roblox",
+      "desc": "Serving as a programmer on an ambitious Roblox horror experience. Designed and built a suite of core game systems from the ground up, including a physics-based Generator System with dynamic fuel consumption and fan mechanics, a modular LightSystem for area-specific blackout events, a TimeDoor System, a Protocol System with layered authorization, and a terminal framework integrated with the CMDR command library. Each system is designed to be modular, well-documented, and easily extendable.",
       "tags": "Lua,Roblox Studio,Game Systems,CMDR,Modular Architecture"
     },
     {
       "company": "Innovation HQ 3.0",
-      "years": "May 2024 — Now",
-      "role": "Lead Programmer — Roblox",
+      "years": "May 2024 - Now",
+      "role": "Lead Programmer - Roblox",
       "desc": "Working as Lead Programmer on an ongoing Roblox project, responsible for a wide range of systems including Door Systems, Infection Systems, Nametag Systems, and more. Overseeing the scripting architecture from simple scripted events through to full game subsystems.",
       "tags": "Lua,Roblox Studio,Game Systems,Scripting"
     },
     {
       "company": "SCPF | Artemis",
-      "years": "Jul 2023 — Mar 2024",
-      "role": "Actor Developer & Programmer — Roblox",
-      "desc": "Worked as an Actor Developer and one of the main programmers on Vistrim's SCPF: Artemis. Scripted and integrated a wide range of SCP entities — including SCP-457, SCP-662, SCP-610-1, SCP-610-2, SCP-610-4, SCP-963, SCP-034, and SCP-504 — alongside core gameplay systems: Mining, Infection, Fire, Anomaly Actor, Ambience, Area, Fall Damage, and Cloak Systems.",
+      "years": "Jul 2023 - Mar 2024",
+      "role": "Actor Developer & Programmer - Roblox",
+      "desc": "Worked as an Actor Developer and one of the main programmers on Vistrim's SCPF: Artemis. Scripted and integrated a wide range of SCP entities, including SCP-457, SCP-662, SCP-610-1, SCP-610-2, SCP-610-4, SCP-963, SCP-034, and SCP-504, alongside core gameplay systems: Mining, Infection, Fire, Anomaly Actor, Ambience, Area, Fall Damage, and Cloak Systems.",
       "tags": "Lua,Roblox Studio,Actor Development,Game Systems"
     },
     {
-      "company": "C++ / OpenGL — Personal Projects",
-      "years": "2022 — Now",
+      "company": "C++ / OpenGL - Personal Projects",
+      "years": "2022 - Now",
       "role": "Systems & Graphics Programmer",
-      "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine — a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
+      "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine, a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
       "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git"
     }
   ],
@@ -308,7 +309,7 @@ const DEFAULT = {
       },
       {
         "type": "out",
-        "text": "Samo_VR — Programmer. C++ by day, Lua by night."
+        "text": "Samo_VR - Programmer. C++ by day, Lua by night."
       },
       {
         "type": "comment",
@@ -348,7 +349,7 @@ const DEFAULT = {
     "notFound": {
       "title": "404",
       "heading": "Lost in the build folder.",
-      "message": "The page you're looking for doesn't exist — it might have been moved, renamed, or never built in the first place.",
+      "message": "The page you're looking for doesn't exist, it might have been moved, renamed, or never built in the first place.",
       "buttonText": "← Back to Home",
       "buttonLink": "index.html"
     }
@@ -360,7 +361,7 @@ const DEFAULT = {
 const DATA_KEYS = ['projects', 'about', 'skills', 'experience', 'contact', 'settings'];
 
 function loadState(k) {
-  // Always load from DEFAULT — localStorage is not used. See the STORE
+  // Always load from DEFAULT, localStorage is not used. See the STORE
   // comment above for why: admin.html is a local-only live preview tool,
   // and this keeps the portfolio's behavior identical whether it's opened
   // on localhost or on the deployed site.
@@ -390,7 +391,7 @@ function showToast(msg) {
 
 // ── CLIPBOARD ──
 // Safe copy helper. Never call this via inline onclick string-building with
-// interpolated user content — always wire it through addEventListener +
+// interpolated user content, always wire it through addEventListener +
 // data-attributes (see attachCopyHandlers in portfolio.js / admin.js).
 // This is what the old code got wrong: building onclick="copyText('...')"
 // strings by interpolating arbitrary user text broke the instant that text

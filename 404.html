@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 — Samo_VR</title>
+<title>404 - Samo_VR</title>
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
@@ -28,7 +28,7 @@
 <div class="wrap">
   <div class="glitch-code" id="nf-code">404</div>
   <div class="heading" id="nf-heading">Lost in the build folder.</div>
-  <p class="message" id="nf-message">The page you're looking for doesn't exist — it might have been moved, renamed, or never built in the first place.</p>
+  <p class="message" id="nf-message">The page you're looking for doesn't exist - it might have been moved, renamed, or never built in the first place.</p>
   <a class="back-btn" id="nf-btn" href="index.html">← Back to Home</a>
   <div class="crumb-trail"><span>Samo_VR</span> · Page not found</div>
 </div>
@@ -41,7 +41,7 @@
   (function () {
     const settings = loadState('settings');
     const nf = (settings && settings.notFound) || DEFAULT.settings.notFound;
-    document.title = (nf.title || '404') + ' — Samo_VR';
+    document.title = (nf.title || '404') + ' - Samo_VR';
     document.getElementById('nf-code').textContent = nf.title || '404';
     document.getElementById('nf-heading').textContent = nf.heading || '';
     document.getElementById('nf-message').textContent = nf.message || '';

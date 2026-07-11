@@ -1,10 +1,10 @@
 /* ════════════════════════════════════════════════
-   ADMIN LOGIC — admin.html
+   ADMIN LOGIC - admin.html
    ════════════════════════════════════════════════ */
 
 // loadD() goes through STORE.get(), falling back to a fresh copy of
 // DEFAULT if nothing's been saved yet (e.g. this is the very first load
-// since the last refresh — see the STORE comment in shared-data.js).
+// since the last refresh - see the STORE comment in shared-data.js).
 function loadD(k) {
   const stored = STORE.get(k);
   return stored !== null ? stored : JSON.parse(JSON.stringify(DEFAULT[k]));
@@ -23,7 +23,7 @@ const state = {
 // Writes the in-memory state out to localStorage so other open tabs (i.e.
 // index.html on localhost) pick it up live via the 'storage' event. This
 // is what makes the admin → portfolio live preview work. Refreshing any
-// tab wipes it all again — see the STORE comment in shared-data.js.
+// tab wipes it all again - see the STORE comment in shared-data.js.
 function persist(k) {
   if (k === 'pass') return STORE.set('pass', state.pass);
   return STORE.set(k, state[k]);
@@ -111,7 +111,7 @@ document.getElementById('mobile-page-select').addEventListener('change', e => {
 //
 // 1. SELECTION LOSS: toolbar buttons live outside the contenteditable
 //    region. A plain click on them fires `mousedown` first, which the
-//    browser uses to start collapsing/moving the text selection — so by
+//    browser uses to start collapsing/moving the text selection - so by
 //    the time `.focus()` + `execCommand()` ran in the old code, the user's
 //    highlighted text was already gone, and the color/format applied to
 //    the wrong place (felt like it "changes the style" globally instead of
@@ -142,7 +142,7 @@ function buildToolbar(tbId, editorId) {
     if (!c) { const s = document.createElement('div'); s.className = 'rb-sep'; tb.appendChild(s); return; }
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'rb'; b.innerHTML = c[0];
-    // preventDefault on mousedown is the actual fix — keeps the live
+    // preventDefault on mousedown is the actual fix - keeps the live
     // selection intact through the click
     b.addEventListener('mousedown', e => e.preventDefault());
     b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); markDirty(_dirtyModal); });
@@ -209,7 +209,7 @@ function syncColorIndicator(editor, dots, label) {
     updateActiveColorDot(dots, label, hex);
   } catch {
     // queryCommandValue can throw in some edge cases (e.g. editor not
-    // focused yet) — fail quietly, indicator just stays as-is
+    // focused yet) - fail quietly, indicator just stays as-is
   }
 }
 
@@ -218,7 +218,7 @@ function initRich(tbId, editorId) { buildToolbar(tbId, editorId); }
 // ═══════════════ SWATCH COLOR PICKERS (project accent, etc.) ═══════════════
 // Fix vs original: selecting a swatch now also updates a visible
 // "currently selected" chip (dot + hex text) next to the row, so there's
-// always a clear answer to "what color is picked right now" — not just a
+// always a clear answer to "what color is picked right now" - not just a
 // thin white outline that's easy to miss, especially for similar colors.
 function pickColor(el, hiddenId) {
   const c = el.dataset.c;
@@ -420,9 +420,9 @@ function saveProject() {
   const fullDesc = document.getElementById('pm-body').innerHTML.trim();
 
   if (pmIconType === 'image' && !pmIconImg) {
-    // user switched to image mode but never actually uploaded one —
+    // user switched to image mode but never actually uploaded one,
     // fall back to emoji rather than saving a project with no visible icon
-    showToast('No icon image uploaded — using emoji instead');
+    showToast('No icon image uploaded - using emoji instead');
     pmIconType = 'emoji';
   }
 
@@ -444,7 +444,7 @@ function saveProject() {
   if (idx === -1) state.projects.push(proj); else state.projects[idx] = proj;
   const ok = persist('projects');
   renderProjList(); closeM('pm');
-  if (ok === false) showToast('⚠ Save may have failed — storage full (try fewer/smaller images)');
+  if (ok === false) showToast('⚠ Save may have failed - storage full (try fewer/smaller images)');
   else showToast('✓ Project saved');
 }
 
@@ -649,7 +649,7 @@ function saveContact() {
   const idx = parseInt(document.getElementById('ctm-idx').value, 10);
   // No escaping tightrope here on purpose: this is stored as plain data and
   // rendered later via esc() / addEventListener wiring on the portfolio
-  // side — never concatenated into an onclick string. That's *why* last
+  // side - never concatenated into an onclick string. That's *why* last
   // time a quote or apostrophe in one of these fields broke the entire
   // page: this value used to get spliced directly into an inline onclick=""
   // attribute. Any character is safe to type here now.
@@ -678,7 +678,7 @@ let tabImgData = {}; // keyed by tab row index during editing
 
 function renderTabsEditor(tabs) {
   let wrap = document.getElementById('pm-tabs-wrap');
-  if (!wrap) return; // guard — HTML element may not exist yet
+  if (!wrap) return; // guard - HTML element may not exist yet
   tabImgData = {};
   wrap.innerHTML = '';
   (tabs || []).forEach((tab, i) => {
@@ -724,6 +724,17 @@ function buildTabRow(tab, i) {
   descArea.value = tab?.desc || '';
   descArea.style.cssText = 'min-height:80px;margin-bottom:.75rem';
 
+  const videoLabel = document.createElement('div');
+  videoLabel.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem';
+  videoLabel.textContent = 'Video link (optional)';
+
+  const videoInput = document.createElement('input');
+  videoInput.type = 'url';
+  videoInput.className = 'tab-video-input';
+  videoInput.placeholder = 'https://youtu.be/... - shows a "Watch Video" button on the live tab';
+  videoInput.value = tab?.videoUrl || '';
+  videoInput.style.cssText = 'margin-bottom:.75rem;width:100%';
+
   const imgLabel = document.createElement('div');
   imgLabel.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem';
   imgLabel.textContent = 'Images (optional)';
@@ -755,6 +766,8 @@ function buildTabRow(tab, i) {
   card.appendChild(topRow);
   card.appendChild(descLabel);
   card.appendChild(descArea);
+  card.appendChild(videoLabel);
+  card.appendChild(videoInput);
   card.appendChild(imgLabel);
   card.appendChild(dropZone);
   card.appendChild(thumbGrid);
@@ -798,6 +811,7 @@ function collectTabs() {
   return Array.from(wrap.querySelectorAll('.tab-editor-card')).map((card, i) => ({
     title: (card.querySelector('.tab-title-input')?.value || '').trim(),
     desc: (card.querySelector('.tab-desc-input')?.value || '').trim(),
+    videoUrl: (card.querySelector('.tab-video-input')?.value || '').trim(),
     images: [...(tabImgData[i] || [])]
   })).filter(t => t.title);
 }
@@ -838,7 +852,7 @@ function renderInteractiveElements() {
   set('card-preview-toggle',  'cardImagePreview');
   set('konami-toggle',        'konamiEnabled');
 
-  // status badge — explicit on/off toggle, separate from the text content
+  // status badge - explicit on/off toggle, separate from the text content
   const statusEnabled = s.statusBadgeEnabled !== false;
   const sbt = document.getElementById('status-badge-toggle');
   if (sbt) sbt.checked = statusEnabled;
@@ -870,7 +884,7 @@ function addTermLineRow(line) {
 
   const textInput = document.createElement('input');
   textInput.type = 'text'; textInput.value = l.text || '';
-  textInput.placeholder = l.type === 'cmd' ? 'e.g. whoami' : 'e.g. Samo_VR — Software Developer';
+  textInput.placeholder = l.type === 'cmd' ? 'e.g. whoami' : 'e.g. Samo_VR - Software Developer';
 
   const delBtn = document.createElement('button');
   delBtn.type = 'button'; delBtn.className = 'ib ib-del'; delBtn.textContent = '✕';

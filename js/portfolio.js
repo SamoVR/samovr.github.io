@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════
-   PORTFOLIO LOGIC — index.html
+   PORTFOLIO LOGIC - index.html
    ════════════════════════════════════════════════ */
 
 const state = {
@@ -11,10 +11,10 @@ const state = {
   settings: loadState('settings')
 };
 
-// ═══════════════ LOCKDOWN — JS-enforced, not CSS ═══════════════
+// ═══════════════ LOCKDOWN - JS-enforced, not CSS ═══════════════
 // Lockdown is checked in JS, not CSS, so removing a stylesheet does nothing.
 // The wall element is injected into the DOM and the body is set to
-// overflow:hidden inline — both must be circumvented to see the page,
+// overflow:hidden inline - both must be circumvented to see the page,
 // and the check reruns on every storage event so toggling via DevTools
 // re-locks immediately.
 function checkLockdown() {
@@ -356,8 +356,23 @@ function openTabModal(tab, ac) {
   document.getElementById('tab-modal-title').textContent = tab.title;
   document.getElementById('tab-modal-title').style.color = ac || '#7f77dd';
 
-  // description first, then images below
+  // description first, then video button (if set), then images below
   document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
+
+  let videoEl = document.getElementById('tab-modal-video');
+  if (!videoEl) {
+    videoEl = document.createElement('div');
+    videoEl.id = 'tab-modal-video';
+    videoEl.style.cssText = 'padding:0 1.5rem 1rem';
+    document.getElementById('tab-modal-desc').insertAdjacentElement('afterend', videoEl);
+  }
+  if (tab.videoUrl) {
+    videoEl.style.display = 'block';
+    videoEl.innerHTML = `<a href="${esc(tab.videoUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-radius:8px;border:.5px solid ${esc(ac || '#7f77dd')};color:${esc(ac || '#7f77dd')};font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='${esc(ac || '#7f77dd')}22'" onmouseout="this.style.background='transparent'">▶ Watch Video</a>`;
+  } else {
+    videoEl.style.display = 'none';
+    videoEl.innerHTML = '';
+  }
 
   const imgsEl = document.getElementById('tab-modal-imgs');
   const imgs = tab.images || [];
@@ -422,7 +437,7 @@ function initCursorEffect() {
     }
   });
 
-  // Static constellation nodes — placed once
+  // Static constellation nodes - placed once
   const nodes = [];
   function buildNodes() {
     nodes.length = 0;
@@ -571,7 +586,7 @@ function typeSequence(body, lines, i) {
     };
     typeChar();
   } else {
-    // output line — appears instantly under the command, like a real shell
+    // output line - appears instantly under the command, like a real shell
     const textSpan = document.createElement('span');
     textSpan.className = line.type === 'comment' ? 'term-comment' : 'term-text';
     textSpan.style.whiteSpace = 'pre-wrap';
@@ -621,11 +636,11 @@ function initProgressBar() {
 // Name appears centred on a dark overlay, holds, then fades out.
 // Once it's gone, the hero block (eyebrow, name, bio, CTAs, stats,
 // currently-building badge) slides up into place together as a single
-// staggered animation — see initHeroReveal(). Only runs once per session.
+// staggered animation - see initHeroReveal(). Only runs once per session.
 function initIntro() {
   const heroInner = document.querySelector('.hero-inner');
 
-  // Disabled in settings entirely — hero should just be visible immediately,
+  // Disabled in settings entirely - hero should just be visible immediately,
   // with no hidden→visible flash at all (so we skip adding the reveal
   // classes altogether rather than adding-then-instantly-revealing them).
   if (!(state.settings || {}).heroReveal) {
@@ -635,7 +650,7 @@ function initIntro() {
   }
 
   // Intro already played earlier this session (e.g. navigated back to the
-  // page in the same tab) — show the hero immediately, still using the
+  // page in the same tab) - show the hero immediately, still using the
   // reveal classes so it's visually consistent, but with no stagger delay
   // and no hidden frame first.
   if (sessionStorage.getItem('svr_intro_done')) {
@@ -653,7 +668,7 @@ function initIntro() {
   if (!heroInner) return;
 
   // Hero items stay hidden (via .hero-reveal-item, applied in initHeroReveal)
-  // until the overlay clears — initHeroReveal() adds the hidden state AND
+  // until the overlay clears - initHeroReveal() adds the hidden state AND
   // the visible state, so call it now in "armed" (not yet revealed) mode.
   initHeroReveal(false);
 
@@ -692,7 +707,7 @@ function initIntro() {
     'transition:opacity 0.55s ease, transform 0.55s cubic-bezier(0.16,1,0.3,1)'
   ].join(';');
 
-  // ── Tag line — SEPARATE from name, normal flow ──
+  // ── Tag line - SEPARATE from name, normal flow ──
   const tagEl = document.createElement('div');
   tagEl.textContent = 'Software Developer';
   tagEl.style.cssText = [
@@ -786,7 +801,7 @@ function initHeroReveal(reveal) {
 }
 
 // ═══════════════ SCROLL-REVEAL ═══════════════
-// KEY FIX: removing sv-hidden is enough — the element's natural CSS
+// KEY FIX: removing sv-hidden is enough - the element's natural CSS
 // has no opacity/transform set, so removing the class triggers the
 // transition from hidden→visible. Adding a second class (sv-revealed)
 // while also removing sv-hidden means the browser sees a simultaneous
@@ -840,7 +855,7 @@ function initScrollReveal() {
       const el = entry.target;
       _revealObs.unobserve(el);
       _revealedSet.add(el);
-      // JUST remove the class — don't add anything. The transition
+      // JUST remove the class - don't add anything. The transition
       // is defined on .sv-hidden itself so it runs on removal.
       el.classList.remove('sv-hidden');
       setTimeout(() => { el.style.transitionDelay = ''; }, 900);
@@ -855,14 +870,14 @@ function initScrollReveal() {
 
 // ═══════════════ SECRET BUTTON ═══════════════
 // Invisible 14×14px button fixed to bottom-right corner.
-// Hover reveals a tiny accent dot — find it and click it.
+// Hover reveals a tiny accent dot - find it and click it.
 function initKonamiButton() {
   if (document.getElementById('konami-btn')) return;
   const btn = document.createElement('button');
   btn.id = 'konami-btn';
   btn.setAttribute('aria-label', 'Easter egg');
   btn.title = '';
-  // Invisible — just a tiny clickable zone, 16×16px in footer corner
+  // Invisible - just a tiny clickable zone, 16×16px in footer corner
   btn.style.cssText = [
     'position:fixed',
     'bottom:0.6rem',
@@ -896,7 +911,7 @@ function initKonamiButton() {
   document.body.appendChild(btn);
 }
 
-// triggerKonami — full CRT glitch storm
+// triggerKonami - full CRT glitch storm
 let _konamiActive = false;
 function triggerKonami() {
   _konamiActive = true;
@@ -985,7 +1000,7 @@ function initCardImagePreview() {
       'pointer-events:none', 'z-index:0',
       'background-size:cover', 'background-position:center',
       'background-repeat:no-repeat',
-      // image set here — not via ::after so it's always available
+      // image set here - not via ::after so it's always available
       'background-image:url(' + JSON.stringify(p.images[0]) + ')',
       'opacity:0',
       'transition:opacity 0.4s ease',
@@ -1004,7 +1019,7 @@ function initCardImagePreview() {
 }
 
 // Ensure card children sit above the bg preview layer
-// (injected once, tiny — no class collision risk)
+// (injected once, tiny - no class collision risk)
 (function injectCardChildZ() {
   const id = 'card-child-z';
   if (document.getElementById(id)) return;
@@ -1133,7 +1148,7 @@ function renderCurrentlyBuilding() {
   if (!s.statusBadgeEnabled) return;
 
   const text = (s.currentlyBuilding || '').trim();
-  if (!text) return; // toggle is on but no text set — nothing to show yet
+  if (!text) return; // toggle is on but no text set - nothing to show yet
 
   const heroCta = document.querySelector('.hero-cta-row');
   if (!heroCta) return;
