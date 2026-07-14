@@ -339,7 +339,7 @@ const DEFAULT = {
     ],
     "cursorEffect": true,
     "lockdown": true,
-    "lockdownMsg": "This portfolio is currently private. Check back around the start of August.",
+    "lockdownMsg": "This portfolio is currently private. Check back around the start of August.", //Check back soon.
     "scrollReveal": true,
     "heroReveal": true,
     "progressBar": true,
