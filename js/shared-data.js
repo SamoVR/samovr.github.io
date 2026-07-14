@@ -82,6 +82,7 @@ const DEFAULT = {
         {
           "title": "Generator System",
           "desc": "The Generator System manages area-specific power through attribute-tagged generator objects (ID, Area, Enabled, FuelLevel). Dynamic fuel consumption scales with fan activity. Includes real-time status screens with color-coded fuel indicators (Normal / Danger / Critical), smooth fan acceleration physics, gas-can refueling with a polished UI, and a dev dashboard for live monitoring.",
+          "videoUrl": "https://youtu.be/K98QBrEiATU",
           "images": [
             "images/backrooms9.png"
           ]
