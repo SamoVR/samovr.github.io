@@ -121,7 +121,7 @@ const DEFAULT = {
       "tabs": [
         {
           "title": "SCP-610",
-          "desc": "Scripted multiple SCP entities for Artemis, handling AI behaviour, animations, hitboxes, and interaction logic. Entities include SCP-457, SCP-662, SCP-610-1, SCP-610-2, SCP-610-4, SCP-963, SCP-034, and SCP-504. Note: models and animations for these entities were not created by me.",
+          "desc": "SCP-610's main abilities such as roar, or attack. \nNote: models and animations for these entities were not created by me.",
           "images": [
             "images/scp1.png",
             "images/scp2.png",
