@@ -310,7 +310,7 @@ const DEFAULT = {
       },
       {
         "type": "out",
-        "text": "Samo_VR - Programmer. C++ by day, Lua by night."
+        "text": "Samo_VR - Programmer. Lua by day, C++ by night."
       },
       {
         "type": "comment",
