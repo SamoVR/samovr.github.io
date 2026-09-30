@@ -147,6 +147,42 @@ const DEFAULT = {
         "images/innohq2.png"
       ],
       "tabs": []
+    },
+    {
+      "name": "Samo's Scripting Place",
+      "icon": "💻",
+      "iconType": "image",
+      "iconImg": "images/sspicon.png",
+      "accentColor": "#ff5c6c",
+      "shortDesc": "Scripts I made in my free time on Roblox",
+      "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects.",
+      "langs": "Lua, Roblox Studio",
+      "tags": "Game Dev",
+      "status": "wip",
+      "link": "https://www.roblox.com/games/16847910715/Samos-Scripting-Place",
+      "images": [
+        "images/ssp.png",
+        "images/soulsys.gif",
+        "images/vissys.gif"
+      ],
+      "tabs": [
+        {
+          "title": "Soul System",
+          "desc": "A system that lets you exit your body as a spiritual being. You can exit your body as either a soul or a demon. Where a soul can roam the map with other souls or get to places normal mortals can't. A demon on the other hand can consume these souls and steal their body if left unattended. However, demons are sensitive to sacred objects such as crucifixes and can't get near them or else they will be diminished or forced to get out of possessed bodies.",
+          "videoUrl": "",
+          "images": [
+            "images/soulsys.gif"
+          ]
+        },
+        {
+          "title": "Vision System",
+          "desc": "By pressing V on your keyboard, and hovering your mouse over players, you can click on them to initiate raycast visualization from their camera. This essentially visualizes the exact field of players vision. This system is in its raw form and could have many uses, such as detecting whether a player is able to see you, or detecting if a players vision is obstructed. Supports both first person and third person mode.",
+          "videoUrl": "",
+          "images": [
+            "images/vissys.gif"
+          ]
+        }
+      ]
     }
   ],
   "about": [
@@ -276,11 +312,11 @@ const DEFAULT = {
       "tags": "Lua,Roblox Studio,Actor Development,Game Systems"
     },
     {
-      "company": "C++ / OpenGL - Personal Projects",
+      "company": "C++ / OpenGL / Lua - Personal Projects",
       "years": "2022 - Now",
       "role": "Systems & Graphics Programmer",
-      "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Primary project is the RIFT Render Engine, a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector.",
-      "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git"
+      "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. Project such as the RIFT Render Engine is a custom scene editor and renderer originally started as a school project and grown into a full-featured tool with scene save/load, animation timelines, object hierarchy, texture mapping, and a built-in property inspector. And more lightweight project such as the Samo's Scripting Place specializing in various systems built out of boredom.",
+      "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git, Lua, Roblox Studio"
     }
   ],
   "contact": [
@@ -339,7 +375,7 @@ const DEFAULT = {
     ],
     "cursorEffect": true,
     "lockdown": false,
-    "lockdownMsg": "This portfolio is currently private. Check back soon.", //Check back soon.
+    "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
     "progressBar": true,
