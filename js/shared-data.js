@@ -154,7 +154,7 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/sspicon.png",
       "accentColor": "#ff5c6c",
-      "shortDesc": "Scripts I made in my free time on Roblox",
+      "shortDesc": "Scripts made in my free time on Roblox",
       "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects.",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev, Tools",
