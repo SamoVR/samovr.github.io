@@ -89,7 +89,7 @@ const DEFAULT = {
         },
         {
           "title": "Terminal System",
-          "desc": "CMDR framework restyled and reprogrammed to fit the new Terminal usage & UI. Together with this, a progress line has been added into the CMDR framework which was fully custom and built by myself.\n\nFeatures: \nA centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.\n\nAn organized remote control system for doors around the map, which handles various door types. System does all checks on the server, ensuring no external access (exploiters). Safe-checks are also present and prevent the player from controlling doors that are busy (opening/closing) or broken.",
+          "desc": "CMDR framework restyled and reprogrammed to fit Terminal usage & UI. Together with this, a progress line has been added into the CMDR framework which was fully custom and built by myself.\n\nFeatures: \nA centralized Protocol System handles activation, authorization, and synchronized broadcasting to all directive screens across the site. Authorization is layered (username → team → group rank). The terminal framework auto-initializes all terminals and connects them to CMDR for in-world command execution. A custom Protocol argument type supports fuzzy search and autocomplete via replicated registry scanning.\n\nAn organized remote control system for doors around the map, which handles various door types. System does all checks on the server, ensuring no external access (exploiters). Safe-checks are also present and prevent the player from controlling doors that are busy (opening/closing) or broken.",
           "videoUrl": "https://youtu.be/IFKqM6eMltk",
           "images": [
             "images/backrooms5.png",
@@ -161,9 +161,7 @@ const DEFAULT = {
       "status": "wip",
       "link": "https://www.roblox.com/games/16847910715/Samos-Scripting-Place",
       "images": [
-        "images/ssp.png",
-        "images/soulsys.gif",
-        "images/vissys.gif"
+        "images/ssp.png"
       ],
       "tabs": [
         {

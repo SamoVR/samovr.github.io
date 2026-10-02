@@ -127,10 +127,12 @@ document.getElementById('mobile-page-select').addEventListener('change', e => {
 //    matching dot + a text label.
 const COLORS = ['#f0f0f0', '#7f77dd', '#4ade80', '#fbbf24', '#f87171', '#38bdf8', '#e879a0', '#fb923c', '#888'];
 
-function buildToolbar(tbId, editorId) {
-  const tb = document.getElementById(tbId);
+function buildToolbar(tbId, editorId, opts = {}) {
+  // accepts either element ids (static editors) or the elements themselves
+  // (the system-tab editors are created dynamically, one per tab)
+  const tb = typeof tbId === 'string' ? document.getElementById(tbId) : tbId;
   if (tb.children.length > 0) return;
-  const editor = document.getElementById(editorId);
+  const editor = typeof editorId === 'string' ? document.getElementById(editorId) : editorId;
 
   const cmds = [
     ['<b>B</b>', 'bold'], ['<i>I</i>', 'italic'], ['<u>U</u>', 'underline'], ['<s>S</s>', 'strikeThrough'], null,
@@ -138,6 +140,19 @@ function buildToolbar(tbId, editorId) {
     ['≡L', 'justifyLeft'], ['≡C', 'justifyCenter'], ['≡R', 'justifyRight'], null,
     ['• List', 'insertUnorderedList'], ['1. List', 'insertOrderedList'], null
   ];
+  if (opts.extras) {
+    // extra blocks for system tabs - styled on the live site by .tm-rich
+    cmds.push(
+      ['❝ Note', 'formatBlock', '<blockquote>'],
+      ['— Divider', 'insertHorizontalRule'],
+      ['&lt;/&gt; Code', () => {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed) { showToast('Select some text first, then click Code'); return; }
+        document.execCommand('insertHTML', false, '<code>' + esc(sel.toString()) + '</code>');
+      }],
+      null
+    );
+  }
   cmds.forEach(c => {
     if (!c) { const s = document.createElement('div'); s.className = 'rb-sep'; tb.appendChild(s); return; }
     const b = document.createElement('button');
@@ -145,7 +160,11 @@ function buildToolbar(tbId, editorId) {
     // preventDefault on mousedown is the actual fix - keeps the live
     // selection intact through the click
     b.addEventListener('mousedown', e => e.preventDefault());
-    b.addEventListener('click', () => { editor.focus(); document.execCommand(c[1], false, c[2] || null); markDirty(_dirtyModal); });
+    b.addEventListener('click', () => {
+      editor.focus();
+      if (typeof c[1] === 'function') c[1](); else document.execCommand(c[1], false, c[2] || null);
+      markDirty(_dirtyModal);
+    });
     tb.appendChild(b);
   });
 
@@ -174,9 +193,13 @@ function buildToolbar(tbId, editorId) {
   // last click"
   editor.addEventListener('keyup', () => syncColorIndicator(editor, dots, colorLabel));
   editor.addEventListener('mouseup', () => syncColorIndicator(editor, dots, colorLabel));
-  document.addEventListener('selectionchange', () => {
+  const onSel = () => {
+    // dynamic editors get thrown away when the modal is rebuilt - drop the
+    // document-level listener with them so they don't pile up
+    if (!editor.isConnected) { document.removeEventListener('selectionchange', onSel); return; }
     if (document.activeElement === editor) syncColorIndicator(editor, dots, colorLabel);
-  });
+  };
+  document.addEventListener('selectionchange', onSel);
 
   // ── font size ──
   const sep2 = document.createElement('div'); sep2.className = 'rb-sep'; tb.appendChild(sep2);
@@ -718,11 +741,27 @@ function buildTabRow(tab, i) {
   descLabel.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem';
   descLabel.textContent = 'Description';
 
-  const descArea = document.createElement('textarea');
-  descArea.className = 'fta tab-desc-input';
-  descArea.placeholder = 'Brief description of this system or feature...';
-  descArea.value = tab?.desc || '';
-  descArea.style.cssText = 'min-height:80px;margin-bottom:.75rem';
+  // rich editor (same toolbar as the project description + extra blocks)
+  const richWrap = document.createElement('div');
+  richWrap.className = 'rich-wrap tab-rich-wrap';
+  richWrap.style.marginBottom = '.75rem';
+  const descTb = document.createElement('div');
+  descTb.className = 'rich-toolbar';
+  const descArea = document.createElement('div');
+  descArea.className = 'rich-body tab-desc-input';
+  descArea.contentEditable = 'true';
+  descArea.dataset.placeholder = 'Describe this system - use the toolbar for headings, lists, notes and colors…';
+  descArea.innerHTML = tabDescToHtml(tab?.desc || '');
+  // paste as plain text so copied web/Word styling doesn't leak into the page
+  descArea.addEventListener('paste', e => {
+    e.preventDefault();
+    const t = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, t);
+  });
+  descArea.addEventListener('input', () => markDirty(_dirtyModal));
+  richWrap.appendChild(descTb);
+  richWrap.appendChild(descArea);
+  buildToolbar(descTb, descArea, { extras: true });
 
   const videoLabel = document.createElement('div');
   videoLabel.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem';
@@ -765,7 +804,7 @@ function buildTabRow(tab, i) {
 
   card.appendChild(topRow);
   card.appendChild(descLabel);
-  card.appendChild(descArea);
+  card.appendChild(richWrap);
   card.appendChild(videoLabel);
   card.appendChild(videoInput);
   card.appendChild(imgLabel);
@@ -805,12 +844,19 @@ function reindexTabCards() {
   tabImgData = newTabImgData;
 }
 
+// an emptied contenteditable leaves stray <br>/<div> behind - treat as empty
+function readTabDesc(el) {
+  if (!el) return '';
+  const hasContent = el.textContent.trim() || el.querySelector('hr');
+  return hasContent ? el.innerHTML.trim() : '';
+}
+
 function collectTabs() {
   const wrap = document.getElementById('pm-tabs-wrap');
   if (!wrap) return [];
   return Array.from(wrap.querySelectorAll('.tab-editor-card')).map((card, i) => ({
     title: (card.querySelector('.tab-title-input')?.value || '').trim(),
-    desc: (card.querySelector('.tab-desc-input')?.value || '').trim(),
+    desc: readTabDesc(card.querySelector('.tab-desc-input')),
     videoUrl: (card.querySelector('.tab-video-input')?.value || '').trim(),
     images: [...(tabImgData[i] || [])]
   })).filter(t => t.title);

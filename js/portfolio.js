@@ -236,15 +236,43 @@ function openPD(i) {
   const tabs = p.tabs || [];
   if (tabs.length) {
     tabsWrap.style.display = 'block';
-    tabsWrap.innerHTML = `<div class="pd-section-label">Systems</div><div class="pd-tabs-row" id="pd-tabs-btns"></div>`;
+    tabsWrap.innerHTML = `
+      <div class="pd-systems-head">
+        <div class="pd-section-label pd-systems-label">Systems <span class="pd-systems-count">${tabs.length}</span></div>
+        <div class="pd-systems-hint">Click a system to see how it works</div>
+      </div>
+      <div class="pd-tabs-row" id="pd-tabs-btns"></div>`;
     const tabsBtns = document.getElementById('pd-tabs-btns');
     tabs.forEach((tab, ti) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'pd-tab-btn';
-      btn.textContent = tab.title;
       btn.style.setProperty('--tab-ac', ac);
-      btn.addEventListener('click', () => openTabModal(tab, ac));
+      btn.style.setProperty('--i', ti);
+
+      // teaser = first sentence of the description (CSS clamps it to 2 lines)
+      const plain = tabDescToText(tab.desc);
+      const firstSentence = (plain.match(/^.*?[.!?](?=\s|$)/) || [plain])[0];
+      const teaser = firstSentence.length > 140 ? firstSentence.slice(0, 137).trimEnd() + '…' : firstSentence;
+
+      const imgCount = (tab.images || []).length;
+      const badges = [
+        tab.videoUrl ? '<span class="pd-tab-badge">▶ Video</span>' : '',
+        imgCount ? `<span class="pd-tab-badge">🖼 ${imgCount} ${imgCount === 1 ? 'screenshot' : 'screenshots'}</span>` : ''
+      ].join('');
+
+      btn.innerHTML = `
+        <span class="pd-tab-index">${String(ti + 1).padStart(2, '0')}</span>
+        <span class="pd-tab-main">
+          <span class="pd-tab-title">${esc(tab.title)}</span>
+          ${teaser ? `<span class="pd-tab-teaser">${esc(teaser)}</span>` : ''}
+          ${badges ? `<span class="pd-tab-badges">${badges}</span>` : ''}
+        </span>
+        <span class="pd-tab-arrow" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>`;
+      btn.setAttribute('aria-label', `Open ${tab.title}`);
+      btn.addEventListener('click', () => openTabModal(tab, ac, { project: p.name, tabs, index: ti }));
       tabsBtns.appendChild(btn);
     });
   } else {
@@ -331,64 +359,126 @@ function closeLB() {
 }
 
 // ═══════════════ TAB SUB-MODAL ═══════════════
-function openTabModal(tab, ac) {
+// ctx = { project, tabs, index } - lets the modal show "System 1 / 2" and
+// step between the project's systems without closing it.
+let tmCtx = null;
+
+function openTabModal(tab, ac, ctx) {
+  ac = ac || '#7f77dd';
+  tmCtx = ctx && ctx.tabs ? { ...ctx, ac } : { project: '', tabs: [tab], index: 0, ac };
+
   let overlay = document.getElementById('tab-modal-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'tab-modal-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:2rem';
+    overlay.className = 'tm-overlay';
     overlay.innerHTML = `
-      <div id="tab-modal-box" style="background:#111;border:.5px solid rgba(255,255,255,.13);border-radius:14px;width:100%;max-width:580px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:.5px solid rgba(255,255,255,.07)">
-          <div id="tab-modal-title" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#f0f0f0"></div>
-          <button id="tab-modal-close" style="background:#181818;border:.5px solid rgba(255,255,255,.13);color:#888;font-size:15px;width:30px;height:30px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      <div class="tm-box" id="tab-modal-box" role="dialog" aria-modal="true" aria-labelledby="tab-modal-title">
+        <div class="tm-head">
+          <div class="tm-head-glow"></div>
+          <button class="tm-close" id="tab-modal-close" type="button" aria-label="Close">✕</button>
+          <div class="tm-eyebrow"><span class="tm-eyebrow-num" id="tm-num"></span><span id="tm-eyebrow"></span></div>
+          <div class="tm-title" id="tab-modal-title"></div>
         </div>
-        <div style="overflow-y:auto;flex:1">
-          <div id="tab-modal-desc" style="padding:1.5rem 1.5rem 1rem;font-size:14px;color:#888;line-height:1.85"></div>
-          <div id="tab-modal-imgs" style="display:none"></div>
+        <div class="tm-scroll" id="tm-scroll">
+          <div class="tm-rich" id="tab-modal-desc"></div>
+          <div class="tm-section" id="tab-modal-video" style="display:none"></div>
+          <div class="tm-section" id="tab-modal-imgs" style="display:none"></div>
+        </div>
+        <div class="tm-foot" id="tm-foot">
+          <button class="tm-nav prev" id="tm-prev" type="button"></button>
+          <button class="tm-nav next" id="tm-next" type="button"></button>
         </div>
       </div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeTabModal(); });
     document.getElementById('tab-modal-close').addEventListener('click', closeTabModal);
+    document.getElementById('tm-prev').addEventListener('click', () => tabModalStep(-1));
+    document.getElementById('tm-next').addEventListener('click', () => tabModalStep(1));
   }
 
+  const box = document.getElementById('tab-modal-box');
+  box.style.setProperty('--ac', ac);
+
+  // header
+  const total = tmCtx.tabs.length;
+  document.getElementById('tm-num').textContent = String(tmCtx.index + 1).padStart(2, '0');
+  document.getElementById('tm-eyebrow').textContent =
+    (tmCtx.project ? tmCtx.project + ' · ' : '') + 'System' + (total > 1 ? ` ${tmCtx.index + 1} of ${total}` : '');
   document.getElementById('tab-modal-title').textContent = tab.title;
-  document.getElementById('tab-modal-title').style.color = ac || '#7f77dd';
 
-  // description first, then video button (if set), then images below
-  document.getElementById('tab-modal-desc').innerHTML = (tab.desc || '').replace(/\n/g, '<br>') || '<em style="color:#555">No description yet.</em>';
+  // description (rich HTML from the admin editor, or legacy plain text)
+  document.getElementById('tab-modal-desc').innerHTML =
+    tabDescToHtml(tab.desc) || '<p class="tm-empty">No description yet.</p>';
 
-  let videoEl = document.getElementById('tab-modal-video');
-  if (!videoEl) {
-    videoEl = document.createElement('div');
-    videoEl.id = 'tab-modal-video';
-    videoEl.style.cssText = 'padding:0 1.5rem 1rem';
-    document.getElementById('tab-modal-desc').insertAdjacentElement('afterend', videoEl);
-  }
-  if (tab.videoUrl) {
+  // video - a proper call-to-action card instead of a tiny link
+  const videoEl = document.getElementById('tab-modal-video');
+  if (tab.videoUrl && /^https?:\/\//i.test(tab.videoUrl)) {
+    let host = '';
+    try { host = new URL(tab.videoUrl).hostname.replace(/^www\./, ''); } catch {}
     videoEl.style.display = 'block';
-    videoEl.innerHTML = `<a href="${esc(tab.videoUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-radius:8px;border:.5px solid ${esc(ac || '#7f77dd')};color:${esc(ac || '#7f77dd')};font-family:'JetBrains Mono',monospace;font-size:13px;text-decoration:none;transition:background .15s" onmouseover="this.style.background='${esc(ac || '#7f77dd')}22'" onmouseout="this.style.background='transparent'">▶ Watch Video</a>`;
+    videoEl.innerHTML = `
+      <a class="tm-video" href="${esc(tab.videoUrl)}" target="_blank" rel="noopener noreferrer">
+        <span class="tm-video-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
+        <span class="tm-video-text">
+          <span class="tm-video-title">Watch the demo video</span>
+          ${host ? `<span class="tm-video-host">${esc(host)}</span>` : ''}
+        </span>
+        <span class="tm-video-ext" aria-hidden="true">↗</span>
+      </a>`;
   } else {
     videoEl.style.display = 'none';
     videoEl.innerHTML = '';
   }
 
+  // screenshots
   const imgsEl = document.getElementById('tab-modal-imgs');
   const imgs = tab.images || [];
   if (imgs.length) {
-    imgsEl.style.display = 'grid';
-    imgsEl.style.cssText = `display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;padding:0 1.5rem 1.25rem`;
-    imgsEl.innerHTML = imgs.map((src, j) => `<div style="border-radius:8px;overflow:hidden;aspect-ratio:16/9;border:.5px solid rgba(255,255,255,.07)"><img src="${esc(src)}" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in" data-imgidx="${j}"></div>`).join('');
-    imgsEl.querySelectorAll('img').forEach(img => {
-      img.addEventListener('click', () => openLB(imgs, parseInt(img.dataset.imgidx, 10)));
+    imgsEl.style.display = 'block';
+    imgsEl.innerHTML = `
+      <div class="tm-label">Screenshots <span class="tm-label-count">${imgs.length}</span></div>
+      <div class="tm-gallery n-${Math.min(imgs.length, 4)}">${
+        imgs.map((src, j) => `
+          <button class="tm-shot" type="button" data-imgidx="${j}" aria-label="Open screenshot ${j + 1}">
+            <img src="${esc(src)}" alt="Screenshot ${j + 1}" loading="lazy">
+            <span class="tm-shot-zoom" aria-hidden="true">⤢</span>
+          </button>`).join('')
+      }</div>`;
+    imgsEl.querySelectorAll('.tm-shot').forEach(b => {
+      b.addEventListener('click', () => openLB(imgs, parseInt(b.dataset.imgidx, 10)));
     });
   } else {
     imgsEl.style.display = 'none';
     imgsEl.innerHTML = '';
   }
 
+  // prev / next system
+  const foot = document.getElementById('tm-foot');
+  foot.style.display = total > 1 ? 'flex' : 'none';
+  if (total > 1) {
+    const prevT = tmCtx.tabs[(tmCtx.index - 1 + total) % total];
+    const nextT = tmCtx.tabs[(tmCtx.index + 1) % total];
+    // with only two systems, prev and next would be the same target - show one
+    document.getElementById('tm-prev').style.display = (total > 2 || tmCtx.index > 0) ? 'flex' : 'none';
+    document.getElementById('tm-next').style.display = (total > 2 || tmCtx.index < total - 1) ? 'flex' : 'none';
+    document.getElementById('tm-prev').innerHTML = `<span class="tm-nav-arrow">←</span><span class="tm-nav-text"><span class="tm-nav-dir">Previous</span><span class="tm-nav-name">${esc(prevT.title)}</span></span>`;
+    document.getElementById('tm-next').innerHTML = `<span class="tm-nav-text"><span class="tm-nav-dir">Next</span><span class="tm-nav-name">${esc(nextT.title)}</span></span><span class="tm-nav-arrow">→</span>`;
+  }
+
   overlay.style.display = 'flex';
+  document.getElementById('tm-scroll').scrollTop = 0;
+  // replay the entrance animation each time (also when stepping systems)
+  box.classList.remove('tm-in'); void box.offsetWidth; box.classList.add('tm-in');
+}
+
+function tabModalStep(dir) {
+  if (!tmCtx || tmCtx.tabs.length < 2) return;
+  const n = tmCtx.tabs.length;
+  const idx = (tmCtx.index + dir + n) % n;
+  // with exactly two systems, only the one valid direction is shown/allowed
+  if (n === 2 && (idx !== tmCtx.index + dir)) return;
+  openTabModal(tmCtx.tabs[idx], tmCtx.ac, { project: tmCtx.project, tabs: tmCtx.tabs, index: idx });
 }
 
 function closeTabModal() {
@@ -1079,13 +1169,18 @@ function wireStaticControls() {
   document.getElementById('lb-next-btn').addEventListener('click', e => { e.stopPropagation(); lbNav(1); });
 
   document.addEventListener('keydown', e => {
-    if (document.getElementById('tab-modal-overlay') && document.getElementById('tab-modal-overlay').style.display === 'flex') {
-      if (e.key === 'Escape') { closeTabModal(); return; }
-    }
+    // top-most layer first: lightbox (z 800) > system modal (z 600) > project modal
     if (document.getElementById('lb-overlay').classList.contains('open')) {
       if (e.key === 'Escape') { closeLB(); return; }
       if (e.key === 'ArrowLeft') { lbNav(-1); return; }
       if (e.key === 'ArrowRight') { lbNav(1); return; }
+    }
+    const tmo = document.getElementById('tab-modal-overlay');
+    if (tmo && tmo.style.display === 'flex') {
+      if (e.key === 'Escape') { closeTabModal(); return; }
+      if (e.key === 'ArrowLeft') { tabModalStep(-1); return; }
+      if (e.key === 'ArrowRight') { tabModalStep(1); return; }
+      return;
     }
     if (document.getElementById('pd-overlay').classList.contains('open')) {
       if (e.key === 'Escape') { closePD(); return; }

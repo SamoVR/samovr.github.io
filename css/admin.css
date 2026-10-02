@@ -119,6 +119,14 @@ textarea.fta{min-height:90px;resize:vertical;font-family:var(--sans);font-size:1
 
 .rich-body{background:var(--bg3);color:var(--text);font-size:14px;padding:12px;min-height:120px;outline:none;line-height:1.75;word-break:break-word}
 .rich-body:empty::before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
+/* shared.css zeroes margins/padding, so give formatted content some shape in the editor */
+.rich-body ul,.rich-body ol{padding-left:1.4rem;margin:.4rem 0}
+.rich-body h2{font-family:var(--mono);font-size:1.1rem;margin:.8rem 0 .3rem}
+.rich-body h3{font-family:var(--mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:.7rem 0 .25rem}
+.rich-body blockquote{margin:.5rem 0;padding:.5rem .85rem;border-left:3px solid var(--accent);background:var(--accent-dim);border-radius:0 8px 8px 0}
+.rich-body hr{border:0;height:1px;margin:.8rem 0;background:linear-gradient(90deg,var(--accent),transparent)}
+.rich-body code{font-family:var(--mono);font-size:.9em;padding:1px 6px;border-radius:4px;background:var(--accent-dim);color:var(--accent)}
+.tab-rich-wrap .rich-body{min-height:110px;max-height:340px;overflow-y:auto}
 
 /* ── IMAGE UPLOAD / DRAG ── */
 .img-drop-zone{border:1.5px dashed var(--border2);border-radius:var(--r);padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--bg3)}
