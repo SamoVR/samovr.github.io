@@ -102,7 +102,7 @@ Lockdown is enforced in **JavaScript**, not CSS. This means:
 | About cards (rich text, colors) | Admin → About |
 | Skills & proficiency bars | Admin → Skills |
 | Work history timeline | Admin → Experience |
-| Contact links (clipboard copy) | Admin → Contact |
+| Contact links (open in a new tab or copy to clipboard, per link) | Admin → Contact |
 | Live Terminal easter egg | Admin → Interactive → Live Terminal |
 | Cursor constellation effect | Admin → Interactive → Cursor Constellation |
 | Site Lockdown | Admin → Interactive → Site Lockdown |

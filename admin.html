@@ -138,7 +138,7 @@
         <div class="page-header">
           <div>
             <div class="page-title">Contact Links</div>
-            <div class="page-sub">Links visitors can copy on your contact section. Any characters (quotes, apostrophes, etc.) are safe to use.</div>
+            <div class="page-sub">Links in your contact section. Each one can either open the website straight away or copy its value to the clipboard. Any characters (quotes, apostrophes, etc.) are safe to use.</div>
           </div>
           <button class="btn btn-accent btn-sm" id="add-contact-btn">+ Add Link</button>
         </div>
@@ -653,6 +653,14 @@
       <div class="fgroup">
         <label>Value <span style="color:var(--muted);font-size:10px">(URL, username, email - any characters safe)</span></label>
         <input type="text" id="ctm-value" placeholder="https://... or your@email.com or Username#0000">
+      </div>
+      <div class="fgroup">
+        <label>When someone clicks it</label>
+        <select id="ctm-action">
+          <option value="copy">Copy the value to clipboard</option>
+          <option value="open">Open it right away (new tab)</option>
+        </select>
+        <div style="color:var(--muted);font-size:11px;margin-top:6px">"Open" works with links (https://…), plain domains and email addresses. If the value isn't a link, it copies instead.</div>
       </div>
       <div class="fgroup" style="margin-bottom:0">
         <label>Icon Emoji</label>

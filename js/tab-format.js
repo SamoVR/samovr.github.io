@@ -1,7 +1,8 @@
-// Helpers for system-tab descriptions. Loaded after shared-data.js (uses its esc()).
-// Tab descriptions are saved as HTML from the rich editor in the admin.
-// Older tabs were saved as plain text (with \n line breaks), so tabDescToHtml
-// turns either form into HTML. Plain text becomes paragraphs, and a short line
+// Helper for system-tab descriptions. Loaded after shared-data.js (uses its esc()).
+// ── SYSTEM TAB DESCRIPTIONS ──
+// Tab descriptions are now saved as HTML from the rich editor in the admin.
+// Older tabs were saved as plain text (with \n line breaks), so this turns
+// either form into HTML. Plain text becomes paragraphs, and a short line
 // ending in ":" (e.g. "Features:") becomes a sub-heading.
 function tabDescToHtml(desc) {
   const s = String(desc == null ? '' : desc).trim();
@@ -18,12 +19,4 @@ function tabDescToHtml(desc) {
   });
   flush();
   return out.join('');
-}
-
-// Plain-text version (for card teasers) - strips tags, keeps spacing sane.
-function tabDescToText(desc) {
-  const html = tabDescToHtml(desc).replace(/<\/(p|div|li|h[1-6]|blockquote)>|<br\s*\/?>|<hr\s*\/?>/gi, ' ');
-  const d = document.createElement('div');
-  d.innerHTML = html;
-  return (d.textContent || '').replace(/\s+/g, ' ').trim();
 }

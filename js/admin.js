@@ -643,7 +643,7 @@ function renderContactList() {
       <div style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${esc(c.icon || '🔗')}</div>
       <div class="list-main">
         <div class="list-name">${esc(c.label)}</div>
-        <div class="list-sub">${esc(c.value)}</div>
+        <div class="list-sub">${esc(c.value)} <span style="opacity:.6">· ${c.action === 'open' ? '↗ opens right away' : '⧉ copies to clipboard'}</span></div>
       </div>
       <div class="list-actions">
         <button type="button" class="ib ib-edit" data-editidx="${i}">Edit</button>
@@ -658,12 +658,13 @@ function openCtModal(i) {
   const isNew = i === null;
   document.getElementById('ctm-title').textContent = isNew ? 'Add Link' : 'Edit Link';
   document.getElementById('ctm-idx').value = isNew ? -1 : i;
-  if (isNew) { ['ctm-label', 'ctm-value', 'ctm-icon'].forEach(id => document.getElementById(id).value = ''); }
+  if (isNew) { ['ctm-label', 'ctm-value', 'ctm-icon'].forEach(id => document.getElementById(id).value = ''); document.getElementById('ctm-action').value = 'copy'; }
   else {
     const c = state.contact[i];
     document.getElementById('ctm-label').value = c.label;
     document.getElementById('ctm-value').value = c.value;
     document.getElementById('ctm-icon').value = c.icon || '';
+    document.getElementById('ctm-action').value = c.action === 'open' ? 'open' : 'copy';
   }
   openM('ctm');
 }
@@ -679,7 +680,8 @@ function saveContact() {
   const link = {
     label: document.getElementById('ctm-label').value || 'Link',
     value: document.getElementById('ctm-value').value || '',
-    icon: document.getElementById('ctm-icon').value || '🔗'
+    icon: document.getElementById('ctm-icon').value || '🔗',
+    action: document.getElementById('ctm-action').value === 'open' ? 'open' : 'copy'
   };
   if (idx === -1) state.contact.push(link); else state.contact[idx] = link;
   persist('contact'); renderContactList(); closeM('ctm'); showToast('✓ Link saved');
@@ -698,6 +700,7 @@ function delItem(key, i) {
 // ═══════════════ PROJECT TABS EDITOR ═══════════════
 // Per-tab image uploads (separate from screenshots)
 let tabImgData = {}; // keyed by tab row index during editing
+let tabEditorSeq = 0; // unique ids for each tab's rich editor
 
 function renderTabsEditor(tabs) {
   let wrap = document.getElementById('pm-tabs-wrap');

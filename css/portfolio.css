@@ -134,6 +134,10 @@ h2.section-title{font-family:var(--mono);font-size:1.9rem;font-weight:700;letter
 .contact-links-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
 .contact-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 20px;border:.5px solid var(--border);border-radius:var(--r);transition:all .2s;letter-spacing:.03em;cursor:pointer;background:none}
 .contact-btn:hover{color:var(--text);border-color:var(--border2)}
+a.contact-btn{text-decoration:none}
+.contact-hint{font-size:11px;opacity:.45;margin-left:2px;transition:opacity .2s, transform .2s var(--ease)}
+.contact-btn:hover .contact-hint,.contact-btn:focus-visible .contact-hint{opacity:1}
+.contact-open:hover .contact-hint{transform:translate(2px,-2px)}
 
 footer{border-top:.5px solid var(--border);padding:2rem;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.05em}
 footer span{color:var(--accent)}
@@ -501,7 +505,7 @@ footer span{color:var(--accent)}
 .tm-rich img{max-width:100%;border-radius:10px}
 .tm-empty{font-style:italic;color:#555}
 
-/* ── section label ── */
+/* ── section label (matches .pd-section-label, accent tinted) ── */
 .tm-label{display:flex;align-items:center;gap:8px;margin-bottom:.85rem;
   font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .tm-label::before{content:'';width:18px;height:1px;background:var(--ac)}

@@ -156,19 +156,38 @@ function renderProjects() {
 // ═══════════════ RENDER: CONTACT ═══════════════
 function renderContact() {
   const el = document.getElementById('contact-links');
-  el.innerHTML = state.contact.map((c, i) => `
-    <button class="contact-btn" data-cidx="${i}" type="button">
-      <span style="font-size:16px">${c.icon || '🔗'}</span>${esc(c.label)}
-    </button>`).join('');
+  // Each link has an action set in the admin: 'open' goes straight to the
+  // site (real <a>, so middle-click / new-tab / screen readers all work),
+  // 'copy' (the default) copies the value to the clipboard.
+  el.innerHTML = state.contact.map((c, i) => {
+    const href = c.action === 'open' ? contactHref(c.value) : null;
+    const icon = `<span style="font-size:16px">${esc(c.icon || '🔗')}</span>`;
+    if (href) {
+      const ext = /^https?:/i.test(href);
+      return `<a class="contact-btn contact-open" data-cidx="${i}" href="${esc(href)}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ''} title="${ext ? 'Opens in a new tab' : 'Opens your mail app'}">${icon}${esc(c.label)}<span class="contact-hint" aria-hidden="true">↗</span></a>`;
+    }
+    return `<button class="contact-btn contact-copy" data-cidx="${i}" type="button" title="Click to copy">${icon}${esc(c.label)}<span class="contact-hint" aria-hidden="true">⧉</span></button>`;
+  }).join('');
 
-  // Safe copy wiring: read the value out of state (not out of the DOM
-  // string), so there's no escaping tightrope to walk at all.
-  el.querySelectorAll('.contact-btn').forEach(btn => {
+  // Copy wiring: read the value out of state (not out of the DOM string),
+  // so there's no escaping tightrope to walk at all.
+  el.querySelectorAll('.contact-copy').forEach(btn => {
     btn.addEventListener('click', () => {
       const c = state.contact[parseInt(btn.dataset.cidx, 10)];
       if (c) copyText(c.value);
     });
   });
+}
+
+// Turns a contact value into something a browser can open, or null if it
+// isn't a link (then the button just falls back to copying).
+function contactHref(v) {
+  v = String(v || '').trim();
+  if (!v || /\s/.test(v)) return null;
+  if (/^https?:\/\//i.test(v) || /^mailto:/i.test(v)) return v;
+  if (/^[^@/]+@[^@/]+\.[a-z]{2,}$/i.test(v)) return 'mailto:' + v;
+  if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(v)) return 'https://' + v;
+  return null;
 }
 
 // ═══════════════ PROJECT DETAIL MODAL ═══════════════
@@ -251,7 +270,7 @@ function openPD(i) {
       btn.style.setProperty('--i', ti);
 
       // teaser = first sentence of the description (CSS clamps it to 2 lines)
-      const plain = tabDescToText(tab.desc);
+      const plain = (tab.desc || '').replace(/\s+/g, ' ').trim();
       const firstSentence = (plain.match(/^.*?[.!?](?=\s|$)/) || [plain])[0];
       const teaser = firstSentence.length > 140 ? firstSentence.slice(0, 137).trimEnd() + '…' : firstSentence;
 
@@ -476,8 +495,6 @@ function tabModalStep(dir) {
   if (!tmCtx || tmCtx.tabs.length < 2) return;
   const n = tmCtx.tabs.length;
   const idx = (tmCtx.index + dir + n) % n;
-  // with exactly two systems, only the one valid direction is shown/allowed
-  if (n === 2 && (idx !== tmCtx.index + dir)) return;
   openTabModal(tmCtx.tabs[idx], tmCtx.ac, { project: tmCtx.project, tabs: tmCtx.tabs, index: idx });
 }
 
@@ -598,7 +615,7 @@ function initCursorEffect() {
     cursorParticles.forEach(p => {
       p.x += p.vx; p.y += p.vy; p.life -= p.decay;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2);
+      ctx.arc(p.x, p.y, Math.max(0, p.r * p.life), 0, Math.PI*2);
       ctx.fillStyle = `rgba(${ACCENT},${p.life * 0.8})`;
       ctx.fill();
     });
