@@ -13,7 +13,7 @@
 const STORE = {
   get(k)    { return null; },
   set(k, v) {
-    // Wipe any stale svr_* keys that may exist from older versions
+    // wipe any stale svr_* keys that may exist from older versions
     try {
       Object.keys(localStorage)
         .filter(k => k.startsWith('svr_'))
