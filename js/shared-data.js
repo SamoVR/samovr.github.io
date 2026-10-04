@@ -36,7 +36,7 @@ const DEFAULT = {
       "fullDesc": "Originally started as a school project, <font color=\"#7f77dd\">RIFT </font>grew into a fully-featured render engine and scene editor. Built solo in <font color=\"#38bdf8\">C++</font> using <font color=\"#38bdf8\">OpenGL</font>, <font color=\"#38bdf8\">ImGui</font>, <font color=\"#38bdf8\">json</font>, and <font color=\"#38bdf8\">stbimage</font>. Features include a scene hierarchy, transform controls (position/rotation/scale), texture mapping, animation timeline with keyframe curves, scene save/load, and a property inspector panel. Every system was written from scratch, this was about understanding how engines work, not just using one.",
       "langs": "C++, OpenGL, GLSL, ImGui",
       "tags": "Graphics, Tools",
-      "status": "wip",
+      "status": "complete",
       "link": "https://github.com/SamoVR/SamosCircus2/tree/master/RenderEngine",
       "images": [
         "images/rift5.webp",
