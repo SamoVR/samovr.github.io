@@ -56,7 +56,8 @@
   <div class="crumb"><span>Samo_VR</span> · Page not found</div>
 </div>
 
-<script src="/js/site-data.js?v=20261021i"></script>
+<!-- site data: fresh URL on every load, so a pushed change shows up on the next refresh (never cached) -->
+<script>document.write('<script src="/js/site-data.js?t=' + Date.now() + '"><\/script>');</script>
 <script src="/js/shared-data.js?v=20261021i"></script>
 <script>
   // Content is editable from Admin → Settings → 404 Page (saved into

@@ -365,7 +365,14 @@
 <script src="vendor/gsap.min.js?v=20261021i" defer></script>
 <script src="vendor/ScrollTrigger.min.js?v=20261021i" defer></script>
 <script src="vendor/lenis.min.js?v=20261021i" defer></script>
-<script src="js/site-data.js?v=20261021i" defer></script>
+<!-- site data: fresh URL on every load, so a pushed change shows up on the next refresh (never cached) -->
+<script>document.write('<script src="js/site-data.js?t=' + Date.now() + '"><\/script>');</script>
+<script>
+  // lockdown: hide everything right away (the lock wall itself is added by portfolio.js)
+  if (typeof DEFAULT !== 'undefined' && DEFAULT.settings && DEFAULT.settings.lockdown) {
+    document.write('<style>body > *:not(#lockdown-wall){visibility:hidden !important}</style>');
+  }
+</script>
 <script src="js/shared-data.js?v=20261021i" defer></script>
 <script src="js/tab-format.js?v=20261021i" defer></script>
 <script src="js/hero-shader.js?v=20261021i" defer></script>

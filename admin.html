@@ -761,7 +761,8 @@
   </div>
 </div>
 
-<script src="js/site-data.js?v=20261021i"></script>
+<!-- site data: fresh URL on every load, so a pushed change shows up on the next refresh (never cached) -->
+<script>document.write('<script src="js/site-data.js?t=' + Date.now() + '"><\/script>');</script>
 <script src="js/shared-data.js?v=20261021i"></script>
 <script src="js/tab-format.js?v=20261021i"></script>
 <script src="js/admin.js?v=20261021i"></script>
