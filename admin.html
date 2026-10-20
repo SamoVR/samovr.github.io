@@ -7,8 +7,8 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shared.css">
-<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/shared.css?v=20261021c">
+<link rel="stylesheet" href="css/admin.css?v=20261021c">
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -388,7 +388,7 @@
 
         <div class="panel">
           <div class="panel-title">Change Password</div>
-          <div class="page-sub" style="margin-bottom:1rem">Only a SHA-256 hash of the password is stored, in <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">js/shared-data.js</code>. Generating a new one gives you a line to paste over <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">passHash</code> there; push it to make it permanent.</div>
+          <div class="page-sub" style="margin-bottom:1rem">Only a SHA-256 hash of the password is stored, in <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">js/site-data.js</code>. Generating a new one gives you a line to paste over <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">passHash</code> there; push it to make it permanent.</div>
           <div class="grid2" style="gap:1rem">
             <div class="fgroup" style="margin:0">
               <label>Current Password</label>
@@ -405,7 +405,7 @@
             </div>
           </div>
           <div class="err" id="perr"></div>
-          <div class="ok" id="pok">✓ Password updated for this session. Paste this line into js/shared-data.js to keep it:</div>
+          <div class="ok" id="pok">✓ Password updated for this session. It's included in your next Export, or paste this line into js/site-data.js:</div>
           <div class="hash-out" id="phash" style="display:none"><code id="phash-code"></code><button type="button" class="btn btn-ghost btn-sm" id="phash-copy">Copy</button></div>
           <button class="btn btn-accent btn-sm" id="changepass-btn" style="margin-top:1rem">Generate New Password Hash</button>
         </div>
@@ -442,17 +442,10 @@
           <div class="panel-title">Data</div>
           <div class="setting-row">
             <div class="setting-info">
-              <div class="setting-name">Export Data</div>
-              <div class="setting-desc">Download all portfolio content as JSON. Paste the values into the DEFAULT object in js/shared-data.js to publish them.</div>
+              <div class="setting-name">Export</div>
+              <div class="setting-desc">Downloads js/site-data.js with all your saved changes. Replace that file in the repo with it and push.</div>
             </div>
-            <button class="btn btn-ghost btn-sm" id="export-btn">Export JSON</button>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info">
-              <div class="setting-name">Publish (download shared-data.js)</div>
-              <div class="setting-desc">Downloads a ready-to-use js/shared-data.js with everything you've changed. Replace the file in your repo with it and push: that's the whole publish step.</div>
-            </div>
-            <button class="btn btn-accent btn-sm" id="publish-btn">⬇ Download shared-data.js</button>
+            <button class="btn btn-accent btn-sm" id="export-btn">⬇ Export site-data.js</button>
           </div>
           <div class="setting-row">
             <div class="setting-info">
@@ -768,8 +761,9 @@
   </div>
 </div>
 
-<script src="js/shared-data.js"></script>
-<script src="js/tab-format.js"></script>
-<script src="js/admin.js"></script>
+<script src="js/site-data.js?v=20261021c"></script>
+<script src="js/shared-data.js?v=20261021c"></script>
+<script src="js/tab-format.js?v=20261021c"></script>
+<script src="js/admin.js?v=20261021c"></script>
 </body>
 </html>

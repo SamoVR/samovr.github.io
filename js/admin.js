@@ -68,7 +68,7 @@ document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click'
 }));
 
 // ═══════════════ AUTH ═══════════════
-// Only a SHA-256 hash of the password lives in shared-data.js (it's public),
+// Only a SHA-256 hash of the password lives in site-data.js (it's public),
 // so the typed password is hashed and compared. crypto.subtle needs a secure
 // context: https, localhost or a file:// page all qualify.
 async function doLogin() {
@@ -333,7 +333,7 @@ function handleImgUpload(e) {
   e.target.value = '';
 }
 
-// project media can be images or .mp4 clips (see shared-data.js)
+// project media can be images or .mp4 clips (see site-data.js)
 function adminThumb(src) {
   return isVideoSrc(src)
     ? `<video src="${esc(src)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>`
@@ -1109,10 +1109,27 @@ function save404Settings() {
 }
 document.getElementById('nf-save-btn').addEventListener('click', save404Settings);
 
+// Export = a complete js/site-data.js. Replace the file in the repo with the
+// downloaded one and push; nothing else changes.
 function exportData() {
-  const data = { projects: state.projects, about: state.about, skills: state.skills, experience: state.experience, contact: state.contact, settings: state.settings };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'samo_vr_portfolio_data.json'; a.click();
+  const data = { projects: state.projects, about: state.about, skills: state.skills, experience: state.experience, contact: state.contact, settings: state.settings, passHash: state.passHash };
+  const file = [
+    '/* ════════════════════════════════════════════════',
+    '   SITE DATA - everything shown on the website',
+    '   Edit it in admin.html, click Export, and replace this file with the',
+    '   downloaded one. (Hand-editing is fine too.)',
+    '   ════════════════════════════════════════════════ */',
+    '',
+    'const DEFAULT = ' + JSON.stringify(data, null, 2) + ';',
+    ''
+  ].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([file], { type: 'text/javascript' }));
+  a.download = 'site-data.js';
+  a.click();
+  showToast(JSON.stringify(data).includes('data:image')
+    ? '✓ Exported. It contains uploaded images; using paths keeps it small.'
+    : '✓ Exported site-data.js. Replace js/site-data.js with it.', 4000);
 }
 document.getElementById('export-btn').addEventListener('click', exportData);
 
@@ -1272,34 +1289,6 @@ function saveHomeEditor() {
   showToast('✓ Homepage saved');
 }
 
-// ═══════════════ PUBLISH: a complete, ready-to-commit shared-data.js ═══════════════
-// Takes the current shared-data.js from the site and swaps its DEFAULT object
-// for everything edited here, so publishing is "replace the file and push".
-async function publishData() {
-  const data = { projects: state.projects, about: state.about, skills: state.skills, experience: state.experience, contact: state.contact, settings: state.settings, passHash: state.passHash };
-  const block = 'const DEFAULT = ' + JSON.stringify(data, null, 2) + '\n';
-  let src;
-  try {
-    const res = await fetch('js/shared-data.js', { cache: 'no-store' });
-    if (!res.ok) throw new Error(res.status);
-    src = await res.text();
-  } catch {
-    showToast('⚠ Open admin through a local server (see README) to publish. Exporting JSON instead.');
-    exportData();
-    return;
-  }
-  const start = src.indexOf('const DEFAULT = {');
-  const end = src.indexOf('\n// keys used across admin and portfolio');
-  if (start < 0 || end < 0) { showToast('⚠ Couldn\'t find DEFAULT in shared-data.js'); return; }
-  const out = src.slice(0, start) + block + src.slice(end);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([out], { type: 'text/javascript' }));
-  a.download = 'shared-data.js';
-  a.click();
-  const big = JSON.stringify(data).includes('data:image');
-  showToast(big ? '✓ Downloaded. Note: it contains uploaded images, consider using paths instead.' : '✓ Downloaded shared-data.js. Replace js/shared-data.js with it and push.', 4500);
-}
-document.getElementById('publish-btn').addEventListener('click', publishData);
 document.getElementById('home-save-btn').addEventListener('click', saveHomeEditor);
 document.getElementById('hero-add-stat').addEventListener('click', () => addStatRow());
 document.getElementById('hero-add-code').addEventListener('click', () => addCodeRow());

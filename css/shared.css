@@ -30,9 +30,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   outline:2px solid var(--accent);outline-offset:3px;
 }
 
+/* Reduced motion: no smooth scrolling here; big movement is switched off
+   per-feature in the page styles/scripts, so the site still feels alive
+   (fades, typing, hover feedback) instead of looking frozen. */
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
 }
 
 /* ── shared buttons ── */

@@ -33,14 +33,16 @@
   // ═══════════════ SCROLL REVEAL ═══════════════
   // Hidden by CSS until .in is added; the entrance itself is a WAAPI
   // animation, so nothing lingers in the element's own transitions afterwards.
-  const revealOn = S.scrollReveal !== false && !reduced;
+  const revealOn = S.scrollReveal !== false;
+  // reduced motion: fade only, no sliding
+  const FROM = reduced ? { opacity: 0 } : { opacity: 0, transform: 'translateY(28px)' };
   root.classList.add('fx-ready');
   if (!revealOn) root.classList.remove('js-reveal');
   let revealIO = null;
 
   function revealed(el, i) {
     el.classList.add('in');
-    if (revealOn) el.animate([{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'none' }],
+    if (revealOn) el.animate([FROM, { opacity: 1, transform: 'none' }],
       { duration: 900, delay: i * 70, easing: EASE, fill: 'backwards' });
     $$('.skill-meter i', el).forEach((seg, j) => setTimeout(() => seg.classList.add('on'), (revealOn ? 200 + i * 70 : 0) + j * 40));
   }
@@ -95,7 +97,6 @@
     const el = $('#role-rotator');
     if (!el || roles.length < 2) return;
     let i = 0;
-    if (reduced) { setInterval(() => { i = (i + 1) % roles.length; el.textContent = roles[i]; }, 3500); return; }
     const type = s => {
       let n = 0;
       const tick = () => { el.textContent = s.slice(0, ++n); if (n < s.length) setTimeout(tick, 42 + Math.random() * 45); else setTimeout(erase, 2600); };
@@ -154,7 +155,6 @@
       $$('.code-tab', tabs).forEach((t, i) => t.classList.toggle('active', i === si));
       langEl.textContent = s.lang === 'cpp' ? 'C++' : 'Luau';
       const next = () => show((si + 1) % snippets.length);
-      if (reduced) { render(s.code, s.lang, false); setTimeout(next, 7000); return; }
       let n = 0;
       const tick = () => {
         if (!visible || document.hidden) { setTimeout(tick, 400); return; }
@@ -211,7 +211,7 @@
     root.classList.remove('js-hero');
     if (animate) {
       $$('[data-hero]').forEach((el, i) => el.animate(
-        [{ opacity: 0, transform: 'translateY(26px)' }, { opacity: 1, transform: 'none' }],
+        [reduced ? { opacity: 0 } : { opacity: 0, transform: 'translateY(26px)' }, { opacity: 1, transform: 'none' }],
         { duration: 1000, delay: 60 + i * 85, easing: EASE, fill: 'backwards' }));
       const status = $('#hero-status');
       if (status && !status.hidden) status.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 800, easing: EASE, fill: 'backwards' });
@@ -359,7 +359,7 @@
   heroParallax();
   cardFX();
   magnetic();
-  runIntro(played => heroEnter(S.heroReveal !== false && !reduced && (played || !SVR.deepLinked)));
+  runIntro(played => heroEnter(S.heroReveal !== false && (played || !SVR.deepLinked)));
 
   const refreshTriggers = () => { if (G) ScrollTrigger.refresh(); };
   if (document.fonts) document.fonts.ready.then(refreshTriggers);

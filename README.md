@@ -17,7 +17,8 @@ A static portfolio site (GitHub Pages) with a local admin dashboard. No build st
 │   ├── samos-demo.css    ← Interactive SAM-OS terminal replica
 │   └── admin.css         ← Dashboard styles
 ├── js/
-│   ├── shared-data.js    ← ALL site content (the DEFAULT object) + helpers
+│   ├── site-data.js      ← ALL site content (the DEFAULT object) - what Admin exports
+│   ├── shared-data.js    ← Helpers shared by every page
 │   ├── portfolio.js      ← Renders sections, project detail, lightbox, Ctrl K menu
 │   ├── fx.js             ← Motion: smooth scroll, reveals, intro, hero, marquee
 │   ├── hero-shader.js    ← Raw WebGL/GLSL background in the hero
@@ -34,7 +35,7 @@ A static portfolio site (GitHub Pages) with a local admin dashboard. No build st
 
 ## Editing content
 
-Everything on the site comes from the `DEFAULT` object in `js/shared-data.js`. To change what's live, edit it and push.
+Everything on the site comes from the `DEFAULT` object in `js/site-data.js`. To change what's live, replace that file (Admin → Settings → Export) and push.
 
 Project fields:
 
@@ -61,7 +62,7 @@ Hero text, rotating role lines, stats and the code snippets typed out in the her
 
 1. Serve the folder locally (`python -m http.server 8765`) and open `http://localhost:8765/admin.html` and `http://localhost:8765/` side by side.
 2. Edits in the admin show up **live** in the open portfolio tab (BroadcastChannel). Nothing is stored: refreshing either tab goes back to `DEFAULT`.
-3. When you're happy, **Settings → Publish (download shared-data.js)**. Replace `js/shared-data.js` with the downloaded file and push. That's it.
+3. When you're happy, **Settings → Export site-data.js**. Replace `js/site-data.js` with the downloaded file and push. Export works even if you open `admin.html` straight from disk.
 
 Everything visible on the site is editable from the admin: **Homepage** (hero text, rotating lines, stats, code card snippets, every section's label/heading/description, footer note), **Projects** (including each system's tagline, highlights, live demo and "New" flag), About, Skills, Experience, Contact, Interactive toggles and the 404 page.
 
@@ -69,7 +70,7 @@ For images, copy the file into `images/` and use **+ Add by path** in the editor
 
 ### Admin password
 
-Only a SHA-256 **hash** is stored (`passHash` in `shared-data.js`), because that file is public. To change it: **Settings → Change Password** generates a `passHash: '…'` line; paste it over the old one and push. The old plain-text password was public in this repo's history, so pick a new one you don't use anywhere else.
+Only a SHA-256 **hash** is stored (`passHash` in `site-data.js`), because that file is public. To change it: **Settings → Change Password** generates a `passHash: '…'` line; paste it over the old one and push. The old plain-text password was public in this repo's history, so pick a new one you don't use anywhere else.
 
 Admin is still a convenience page, not real security: anything on a static site is readable. It's excluded from search engines via `robots.txt` and a `noindex` tag.
 
@@ -112,6 +113,10 @@ Lockdown is enforced in **JavaScript**, not CSS: the wall is injected as a DOM e
 ## 404 Page
 
 GitHub Pages serves `404.html` for any URL that doesn't exist, at any depth. All of its asset paths are absolute (`/css/...`) so it renders correctly on nested URLs too.
+
+## Updating code (not just content)
+
+Every CSS/JS link in `index.html`, `admin.html` and `404.html` ends in `?v=…`. When you change any CSS or JS file, change that value (e.g. `?v=20261021c` → `?v=20261102`) in all three pages. Otherwise visitors' browsers can keep old cached files for a few minutes and mix them with the new page, which breaks the layout. Replacing only `site-data.js` doesn't need this.
 
 ## Deploying
 

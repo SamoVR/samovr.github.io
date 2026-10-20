@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════
    PORTFOLIO LOGIC - index.html
-   Renders every section from DEFAULT (shared-data.js), and owns the
+   Renders every section from DEFAULT (site-data.js), and owns the
    project detail view, lightbox, command menu and navigation.
    Motion (smooth scroll, reveals, hero intro) lives in fx.js.
    ════════════════════════════════════════════════ */
@@ -333,9 +333,9 @@ function renderProjects() {
   // featured project always leads the grid, whatever its position in the data
   const order = state.projects.map((p, i) => i).sort((a, b) => (state.projects[b].featured ? 1 : 0) - (state.projects[a].featured ? 1 : 0));
   grid.innerHTML = order.map(i => projectCardHTML(state.projects[i], i)).join('');
-  // 4 regular cards read better as a 2×2 than as 3 + 1
+  // 4 regular cards sit in one compact row of four instead of 3 + 1
   const regular = state.projects.filter(p => !p.featured).length;
-  grid.classList.toggle('cols-2', regular === 4 || regular === 2);
+  grid.classList.toggle('cols-4', regular === 4);
   // event delegation keeps this immune to any special characters in content
   $$('.project-card', grid).forEach(card => {
     const open = () => openProject(parseInt(card.dataset.pidx, 10));
