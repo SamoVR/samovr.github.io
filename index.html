@@ -3,208 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Samo_VR - Software Developer</title>
+<title>Samo_VR · Systems &amp; Graphics Programmer</title>
 
 <!-- ── Discoverability basics ── -->
-<meta name="description" content="Samo_VR - Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development. Browse projects, skills, and experience.">
+<meta name="description" content="Samo_VR builds server-authoritative game systems in Lua for Roblox and real-time graphics in C++ / OpenGL. Browse projects, systems breakdowns, videos and experience.">
 <meta name="author" content="Samo_VR">
 <link rel="canonical" href="https://samovr.github.io/">
-<meta name="theme-color" content="#726bff">
+<meta name="theme-color" content="#08080b">
+<meta name="color-scheme" content="dark">
 
 <!-- Open Graph (Facebook, Discord, LinkedIn, etc.) -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Samo_VR - Software Developer">
-<meta property="og:description" content="Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development.">
+<meta property="og:title" content="Samo_VR · Systems & Graphics Programmer">
+<meta property="og:description" content="Game systems in Lua for Roblox, real-time graphics in C++ / OpenGL. Projects, system breakdowns and videos.">
 <meta property="og:url" content="https://samovr.github.io/">
 <meta property="og:site_name" content="Samo_VR">
+<meta property="og:image" content="https://samovr.github.io/images/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Samo_VR, Systems & Graphics Programmer">
 
 <!-- Twitter Card -->
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samo_VR - Software Developer">
-<meta name="twitter:description" content="Software developer specializing in C++ / OpenGL graphics programming and Lua / Roblox Studio game development.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Samo_VR · Systems & Graphics Programmer">
+<meta name="twitter:description" content="Game systems in Lua for Roblox, real-time graphics in C++ / OpenGL.">
+<meta name="twitter:image" content="https://samovr.github.io/images/og-card.png">
 
-<!-- Favicon - inline SVG, no external image asset needed -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0a0a'/%3E%3Ctext x='50' y='68' font-family='monospace' font-size='52' font-weight='700' fill='%237f77dd' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Samo_VR",
+  "url": "https://samovr.github.io/",
+  "jobTitle": "Systems & Graphics Programmer",
+  "sameAs": ["https://github.com/SamoVR"],
+  "knowsAbout": ["Lua", "Roblox Studio", "C++", "OpenGL", "GLSL", "Game systems architecture"]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/portfolio.css">
+<link rel="stylesheet" href="css/medical-demo.css">
+<link rel="stylesheet" href="css/samos-demo.css">
+<script>document.documentElement.classList.add('js', 'js-reveal', 'js-hero');</script>
 </head>
 <body>
-<div class="toast" id="toast"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
 
-<nav>
-  <a class="nav-logo" href="#hero">Samo<span>_VR</span></a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+<!-- ════════ NAV ════════ -->
+<header class="nav" id="nav">
+  <a class="nav-logo" href="#top" aria-label="Samo_VR, back to top">
+    <span class="nav-logo-mark" aria-hidden="true">S</span>
+    <span class="nav-logo-text">Samo<span>_VR</span></span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#about">About</a>
+    <a href="#projects">Work</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+    <span class="nav-indicator" aria-hidden="true"></span>
+  </nav>
+  <div class="nav-actions">
+    <button class="cmdk-trigger" id="cmdk-trigger" type="button" aria-label="Open command menu">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="cmdk-trigger-text">Search</span>
+      <kbd id="cmdk-kbd">Ctrl K</kbd>
+    </button>
+    <a class="btn btn-primary btn-sm nav-cta" href="#contact">Let's talk</a>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
 
-<div class="mobile-nav-panel" id="mobile-nav-panel">
-  <ul class="mobile-nav-links">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <nav aria-label="Mobile">
+    <a href="#top"><span>00</span>Home</a>
+    <a href="#about"><span>01</span>About</a>
+    <a href="#projects"><span>02</span>Work</a>
+    <a href="#experience"><span>03</span>Experience</a>
+    <a href="#skills"><span>04</span>Skills</a>
+    <a href="#terminal-section" id="mobile-terminal-link"><span>05</span>Terminal</a>
+    <a href="#contact"><span>06</span>Contact</a>
+  </nav>
+  <div class="mobile-menu-foot" id="mobile-menu-foot"></div>
 </div>
 
-<section id="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="container">
-    <div class="hero-inner">
-      <p class="hero-eyebrow">Software Developer</p>
-      <h1 class="hero-name">Samo<span>_VR</span></h1>
-      <p class="hero-bio" id="hero-bio">Specializing in <strong>C++ systems programming</strong> and <strong>Lua scripting for Roblox</strong>. I build everything from low-level OpenGL projects to game mechanics - with 4+ years shipping real projects.</p>
-      <div class="hero-cta-row">
-        <a class="btn btn-primary" href="#projects">View Projects</a>
-        <a class="btn btn-outline" href="#contact">Get in Touch</a>
+<main id="main">
+
+<!-- ════════ HERO ════════ -->
+<section id="top" class="hero">
+  <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-status" id="hero-status" hidden>
+        <span class="pulse-dot" aria-hidden="true"></span><span id="hero-status-text"></span>
       </div>
-      <div class="hero-stats">
-        <div><div class="stat-num">4<span>+</span></div><div class="stat-label">Years Experience</div></div>
-        <div><div class="stat-num">2</div><div class="stat-label">Core Languages</div></div>
-        <div><div class="stat-num">7<span>M+</span></div><div class="stat-label">Experience Visits</div></div>
-        <div><div class="stat-num">∞</div><div class="stat-label">Lines of Code</div></div>
+      <p class="hero-eyebrow" id="hero-eyebrow" data-hero>Systems &amp; Graphics Programmer</p>
+      <h1 class="hero-name" data-hero><span class="hero-name-main" data-scramble="Samo">Samo</span><span class="hero-name-accent" data-scramble="_VR">_VR</span></h1>
+      <p class="hero-role" data-hero>I <span class="hero-role-text" id="role-rotator">build game systems in Lua.</span><span class="hero-caret" aria-hidden="true"></span></p>
+      <p class="hero-bio" id="hero-bio" data-hero></p>
+      <div class="hero-cta" data-hero>
+        <a class="btn btn-primary btn-lg magnetic" href="#projects">
+          View my work
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10m0 0L9 4m4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-outline btn-lg magnetic" href="#contact">Get in touch</a>
       </div>
+      <dl class="hero-stats" id="hero-stats" data-hero></dl>
+    </div>
+
+    <div class="hero-visual" data-hero aria-hidden="true">
+      <div class="code-card" id="code-card">
+        <div class="code-head">
+          <span class="code-dots"><i></i><i></i><i></i></span>
+          <div class="code-tabs" id="code-tabs"></div>
+        </div>
+        <pre class="code-body"><code id="code-body"></code></pre>
+        <div class="code-foot">
+          <span id="code-lang">Lua</span>
+          <span id="code-pos">Ln 1, Col 1</span>
+          <span class="code-foot-ok">● Ready</span>
+        </div>
+      </div>
+      <div class="float-chip chip-a"><span class="chip-dot red"></span>Session active</div>
+      <div class="float-chip chip-b"><span class="chip-mono">{ }</span>Modular by design</div>
     </div>
   </div>
+  <a class="scroll-cue" href="#about" aria-label="Scroll to About">
+    <span class="scroll-cue-mouse"><span></span></span>
+    <span class="scroll-cue-text">Scroll</span>
+  </a>
 </section>
 
-<section id="about">
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track"></div>
+</div>
+
+<!-- ════════ ABOUT ════════ -->
+<section id="about" class="section">
   <div class="container">
-    <p class="section-tag">About Me</p>
-    <h2 class="section-title">Who I am</h2>
-    <div class="about-grid" id="about-grid"></div>
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="section-tag"><span class="section-idx">01</span>About</p>
+        <h2 class="section-title">Who I am</h2>
+      </div>
+      <p class="section-lede">Programmer working where gameplay meets engineering: systems that are secure, modular and pleasant to maintain.</p>
+    </header>
+    <div class="bento" id="about-grid"></div>
   </div>
 </section>
 
-<section id="skills">
+<!-- ════════ PROJECTS ════════ -->
+<section id="projects" class="section">
   <div class="container">
-    <p class="section-tag">Tech Stack</p>
-    <h2 class="section-title">Languages & Tools</h2>
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="section-tag"><span class="section-idx">02</span>Selected work</p>
+        <h2 class="section-title">Things I've built</h2>
+      </div>
+      <p class="section-lede">Game systems, tools and a render engine. Open any project for the full breakdown, screenshots and videos.</p>
+    </header>
+    <div class="filter-bar" id="project-filter-bar" role="group" aria-label="Filter projects"></div>
+    <div class="projects-grid" id="projects-container"></div>
+    <p class="project-filter-empty" id="project-filter-empty" hidden>No projects match this filter.</p>
+  </div>
+</section>
+
+<!-- ════════ EXPERIENCE ════════ -->
+<section id="experience" class="section">
+  <div class="container">
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="section-tag"><span class="section-idx">03</span>Experience</p>
+        <h2 class="section-title">Where I've worked</h2>
+      </div>
+      <p class="section-lede">Teams and projects I've written systems for, newest first.</p>
+    </header>
+    <div class="timeline" id="experience-container"></div>
+  </div>
+</section>
+
+<!-- ════════ SKILLS ════════ -->
+<section id="skills" class="section">
+  <div class="container">
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="section-tag"><span class="section-idx">04</span>Toolbox</p>
+        <h2 class="section-title">Languages &amp; tools</h2>
+      </div>
+      <p class="section-lede">What I reach for, and how comfortable I am with it.</p>
+    </header>
     <div class="skills-grid" id="skills-container"></div>
   </div>
 </section>
 
-<section id="experience">
+<!-- ════════ TERMINAL (toggleable from admin) ════════ -->
+<section id="terminal-section" class="section" hidden>
   <div class="container">
-    <p class="section-tag">Experience</p>
-    <h2 class="section-title">Work History</h2>
-    <div id="experience-container"></div>
-  </div>
-</section>
-
-<section id="projects">
-  <div class="container">
-    <p class="section-tag">Projects</p>
-    <h2 class="section-title">What I've Built</h2>
-    <div class="project-filter-bar" id="project-filter-bar"></div>
-    <div class="projects-grid" id="projects-container"></div>
-    <p class="project-filter-empty" id="project-filter-empty" style="display:none">No projects match this filter.</p>
-  </div>
-</section>
-
-<!-- Toggleable interactive element: live-typing terminal. Hidden unless
-     enabled from the admin dashboard (Settings → Interactive Elements). -->
-<section id="terminal-section">
-  <div class="container">
-    <p class="section-tag">A Little Easter Egg</p>
-    <h2 class="section-title">Poking Around</h2>
-    <div class="term-window">
+    <header class="section-head" data-reveal>
+      <div>
+        <p class="section-tag"><span class="section-idx">05</span>A little easter egg</p>
+        <h2 class="section-title">Poking around</h2>
+      </div>
+      <p class="section-lede">A real (tiny) shell. Click it and type <code>help</code>.</p>
+    </header>
+    <div class="term-window" id="term-window" data-reveal>
       <div class="term-titlebar">
         <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
         <span class="term-titlebar-label" id="term-title-label">guest@samo_vr: ~</span>
+        <span class="term-titlebar-hint">zsh · 80×24</span>
       </div>
-      <div class="term-body" id="term-body"></div>
+      <div class="term-body" id="term-body" data-lenis-prevent></div>
     </div>
   </div>
 </section>
 
-<section id="contact">
+<!-- ════════ CONTACT ════════ -->
+<section id="contact" class="section contact">
+  <div class="contact-glow" aria-hidden="true"></div>
   <div class="container">
-    <div class="contact-inner">
-      <p class="section-tag" style="justify-content:center">Contact</p>
-      <h2 class="section-title" style="margin-bottom:0">Let's Connect</h2>
-      <p class="contact-tagline">Open to collaborations, freelance work, or just talking about code. Click any link to copy it to clipboard.</p>
-      <div class="contact-links-row" id="contact-links"></div>
+    <div class="contact-inner" data-reveal>
+      <p class="section-tag"><span class="section-idx">06</span>Contact</p>
+      <h2 class="contact-title">Let's build something<span>.</span></h2>
+      <p class="contact-tagline" id="contact-tagline">Open to collaborations, freelance work, or just talking about code.</p>
+      <div class="contact-links" id="contact-links"></div>
     </div>
   </div>
 </section>
 
-<footer><span>Samo_VR</span> - Built with code & caffeine · 2026</footer>
+</main>
 
-<!-- ════════ PROJECT DETAIL MODAL - near-fullscreen, two-pane ════════ -->
-<div class="pd-overlay" id="pd-overlay">
-  <div class="pd-modal" id="pd-modal">
-
-    <!-- LEFT: info column -->
-    <div class="pd-info">
-      <div class="pd-hero" id="pd-hero-section">
-        <div class="pd-hero-glow"></div>
-        <button class="pd-close" id="pd-close-btn" aria-label="Close">✕</button>
-        <div class="pd-icon" id="pd-icon"></div>
-        <div class="pd-title" id="pd-title"></div>
-        <div class="pd-subtitle" id="pd-subtitle"></div>
-      </div>
-      <div class="pd-body">
-        <!-- mobile-only screenshots (rail is hidden under 880px, this shows instead) -->
-        <div id="pd-images-mobile"></div>
-        <div>
-          <div class="pd-section-label">About This Project</div>
-          <div class="pd-desc" id="pd-desc"></div>
-        </div>
-        <div>
-          <div class="pd-section-label">Stack</div>
-          <div class="pd-tags" id="pd-tags"></div>
-        </div>
-        <div id="pd-links-section" style="display:none">
-          <div class="pd-section-label">Links</div>
-          <div class="pd-links" id="pd-links"></div>
-        </div>
-        <div id="pd-tabs-section" style="display:none"></div>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="nav-logo-mark" aria-hidden="true">S</span>
+      <div>
+        <div class="footer-name">Samo<span>_VR</span></div>
+        <div class="footer-note">Hand-written HTML, CSS &amp; JS, with a GLSL shader in the hero.</div>
       </div>
     </div>
-
-    <!-- RIGHT: screenshots gallery rail -->
-    <div class="pd-gallery" id="pd-gallery">
-      <div class="pd-gallery-empty" id="pd-gallery-empty">
-        <div class="pd-gallery-empty-icon">🖼</div>
-        <div>No screenshots for this project yet.</div>
-      </div>
-      <div class="pd-gallery-head" id="pd-gallery-headwrap">
-        <span class="pd-gallery-label">Screenshots</span>
-        <span class="pd-gallery-count" id="pd-gallery-count"></span>
-      </div>
-      <div class="pd-gallery-main" id="pd-gallery-mainwrap">
-        <button class="pd-gallery-nav prev" id="pd-gallery-prev" aria-label="Previous screenshot">‹</button>
-        <img id="pd-gallery-img" src="" alt="Project screenshot">
-        <button class="pd-gallery-nav next" id="pd-gallery-next" aria-label="Next screenshot">›</button>
-      </div>
-      <div class="pd-gallery-thumbs" id="pd-gallery-thumbs"></div>
+    <div class="footer-meta">
+      <span>© <span id="footer-year">2026</span> Samo_VR</span>
+      <span class="footer-sep">·</span>
+      <button type="button" class="footer-link" id="footer-cmdk">Press <kbd>Ctrl K</kbd> to search</button>
     </div>
+  </div>
+</footer>
 
+<button class="to-top" id="to-top" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="to-top-track" cx="18" cy="18" r="16"/><circle class="to-top-ring" id="to-top-ring" cx="18" cy="18" r="16"/></svg>
+  <svg class="to-top-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3m0 0L4 7m4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<!-- ════════ PROJECT DETAIL ════════ -->
+<div class="pm-overlay" id="pm-overlay" hidden>
+  <div class="pm-sheet" id="pm-sheet" role="dialog" aria-modal="true" aria-labelledby="pm-title" tabindex="-1">
+    <header class="pm-bar">
+      <div class="pm-bar-id">
+        <span class="pm-icon" id="pm-icon"></span>
+        <div class="pm-bar-text">
+          <h2 class="pm-title" id="pm-title"></h2>
+          <div class="pm-sub" id="pm-sub"></div>
+        </div>
+      </div>
+      <div class="pm-bar-actions">
+        <button class="icon-btn" id="pm-share" type="button" aria-label="Copy a link to this project" title="Copy link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" id="pm-prev" type="button" aria-label="Previous project" title="Previous project">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn" id="pm-next" type="button" aria-label="Next project" title="Next project">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn pm-close" id="pm-close" type="button" aria-label="Close" title="Close (Esc)">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="pm-scroll" id="pm-scroll" data-lenis-prevent>
+      <div class="pm-media" id="pm-media"></div>
+
+      <div class="pm-content">
+        <div class="pm-main">
+          <section class="pm-block">
+            <h3 class="pm-label">About this project</h3>
+            <div class="pm-desc" id="pm-desc"></div>
+          </section>
+          <section class="pm-block" id="pm-video-sec" hidden>
+            <h3 class="pm-label">Showcase video</h3>
+            <div id="pm-video"></div>
+          </section>
+          <section class="pm-block" id="pm-demo-sec" hidden>
+            <div class="pm-label-row">
+              <h3 class="pm-label">Try it: interactive replica</h3>
+              <span class="pm-label-note">Runs in your browser, built from the system's own rules</span>
+            </div>
+            <div id="pm-demo"></div>
+          </section>
+          <section class="pm-block" id="pm-systems-sec" hidden></section>
+        </div>
+
+        <aside class="pm-side">
+          <dl class="pm-facts" id="pm-facts"></dl>
+          <div class="pm-side-block" id="pm-highlights-wrap" hidden>
+            <h3 class="pm-label">Highlights</h3>
+            <ul class="pm-highlights" id="pm-highlights"></ul>
+          </div>
+          <div class="pm-side-block">
+            <h3 class="pm-label">Stack</h3>
+            <div class="pm-tags" id="pm-tags"></div>
+          </div>
+          <div class="pm-links" id="pm-links"></div>
+        </aside>
+      </div>
+
+      <nav class="pm-footer" id="pm-footer" aria-label="More projects"></nav>
+    </div>
   </div>
 </div>
 
 <!-- ════════ LIGHTBOX (full-res viewer) ════════ -->
-<div class="lb-overlay" id="lb-overlay">
-  <button class="lb-close" id="lb-close-btn" aria-label="Close">✕</button>
-  <button class="lb-nav prev" id="lb-prev-btn" aria-label="Previous">‹</button>
-  <img class="lb-img" id="lb-img" src="" alt="">
-  <button class="lb-nav next" id="lb-next-btn" aria-label="Next">›</button>
+<div class="lb-overlay" id="lb-overlay" hidden>
+  <div class="lb-count" id="lb-count"></div>
+  <button class="lb-close" id="lb-close-btn" type="button" aria-label="Close">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <button class="lb-nav prev" id="lb-prev-btn" type="button" aria-label="Previous">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="lb-stage" id="lb-stage"></div>
+  <button class="lb-nav next" id="lb-next-btn" type="button" aria-label="Next">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
 </div>
 
-<script src="js/shared-data.js"></script>
-<script src="js/tab-format.js"></script>
-<script src="js/portfolio.js"></script>
+<!-- ════════ COMMAND PALETTE ════════ -->
+<div class="cmdk" id="cmdk" hidden>
+  <div class="cmdk-box" role="dialog" aria-modal="true" aria-label="Command menu">
+    <div class="cmdk-input-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="cmdk-input" type="text" placeholder="Search projects, sections, actions…" autocomplete="off" spellcheck="false" aria-controls="cmdk-list" aria-label="Search">
+      <kbd>Esc</kbd>
+    </div>
+    <div class="cmdk-list" id="cmdk-list" role="listbox" data-lenis-prevent></div>
+    <div class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span><span><kbd>↵</kbd> to select</span></div>
+  </div>
+</div>
+
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
+<script src="vendor/lenis.min.js" defer></script>
+<script src="js/shared-data.js" defer></script>
+<script src="js/tab-format.js" defer></script>
+<script src="js/hero-shader.js" defer></script>
+<script src="js/medical-demo.js" defer></script>
+<script src="js/samos-demo.js" defer></script>
+<script src="js/terminal.js" defer></script>
+<script src="js/portfolio.js" defer></script>
+<script src="js/fx.js" defer></script>
 </body>
 </html>

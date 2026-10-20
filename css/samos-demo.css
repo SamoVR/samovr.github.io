@@ -1,0 +1,60 @@
+/* ════════════════════════════════════════════════
+   SAM-OS TERMINAL REPLICA (see js/samos-demo.js)
+   Amber phosphor CRT, matching the in-game THEME table.
+   ════════════════════════════════════════════════ */
+.sm{--ph:#ffb238;--ph-dim:#8a5a1e;--ph-faint:#603e16;--alert:#c4432b;display:grid;gap:.7rem;font-family:var(--mono)}
+.sm-bezel{padding:12px;border-radius:14px;background:#1b1712;border:2px solid #33291c;box-shadow:0 24px 60px -24px rgba(0,0,0,.8)}
+.sm-screen{position:relative;display:flex;flex-direction:column;height:440px;border-radius:6px;overflow:hidden;background:#0c0904;
+  box-shadow:inset 0 0 0 3px #000,inset 0 3px 10px rgba(0,0,0,.65);color:var(--ph);text-shadow:0 0 6px rgba(255,178,56,.35);cursor:text}
+.sm-screen::before{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.32) 0,rgba(0,0,0,.32) 1px,transparent 1px,transparent 4px),
+             linear-gradient(180deg,rgba(0,0,0,.55),transparent 14%,transparent 86%,rgba(0,0,0,.55))}
+.sm-scan{position:absolute;left:0;right:0;height:80px;z-index:2;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,178,56,.05),transparent);animation:smSweep 6s linear infinite}
+@keyframes smSweep{from{top:-80px}to{top:100%}}
+.sm-screen.off .sm-body,.sm-screen.off .sm-input-wrap{opacity:.25}
+.sm-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:10px 14px;border-bottom:1px solid var(--ph-faint)}
+.sm-title{font-weight:800;font-size:15px;letter-spacing:.08em}
+.sm-sub{margin-left:.75rem;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ph-dim)}
+.sm-status{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.14em}
+.sm-dot{width:7px;height:7px;border-radius:50%;background:var(--ph);box-shadow:0 0 8px var(--ph);animation:smPulse 1.6s ease-in-out infinite}
+.sm-status.alert{color:var(--alert);text-shadow:0 0 6px rgba(196,67,43,.5)}
+.sm-status.alert .sm-dot{background:var(--alert);box-shadow:0 0 10px var(--alert)}
+@keyframes smPulse{50%{opacity:.35}}
+.sm-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 190px}
+.sm-log{overflow-y:auto;padding:10px 14px;font-size:12px;line-height:1.65;scrollbar-width:thin;scrollbar-color:var(--ph-faint) transparent}
+.sm-line{white-space:pre-wrap;word-break:break-word}
+.sm-echo{color:#ffd28a}
+.sm-dim{color:var(--ph-dim);text-shadow:none}
+.sm-err{color:#ff6a4d;text-shadow:0 0 6px rgba(255,90,60,.35)}
+.sm-ok{color:#ffe0a3}
+.sm-warn{color:#ff9a3c}
+.sm-progress{white-space:pre;color:var(--ph)}
+.sm-side{padding:10px 12px;border-left:1px solid var(--ph-faint);font-size:10.5px;overflow:hidden}
+.sm-side-label{color:var(--ph-dim);letter-spacing:.12em;margin:4px 0 6px;text-shadow:none}
+.sm-side-label+div{margin-bottom:10px}
+.sm-doors{display:grid;gap:4px}
+.sm-door{position:relative;display:grid;grid-template-columns:1fr auto;gap:0 6px;padding:4px 6px;border:1px solid var(--ph-faint);overflow:hidden}
+.sm-door-type{grid-column:1;color:var(--ph-dim);font-size:9.5px;text-shadow:none}
+.sm-door-state{grid-row:1 / span 2;grid-column:2;align-self:center;font-size:9.5px;letter-spacing:.08em}
+.sm-door i{position:absolute;left:0;bottom:0;height:2px;width:100%;transform-origin:left;background:var(--ph);transition:transform .08s linear}
+.sm-door-s .sm-door-state{color:#ff9a3c}.sm-door-m .sm-door-state{color:#ffe0a3;animation:smPulse .8s infinite}
+.sm-door-b{opacity:.5}.sm-door-b .sm-door-state{color:#ff6a4d}
+.sm-op{color:var(--ph-dim);text-shadow:none}
+.sm-input-wrap{position:relative;border-top:1px solid var(--ph-faint)}
+.sm-input-row{display:flex;align-items:center;gap:8px;padding:9px 14px}
+.sm-prompt{font-weight:700}
+.sm-input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--ph);font:inherit;font-size:12.5px;caret-color:var(--ph);text-shadow:inherit}
+.sm-input:focus-visible{outline:none}
+.sm-ac{position:absolute;left:28px;bottom:100%;z-index:4;min-width:160px;background:#140f07;border:1px solid var(--ph-dim);font-size:11.5px}
+.sm-ac div{padding:3px 10px;color:var(--ph-dim)}
+.sm-ac div.on{background:rgba(255,178,56,.14);color:var(--ph)}
+.sm-try{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;font-size:11px;color:var(--muted)}
+.sm-try button{font-family:var(--mono);font-size:11px;padding:6px 9px;border-radius:7px;cursor:pointer;color:#ffd28a;background:rgba(255,178,56,.07);border:1px solid rgba(255,178,56,.28);transition:background .2s,border-color .2s}
+.sm-try button:hover{background:rgba(255,178,56,.16);border-color:rgba(255,178,56,.55)}
+@media (max-width:640px){
+  .sm-bezel{padding:6px}
+  .sm-screen{height:460px}
+  .sm-body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .sm-side{border-left:0;border-top:1px solid var(--ph-faint);display:grid;grid-template-columns:1fr;max-height:150px;overflow-y:auto}
+  .sm-sub{display:none}
+}

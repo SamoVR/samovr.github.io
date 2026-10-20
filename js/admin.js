@@ -11,7 +11,7 @@ function loadD(k) {
 }
 
 const state = {
-  pass: STORE.get('pass') || DEFAULT.pass,
+  passHash: DEFAULT.passHash,
   projects: loadD('projects'),
   about: loadD('about'),
   skills: loadD('skills'),
@@ -20,12 +20,11 @@ const state = {
   settings: loadD('settings')
 };
 
-// Writes the in-memory state out to localStorage so other open tabs (i.e.
-// index.html on localhost) pick it up live via the 'storage' event. This
-// is what makes the admin → portfolio live preview work. Refreshing any
-// tab wipes it all again - see the STORE comment in shared-data.js.
+// Broadcasts the in-memory state so an open portfolio tab from the same
+// origin (e.g. both on localhost) re-renders live - see PREVIEW in
+// shared-data.js. Nothing is stored: refreshing any tab goes back to DEFAULT.
 function persist(k) {
-  if (k === 'pass') return STORE.set('pass', state.pass);
+  PREVIEW.send(k, state[k]);
   return STORE.set(k, state[k]);
 }
 
@@ -69,8 +68,14 @@ document.querySelectorAll('.moverlay').forEach(el => el.addEventListener('click'
 }));
 
 // ═══════════════ AUTH ═══════════════
-function doLogin() {
-  if (document.getElementById('lpass').value === state.pass) {
+// Only a SHA-256 hash of the password lives in shared-data.js (it's public),
+// so the typed password is hashed and compared. crypto.subtle needs a secure
+// context: https, localhost or a file:// page all qualify.
+async function doLogin() {
+  let hash = '';
+  try { hash = await sha256Hex(document.getElementById('lpass').value); }
+  catch { const e = document.getElementById('lerr'); e.textContent = 'Open admin over https, localhost or as a local file to sign in.'; e.style.display = 'block'; return; }
+  if (hash === state.passHash) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     initApp();
@@ -328,6 +333,13 @@ function handleImgUpload(e) {
   e.target.value = '';
 }
 
+// project media can be images or .mp4 clips (see shared-data.js)
+function adminThumb(src) {
+  return isVideoSrc(src)
+    ? `<video src="${esc(src)}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>`
+    : `<img src="${esc(src)}" alt="">`;
+}
+
 function renderImgGrid() {
   const grid = document.getElementById('pm-img-grid');
   const hint = document.getElementById('pm-drag-hint');
@@ -335,7 +347,7 @@ function renderImgGrid() {
   hint.style.display = pmImages.length > 1 ? 'block' : 'none';
   grid.innerHTML = pmImages.map((src, i) => `
     <div class="img-thumb" draggable="true" data-i="${i}">
-      <img src="${src}" alt="">
+      ${adminThumb(src)}
       <div class="img-thumb-overlay">
         <button type="button" class="img-thumb-btn del" data-removeidx="${i}">✕ Remove</button>
       </div>
@@ -410,6 +422,11 @@ function openProjModal(i) {
     document.getElementById('pm-tags').value = '';
     document.getElementById('pm-status').value = 'complete';
     document.getElementById('pm-link').value = '';
+    document.getElementById('pm-role').value = '';
+    document.getElementById('pm-year').value = '';
+    document.getElementById('pm-video').value = '';
+    document.getElementById('pm-highlights').value = '';
+    document.getElementById('pm-featured').checked = false;
     document.querySelectorAll('#pm .color-swatch').forEach((s, idx) => s.classList.toggle('selected', idx === 0));
     updateColorCurrentChip(document.querySelector('#pm .color-row'), '#7f77dd');
     setIconMode('emoji');
@@ -426,6 +443,11 @@ function openProjModal(i) {
     document.getElementById('pm-tags').value = p.tags || '';
     document.getElementById('pm-status').value = p.status || 'complete';
     document.getElementById('pm-link').value = p.link || '';
+    document.getElementById('pm-role').value = p.role || '';
+    document.getElementById('pm-year').value = p.year || '';
+    document.getElementById('pm-video').value = p.videoUrl || '';
+    document.getElementById('pm-highlights').value = (p.highlights || []).join('\n');
+    document.getElementById('pm-featured').checked = !!p.featured;
     pmImages = [...(p.images || [])];
     document.querySelectorAll('#pm .color-swatch').forEach(s => s.classList.toggle('selected', s.dataset.c === ac));
     updateColorCurrentChip(document.querySelector('#pm .color-row'), ac);
@@ -449,7 +471,11 @@ function saveProject() {
     pmIconType = 'emoji';
   }
 
+  const val = id => document.getElementById(id).value.trim();
   const proj = {
+    // start from the existing project so fields the form doesn't edit
+    // (slug, demo, ...) survive a save
+    ...(idx === -1 ? {} : state.projects[idx]),
     name: document.getElementById('pm-name').value || 'Untitled',
     icon: document.getElementById('pm-icon').value || '💻',
     iconType: pmIconType,
@@ -462,13 +488,22 @@ function saveProject() {
     status: document.getElementById('pm-status').value,
     link: document.getElementById('pm-link').value || '',
     images: [...pmImages],
-    tabs: collectTabs()
+    tabs: collectTabs(),
+    role: val('pm-role'),
+    year: val('pm-year'),
+    videoUrl: val('pm-video'),
+    highlights: val('pm-highlights').split('\n').map(l => l.trim()).filter(Boolean),
+    featured: document.getElementById('pm-featured').checked
   };
+  ['role', 'year', 'videoUrl'].forEach(k => { if (!proj[k]) delete proj[k]; });
+  if (!proj.highlights.length) delete proj.highlights;
+  if (!proj.featured) delete proj.featured;
+  // only one featured card: featuring this project un-features the others
+  if (proj.featured) state.projects.forEach(p => { delete p.featured; });
   if (idx === -1) state.projects.push(proj); else state.projects[idx] = proj;
-  const ok = persist('projects');
+  persist('projects');
   renderProjList(); closeM('pm');
-  if (ok === false) showToast('⚠ Save may have failed - storage full (try fewer/smaller images)');
-  else showToast('✓ Project saved');
+  showToast('✓ Project saved');
 }
 
 // ═══════════════ ABOUT ═══════════════
@@ -718,6 +753,7 @@ function buildTabRow(tab, i) {
   const card = document.createElement('div');
   card.className = 'tab-editor-card';
   card.dataset.tabidx = i;
+  card._orig = tab || {}; // keeps fields this editor doesn't show (slug, tagline, highlights, demo, latest)
 
   const topRow = document.createElement('div');
   topRow.style.cssText = 'display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem';
@@ -820,7 +856,7 @@ function renderTabImgGrid(grid, tabIdx) {
   const imgs = tabImgData[tabIdx] || [];
   grid.innerHTML = imgs.map((src, j) => `
     <div class="img-thumb" style="aspect-ratio:16/9" data-rmtab="${tabIdx}" data-rmimg="${j}">
-      <img src="${src}" alt="">
+      ${adminThumb(src)}
       <div class="img-thumb-overlay">
         <button type="button" class="img-thumb-btn del" data-rmtab="${tabIdx}" data-rmimg="${j}">✕</button>
       </div>
@@ -858,6 +894,7 @@ function collectTabs() {
   const wrap = document.getElementById('pm-tabs-wrap');
   if (!wrap) return [];
   return Array.from(wrap.querySelectorAll('.tab-editor-card')).map((card, i) => ({
+    ...(card._orig || {}),
     title: (card.querySelector('.tab-title-input')?.value || '').trim(),
     desc: readTabDesc(card.querySelector('.tab-desc-input')),
     videoUrl: (card.querySelector('.tab-video-input')?.value || '').trim(),
@@ -990,18 +1027,20 @@ document.getElementById('term-add-line-btn').addEventListener('click', () => add
 document.getElementById('term-save-btn').addEventListener('click', saveInteractiveElements);
 document.getElementById('term-save-btn-bottom').addEventListener('click', saveInteractiveElements);
 // ═══════════════ SETTINGS: password / export / reset ═══════════════
-function changePass() {
+async function changePass() {
   const cur = document.getElementById('pcur').value, nw = document.getElementById('pnew').value, cf = document.getElementById('pcon').value;
-  const err = document.getElementById('perr'), ok = document.getElementById('pok');
-  err.style.display = 'none'; ok.style.display = 'none';
-  if (cur !== state.pass) { err.textContent = 'Current password incorrect.'; err.style.display = 'block'; return; }
-  if (nw.length < 6) { err.textContent = 'Min 6 characters.'; err.style.display = 'block'; return; }
+  const err = document.getElementById('perr'), ok = document.getElementById('pok'), out = document.getElementById('phash');
+  err.style.display = 'none'; ok.style.display = 'none'; out.style.display = 'none';
+  if (await sha256Hex(cur) !== state.passHash) { err.textContent = 'Current password incorrect.'; err.style.display = 'block'; return; }
+  if (nw.length < 8) { err.textContent = 'Min 8 characters.'; err.style.display = 'block'; return; }
   if (nw !== cf) { err.textContent = 'Passwords do not match.'; err.style.display = 'block'; return; }
-  state.pass = nw; persist('pass');
+  state.passHash = await sha256Hex(nw);
+  document.getElementById('phash-code').textContent = `passHash: '${state.passHash}'`;
   ok.style.display = 'block';
+  out.style.display = 'flex';
   ['pcur', 'pnew', 'pcon'].forEach(id => document.getElementById(id).value = '');
-  setTimeout(() => ok.style.display = 'none', 2500);
 }
+document.getElementById('phash-copy').addEventListener('click', () => copyText(document.getElementById('phash-code').textContent, 'Hash line'));
 document.getElementById('changepass-btn').addEventListener('click', changePass);
 
 // ═══════════════ SETTINGS: 404 page ═══════════════

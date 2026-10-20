@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin - Samo_VR Portfolio</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/admin.css">
@@ -160,8 +162,8 @@
         <div class="elcard">
           <div class="elcard-head">
             <div>
-              <div class="elcard-name"><span>✨</span> Cursor Constellation</div>
-              <div class="elcard-desc">Animated constellation of floating dots that connect to each other and react to the visitor's cursor with trails and a glow. Rendered on a canvas behind the whole page.</div>
+              <div class="elcard-name"><span>✨</span> Cursor Glow</div>
+              <div class="elcard-desc">A soft accent-coloured light that follows the visitor's cursor behind the page content (desktop only). The hero shader reacts to the cursor either way.</div>
             </div>
             <label class="toggle-switch" title="Enable cursor effect">
               <input type="checkbox" id="cursor-toggle-input">
@@ -174,7 +176,7 @@
           <div class="elcard-head">
             <div>
               <div class="elcard-name"><span>🔽</span> Scroll-Reveal Animations</div>
-              <div class="elcard-desc">Cards, skill bars, timeline entries, and section headings fade and slide up as you scroll. Skill bars also animate from 0% to their real level on scroll-in.</div>
+              <div class="elcard-desc">Cards, skill meters, timeline entries, and section headings fade and slide up as you scroll. Skill meters fill segment by segment on scroll-in.</div>
             </div>
             <label class="toggle-switch" title="Enable scroll-reveal">
               <input type="checkbox" id="scroll-reveal-toggle">
@@ -187,7 +189,7 @@
           <div class="elcard-head">
             <div>
               <div class="elcard-name"><span>⚡</span> Hero Reveal Animation</div>
-              <div class="elcard-desc">A short cinematic intro plays once per visit (your name appears centred, holds, fades out) - then your name, bio, buttons, and stats all slide up into place together as one animation. Turning this off shows the hero instantly with no intro and no slide-in.</div>
+              <div class="elcard-desc">A short boot-style intro plays once per visit (skippable with any key or click), then your name decodes, and the bio, buttons, stats and code card slide up into place while the stats count up. Turning this off shows the hero instantly with no intro and no slide-in.</div>
             </div>
             <label class="toggle-switch" title="Enable hero reveal animation">
               <input type="checkbox" id="hero-reveal-toggle">
@@ -199,8 +201,8 @@
         <div class="elcard">
           <div class="elcard-head">
             <div>
-              <div class="elcard-name"><span>🖼</span> Card Image Preview on Hover</div>
-              <div class="elcard-desc">When hovering a project card, the first screenshot fades in as a subtle background wash - makes the grid feel alive before clicking anything.</div>
+              <div class="elcard-name"><span>🖼</span> Project Card Covers</div>
+              <div class="elcard-desc">Shows each project's first screenshot as the cover image on its card, with a zoom and accent-tinted spotlight on hover. Turn off for compact, text-only cards.</div>
             </div>
             <label class="toggle-switch" title="Enable card image preview">
               <input type="checkbox" id="card-preview-toggle">
@@ -226,7 +228,7 @@
           <div class="elcard-head">
             <div>
               <div class="elcard-name"><span>🎮</span> Secret Button</div>
-              <div class="elcard-desc">A tiny invisible button hidden in the corner of the page. Hover over the bottom-right corner to reveal it. Clicking it triggers a full-page glitch effect.</div>
+              <div class="elcard-desc">A tiny invisible button hidden in the bottom-left corner of the page (hover to reveal it), plus the Konami code (↑ ↑ ↓ ↓ ← → ← → B A). Either one triggers a full-page glitch effect.</div>
             </div>
             <label class="toggle-switch" title="Enable secret button">
               <input type="checkbox" id="konami-toggle">
@@ -283,7 +285,7 @@
           <div class="elcard-head">
             <div>
               <div class="elcard-name"><span>⌨</span> Live Terminal</div>
-              <div class="elcard-desc">A typing-animation terminal window that appears as a section on your portfolio. Loops through configurable command/output lines.</div>
+              <div class="elcard-desc">A terminal section on your portfolio. It types out the command/output lines below once, then becomes a working shell visitors can type into (help, projects, open 1, neofetch, …).</div>
             </div>
             <label class="toggle-switch" title="Enable terminal section">
               <input type="checkbox" id="term-toggle-input">
@@ -329,6 +331,7 @@
 
         <div class="panel">
           <div class="panel-title">Change Password</div>
+          <div class="page-sub" style="margin-bottom:1rem">Only a SHA-256 hash of the password is stored, in <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">js/shared-data.js</code>. Generating a new one gives you a line to paste over <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:var(--mono)">passHash</code> there; push it to make it permanent.</div>
           <div class="grid2" style="gap:1rem">
             <div class="fgroup" style="margin:0">
               <label>Current Password</label>
@@ -345,8 +348,9 @@
             </div>
           </div>
           <div class="err" id="perr"></div>
-          <div class="ok" id="pok">✓ Password updated.</div>
-          <button class="btn btn-accent btn-sm" id="changepass-btn" style="margin-top:1rem">Update Password</button>
+          <div class="ok" id="pok">✓ Password updated for this session. Paste this line into js/shared-data.js to keep it:</div>
+          <div class="hash-out" id="phash" style="display:none"><code id="phash-code"></code><button type="button" class="btn btn-ghost btn-sm" id="phash-copy">Copy</button></div>
+          <button class="btn btn-accent btn-sm" id="changepass-btn" style="margin-top:1rem">Generate New Password Hash</button>
         </div>
 
         <div class="panel">
@@ -372,7 +376,7 @@
           </div>
           <div class="fgroup" style="margin-bottom:.5rem">
             <label>Button Link</label>
-            <input type="text" id="nf-btnlink" placeholder="index.html">
+            <input type="text" id="nf-btnlink" placeholder="/">
           </div>
           <button class="btn btn-accent btn-sm" id="nf-save-btn">Save 404 Page</button>
         </div>
@@ -382,7 +386,7 @@
           <div class="setting-row">
             <div class="setting-info">
               <div class="setting-name">Export Data</div>
-              <div class="setting-desc">Download all portfolio content as a JSON file for backup.</div>
+              <div class="setting-desc">Download all portfolio content as JSON. Paste the values into the DEFAULT object in js/shared-data.js to publish them.</div>
             </div>
             <button class="btn btn-ghost btn-sm" id="export-btn">Export JSON</button>
           </div>
@@ -498,6 +502,30 @@
       <div class="fgroup">
         <label>Project Link <span style="color:var(--muted);font-size:10px">(optional)</span></label>
         <input type="text" id="pm-link" placeholder="https://...">
+      </div>
+
+      <div class="grid2">
+        <div class="fgroup">
+          <label>Your Role <span style="color:var(--muted);font-size:10px">(optional)</span></label>
+          <input type="text" id="pm-role" placeholder="e.g. Systems Programmer">
+        </div>
+        <div class="fgroup">
+          <label>Timeline <span style="color:var(--muted);font-size:10px">(optional)</span></label>
+          <input type="text" id="pm-year" placeholder="e.g. 2025 – Now">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label>Showcase Video <span style="color:var(--muted);font-size:10px">(optional YouTube link)</span></label>
+        <input type="text" id="pm-video" placeholder="https://www.youtube.com/watch?v=...">
+        <div class="fhint">Embedded in the project detail (click to play). Adds a "Video" badge to the card.</div>
+      </div>
+      <div class="fgroup">
+        <label>Highlights <span style="color:var(--muted);font-size:10px">(optional, one per line)</span></label>
+        <textarea class="fta" id="pm-highlights" placeholder="Server-authoritative: every remote call validated"></textarea>
+        <div class="fhint">Short bullet points shown in the project detail sidebar and on the featured card.</div>
+      </div>
+      <div class="fgroup">
+        <label class="check-label"><input type="checkbox" id="pm-featured"> Featured project <span style="color:var(--muted);font-size:10px">(shown as the large card at the top of the grid)</span></label>
       </div>
 
       <!-- SCREENSHOTS -->

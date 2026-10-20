@@ -5,49 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>404 - Samo_VR</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shared.css">
+<meta name="theme-color" content="#08080b">
+<!-- GitHub Pages serves this page for any missing URL, at any depth, so
+     every asset path here is absolute (from the site root). -->
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shared.css">
 <style>
-  body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)radial-gradient(ellipse 60% 50% at 50% 30%,rgba(127,119,221,.07),transparent);padding:2rem;text-align:center}
-  .wrap{max-width:480px}
-  .glitch-code{
-    font-family:var(--mono);font-weight:700;
-    font-size:clamp(4rem,18vw,7rem);line-height:1;
-    color:var(--accent);letter-spacing:-.02em;margin-bottom:.5rem;
-    text-shadow:0 0 40px rgba(127,119,221,.35);
-  }
-  .heading{font-family:var(--mono);font-size:1.3rem;font-weight:700;margin-bottom:.85rem;letter-spacing:-.01em}
-  .message{font-size:14.5px;color:var(--muted);line-height:1.75;margin-bottom:2rem}
-  .back-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:500;color:#fff;background:var(--accent);padding:11px 26px;border-radius:var(--r);text-decoration:none;transition:background .2s}
-  .back-btn:hover{background:#9189e8}
-  .crumb-trail{margin-top:2.5rem;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
-  .crumb-trail span{color:var(--accent)}
+  body{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:2rem 1.25rem;text-align:center;overflow:hidden;
+    background:radial-gradient(ellipse 60% 50% at 50% 35%,rgba(139,132,255,.12),transparent 70%),var(--bg)}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 40%,#000 15%,transparent 70%);mask-image:radial-gradient(ellipse 60% 55% at 50% 40%,#000 15%,transparent 70%)}
+  .wrap{position:relative;max-width:520px;width:100%}
+  .code{font-family:var(--mono);font-weight:800;font-size:clamp(5rem,24vw,9rem);line-height:.9;letter-spacing:-.06em;margin-bottom:1rem;
+    background:linear-gradient(120deg,#b3adff,var(--accent) 45%,var(--accent-2) 110%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 40px rgba(139,132,255,.3))}
+  .heading{font-family:var(--mono);font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem}
+  .message{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:1.75rem}
+  .term{margin:0 auto 2rem;max-width:440px;text-align:left;border-radius:12px;overflow:hidden;background:#0b0b0f;border:1px solid var(--border2);font-family:var(--mono);font-size:12.5px;line-height:1.8}
+  .term-bar{display:flex;gap:6px;padding:.55rem .8rem;background:var(--bg3);border-bottom:1px solid var(--border)}
+  .term-bar i{width:9px;height:9px;border-radius:50%;background:#f87171}.term-bar i+i{background:#fbbf24}.term-bar i+i+i{background:#4ade80}
+  .term-body{padding:.8rem 1rem}
+  .term-body .p{color:var(--accent)}.term-body .e{color:#fca5a5}.term-body .d{color:var(--muted2)}
+  .term-body span{overflow-wrap:anywhere}
+  .actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+  .crumb{margin-top:2.5rem;font-family:var(--mono);font-size:11px;color:var(--muted2);letter-spacing:.06em}
+  .crumb span{color:var(--accent)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="glitch-code" id="nf-code">404</div>
-  <div class="heading" id="nf-heading">Lost in the build folder.</div>
-  <p class="message" id="nf-message">The page you're looking for doesn't exist - it might have been moved, renamed, or never built in the first place.</p>
-  <a class="back-btn" id="nf-btn" href="index.html">← Back to Home</a>
-  <div class="crumb-trail"><span>Samo_VR</span> · Page not found</div>
+  <div class="code" id="nf-code">404</div>
+  <h1 class="heading" id="nf-heading">Lost in the build folder.</h1>
+  <p class="message" id="nf-message">The page you're looking for doesn't exist, it might have been moved, renamed, or never built in the first place.</p>
+  <div class="term" aria-hidden="true">
+    <div class="term-bar"><i></i><i></i><i></i></div>
+    <div class="term-body">
+      <div><span class="p">guest:~$</span> cd <span id="nf-path">/missing</span></div>
+      <div class="e">cd: no such file or directory</div>
+      <div class="d"># try the homepage, everything lives there</div>
+    </div>
+  </div>
+  <div class="actions">
+    <a class="btn btn-primary btn-lg" id="nf-btn" href="/">← Back to Home</a>
+    <a class="btn btn-outline btn-lg" href="/#projects">See projects</a>
+  </div>
+  <div class="crumb"><span>Samo_VR</span> · Page not found</div>
 </div>
 
-<script src="js/shared-data.js"></script>
+<script src="/js/shared-data.js"></script>
 <script>
-  // Content is editable from Admin → Settings → 404 Page. Falls back to
-  // DEFAULT if nothing has been saved yet (e.g. fresh GitHub Pages deploy
-  // before the admin has been run locally even once).
+  // Content is editable from Admin → Settings → 404 Page (saved into
+  // DEFAULT.settings.notFound in shared-data.js).
   (function () {
-    const settings = loadState('settings');
-    const nf = (settings && settings.notFound) || DEFAULT.settings.notFound;
-    document.title = (nf.title || '404') + ' - Samo_VR';
-    document.getElementById('nf-code').textContent = nf.title || '404';
+    const nf = (DEFAULT.settings && DEFAULT.settings.notFound) || {};
+    const code = nf.title || '404';
+    document.title = code + ' - Samo_VR';
     document.getElementById('nf-heading').textContent = nf.heading || '';
     document.getElementById('nf-message').textContent = nf.message || '';
     const btn = document.getElementById('nf-btn');
     btn.textContent = nf.buttonText || '← Back to Home';
-    btn.href = nf.buttonLink || 'index.html';
+    // old setting value 'index.html' would resolve relative to the missing URL
+    const link = nf.buttonLink || '/';
+    btn.href = link === 'index.html' ? '/' : link;
+    document.getElementById('nf-path').textContent = decodeURIComponent(location.pathname);
+
+    // the code decodes itself from noise, like the hero on the homepage
+    const el = document.getElementById('nf-code');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = code; return; }
+    const glyphs = '!<>-_\\/[]{}=+*^?#01';
+    const start = performance.now(), dur = 1100;
+    (function tick(now) {
+      const k = (now - start) / dur;
+      el.textContent = code.split('').map((ch, i) => (k > (i + 1) / (code.length + 1) ? ch : glyphs[(Math.random() * glyphs.length) | 0])).join('');
+      if (k < 1) requestAnimationFrame(tick); else el.textContent = code;
+    })(start);
   })();
 </script>
 </body>
