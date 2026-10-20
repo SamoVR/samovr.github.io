@@ -111,8 +111,9 @@ section[id]{scroll-margin-top:72px}
 .hero-visual{position:relative;min-width:0}
 .code-card{position:relative;border-radius:16px;overflow:hidden;
   background:linear-gradient(180deg,rgba(24,24,33,.82),rgba(14,14,19,.9));border:1px solid var(--border2);
-  box-shadow:0 30px 70px -30px rgba(0,0,0,.8),0 0 100px -55px var(--accent-glow);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.02),0 0 120px -50px var(--accent-glow);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transform:perspective(1400px) rotateY(-7deg) rotateX(3deg);transform-origin:left center;transition:transform .8s var(--ease)}
+.hero-visual:hover .code-card{transform:perspective(1400px) rotateY(-2deg) rotateX(1deg)}
 .code-card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 40%)}
 .code-head{display:flex;align-items:center;gap:12px;padding:0 12px;height:42px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.25)}
 .code-dots{display:flex;gap:6px;flex-shrink:0}
@@ -123,7 +124,7 @@ section[id]{scroll-margin-top:72px}
 .code-tab.active{color:var(--text);border-bottom-color:var(--accent);background:rgba(255,255,255,.045);flex-shrink:0}
 .code-tab i{width:7px;height:7px;border-radius:2px;background:#5c7cfa;flex-shrink:0}
 .code-tab[data-lang=cpp] i{background:#f472b6}
-.code-body{margin:0;padding:16px 18px 16px 0;height:280px;overflow:hidden;font-family:var(--mono);font-size:12.5px;line-height:1.75;color:#cfd0dc;tab-size:4;counter-reset:ln}
+.code-body{margin:0;padding:18px 18px 18px 0;height:328px;overflow:hidden;font-family:var(--mono);font-size:12.5px;line-height:1.75;color:#cfd0dc;tab-size:4;counter-reset:ln}
 .code-body code{display:block;font-family:inherit;white-space:pre-wrap;overflow-wrap:anywhere}
 .code-line{display:block;padding-left:3.4em;position:relative}
 .code-line::before{counter-increment:ln;content:counter(ln);position:absolute;left:0;width:2.4em;text-align:right;color:#3e3e4c}
