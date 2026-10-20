@@ -456,7 +456,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": false,
+    "lockdown": true,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
@@ -473,7 +473,5 @@ const DEFAULT = {
       "buttonLink": "/"
     }
   },
-  // SHA-256 of the admin password (never store the plain password here: this
-  // file is public). Generate a new one from Admin → Settings → Change Password.
-  passHash: '15288750a0168c973a1cb743cb11f0f1221d1621bd095d6b1a17066a6b58e97e'
+  passHash: '432b79121752641641a11165ddb2c0e8b721e43f346acce2d802647d1bd7214a'
 };
