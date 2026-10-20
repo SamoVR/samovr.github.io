@@ -380,6 +380,42 @@ const DEFAULT = {
     }
   ],
   "settings": {
+    // Headings and short texts for each page section (Admin → Homepage)
+    "sections": {
+      "about": {
+        "tag": "About",
+        "title": "Who I am",
+        "lede": "Programmer working where gameplay meets engineering: systems that are secure, modular and pleasant to maintain."
+      },
+      "projects": {
+        "tag": "Selected work",
+        "title": "Things I've built",
+        "lede": "Game systems, tools and a render engine. Open any project for the full breakdown, screenshots and videos."
+      },
+      "experience": {
+        "tag": "Experience",
+        "title": "Where I've worked",
+        "lede": "Teams and projects I've written systems for, newest first."
+      },
+      "skills": {
+        "tag": "Toolbox",
+        "title": "Languages & tools",
+        "lede": "What I reach for, and how comfortable I am with it."
+      },
+      "terminal": {
+        "tag": "A little easter egg",
+        "title": "Poking around",
+        "lede": "A real (tiny) shell. Click it and type <code>help</code>."
+      },
+      "contact": {
+        "tag": "Contact",
+        "title": "Let's build something",
+        "lede": "Open to collaborations, freelance work, or just talking about code."
+      },
+      "footer": {
+        "note": "Hand-written HTML, CSS & JS, with a GLSL shader in the hero."
+      }
+    },
     "hero": {
       "eyebrow": "Systems & Graphics Programmer",
       "bio": "I build <strong>game systems in Lua for Roblox</strong> and <strong>real-time graphics in C++ / OpenGL</strong>. From server-authoritative gameplay to a hand-written render engine, I've spent 4+ years shipping real projects, and I don't call something done until it's done properly.",

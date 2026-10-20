@@ -280,3 +280,13 @@ input[type=color]{width:30px;height:28px;border-radius:6px;border:.5px solid var
 /* inline checkbox label (project modal → Featured) */
 .fgroup label.check-label{display:flex;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--text);cursor:pointer}
 .check-label input{accent-color:var(--accent);width:15px;height:15px}
+
+/* Homepage editor */
+.home-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.home-row input,.home-row select{min-width:0}
+.home-code{padding:.75rem;margin-bottom:.75rem;border-radius:var(--r);background:var(--bg3);border:.5px solid var(--border2)}
+.home-section{padding:.85rem 0;border-top:.5px solid var(--border)}
+.home-section:first-child{border-top:0;padding-top:0}
+.home-section-name{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent);margin-bottom:.6rem}
+.tab-extras{margin-bottom:.25rem}
+@media(max-width:700px){.stat-row{flex-wrap:wrap}.stat-row .st-label{flex-basis:100%}}

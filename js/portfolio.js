@@ -400,7 +400,8 @@ function renderContact() {
   const parts = [];
   if (opens.length) parts.push(`${list(opens)} open${opens.length === 1 ? 's' : ''} in a new tab`);
   if (copies.length) parts.push(`${list(copies)} cop${copies.length === 1 ? 'ies' : 'y'} to your clipboard`);
-  $('#contact-tagline').textContent = 'Open to collaborations, freelance work, or just talking about code. ' + (parts.length ? parts.join('; ') + '.' : '');
+  const lede = ((state.settings.sections || {}).contact || {}).lede || 'Open to collaborations, freelance work, or just talking about code.';
+  $('#contact-tagline').textContent = lede + ' ' + (parts.length ? parts.join('; ') + '.' : '');
 
   // the same links, compact, at the bottom of the mobile menu
   $('#mobile-menu-foot').innerHTML = state.contact.map((c, i) => `<button type="button" class="btn btn-outline btn-sm" data-cidx="${i}">${esc(c.icon || '')} ${esc(c.label)}</button>`).join('');
@@ -1160,8 +1161,18 @@ PREVIEW.listen((k, v) => {
   if (SVR.fx) SVR.fx.refresh();
 });
 
+// ═══════════════ PAGE TEXTS (settings.sections) ═══════════════
+// Elements marked data-text / data-html="sections.about.title" take their
+// text from settings; the HTML's own text is the fallback.
+function renderTexts() {
+  const get = path => path.split('.').reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), state.settings || {});
+  $$('[data-text]').forEach(el => { const v = get(el.dataset.text); if (typeof v === 'string' && v) el.textContent = v; });
+  $$('[data-html]').forEach(el => { const v = get(el.dataset.html); if (typeof v === 'string' && v) el.innerHTML = v; });
+}
+
 function renderAll() {
   checkLockdown();
+  renderTexts();
   renderHero();
   renderMarquee();
   renderAbout();

@@ -48,6 +48,7 @@
     <nav class="sidebar">
       <div class="sidebar-group">
         <div class="sidebar-label">Content</div>
+        <button class="sidebar-item" data-nav="home"><span class="sidebar-item-icon">🏠</span>Homepage</button>
         <button class="sidebar-item active" data-nav="projects"><span class="sidebar-item-icon">⚙</span>Projects</button>
         <button class="sidebar-item" data-nav="about"><span class="sidebar-item-icon">👤</span>About</button>
         <button class="sidebar-item" data-nav="skills"><span class="sidebar-item-icon">📊</span>Skills</button>
@@ -65,6 +66,7 @@
     <main class="content">
       <div class="mobile-page-select-wrap">
         <select id="mobile-page-select">
+          <option value="home">🏠 Homepage</option>
           <option value="projects">⚙ Projects</option>
           <option value="about">👤 About</option>
           <option value="skills">📊 Skills</option>
@@ -320,6 +322,61 @@
 
       </div>
 
+      <!-- HOMEPAGE: hero, code card, section texts -->
+      <div class="page" id="page-home">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Homepage</div>
+            <div class="page-sub">The hero at the top of the site, the code card next to it, and the headings of every section.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Hero</div>
+          <div class="fgroup">
+            <label>Eyebrow</label>
+            <input type="text" id="hero-eyebrow" placeholder="Systems &amp; Graphics Programmer">
+            <div class="fhint">The small line above your name.</div>
+          </div>
+          <div class="fgroup">
+            <label>Bio</label>
+            <textarea class="fta" id="hero-bio"></textarea>
+            <div class="fhint">Wrap words in &lt;strong&gt;…&lt;/strong&gt; to make them bright.</div>
+          </div>
+          <div class="fgroup">
+            <label>Rotating lines <span style="color:var(--muted);font-size:10px">(one per line, each follows "I …")</span></label>
+            <textarea class="fta" id="hero-roles"></textarea>
+          </div>
+          <div class="fgroup" style="margin-bottom:0">
+            <label>Stats</label>
+            <div class="fhint" style="margin-bottom:.6rem">Number + suffix (e.g. 7 and M+) and a label. "Count automatically" fills in the number of projects or systems for you.</div>
+            <div id="hero-stats-rows"></div>
+            <button type="button" class="btn btn-ghost btn-sm" id="hero-add-stat" style="margin-top:.5rem">+ Add Stat</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Code Card</div>
+          <div class="fhint" style="margin-bottom:.75rem">Snippets typed out in the editor window next to your name, one tab each. Leave none to hide the card.</div>
+          <div id="hero-code-rows"></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="hero-add-code" style="margin-top:.5rem">+ Add Snippet</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Section Texts</div>
+          <div class="fhint" style="margin-bottom:.75rem">Small label, heading and description for each section of the page.</div>
+          <div id="section-text-rows"></div>
+        </div>
+
+        <div class="save-all-bar">
+          <div class="save-all-info">
+            <div class="save-all-title">Save Homepage</div>
+            <div class="save-all-desc">Saves the hero, code card and section texts.</div>
+          </div>
+          <button type="button" class="btn btn-accent" id="home-save-btn">💾 Save Homepage</button>
+        </div>
+      </div>
+
       <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="page-header">
@@ -389,6 +446,13 @@
               <div class="setting-desc">Download all portfolio content as JSON. Paste the values into the DEFAULT object in js/shared-data.js to publish them.</div>
             </div>
             <button class="btn btn-ghost btn-sm" id="export-btn">Export JSON</button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-name">Publish (download shared-data.js)</div>
+              <div class="setting-desc">Downloads a ready-to-use js/shared-data.js with everything you've changed. Replace the file in your repo with it and push: that's the whole publish step.</div>
+            </div>
+            <button class="btn btn-accent btn-sm" id="publish-btn">⬇ Download shared-data.js</button>
           </div>
           <div class="setting-row">
             <div class="setting-info">
@@ -535,6 +599,8 @@
           <input type="file" id="pm-file" accept="image/*" multiple>
           <div class="img-drop-label">Click or drag images here · <span>Browse files</span> · Max 8</div>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="pm-add-path-btn" style="margin-top:.5rem">+ Add by path</button>
+        <div class="fhint">Tip: put images in the site's images/ folder and add them by path (e.g. images/shot.webp). Uploaded files get embedded into the data file, which makes it very large.</div>
         <div class="img-grid" id="pm-img-grid"></div>
         <div class="img-drag-hint" id="pm-drag-hint" style="display:none">Drag thumbnails to reorder</div>
       </div>

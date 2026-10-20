@@ -841,13 +841,44 @@ function buildTabRow(tab, i) {
   thumbGrid.style.cssText = 'grid-template-columns:repeat(auto-fill,minmax(90px,1fr))';
   renderTabImgGrid(thumbGrid, i);
 
+  // extras used by the redesigned system view
+  const extras = document.createElement('div');
+  extras.className = 'tab-extras';
+  extras.innerHTML = `
+    <div class="grid2">
+      <div class="fgroup"><label>Tagline (optional)</label><input type="text" class="tab-tagline-input" placeholder="One short line under the title"></div>
+      <div class="fgroup"><label>Live demo</label><select class="tab-demo-input">
+        <option value="">None</option><option value="medical">Medical Examine System replica</option><option value="samos">SAM-OS terminal replica</option>
+      </select></div>
+    </div>
+    <div class="fgroup"><label>Highlights (optional, one per line)</label><textarea class="fta tab-highlights-input" style="min-height:70px"></textarea></div>
+    <div class="fgroup"><label class="check-label"><input type="checkbox" class="tab-latest-input"> Latest release <span style="color:var(--muted);font-size:10px">(adds a "New" badge and features it in About)</span></label></div>`;
+  extras.querySelector('.tab-tagline-input').value = tab?.tagline || '';
+  extras.querySelector('.tab-demo-input').value = tab?.demo || '';
+  extras.querySelector('.tab-highlights-input').value = (tab?.highlights || []).join('\n');
+  extras.querySelector('.tab-latest-input').checked = !!tab?.latest;
+
+  const pathBtn = document.createElement('button');
+  pathBtn.type = 'button'; pathBtn.className = 'btn btn-ghost btn-sm'; pathBtn.textContent = '+ Add by path';
+  pathBtn.style.marginBottom = '.5rem';
+  pathBtn.addEventListener('click', () => {
+    const v = (prompt('Image or .mp4 path inside your site, e.g. images/backrooms5.webp') || '').trim();
+    if (!v) return;
+    const ti = parseInt(card.dataset.tabidx, 10);
+    (tabImgData[ti] = tabImgData[ti] || []).push(v);
+    renderTabImgGrid(thumbGrid, ti);
+    markDirty(_dirtyModal);
+  });
+
   card.appendChild(topRow);
   card.appendChild(descLabel);
   card.appendChild(richWrap);
   card.appendChild(videoLabel);
   card.appendChild(videoInput);
+  card.appendChild(extras);
   card.appendChild(imgLabel);
   card.appendChild(dropZone);
+  card.appendChild(pathBtn);
   card.appendChild(thumbGrid);
   return card;
 }
@@ -893,13 +924,24 @@ function readTabDesc(el) {
 function collectTabs() {
   const wrap = document.getElementById('pm-tabs-wrap');
   if (!wrap) return [];
-  return Array.from(wrap.querySelectorAll('.tab-editor-card')).map((card, i) => ({
-    ...(card._orig || {}),
-    title: (card.querySelector('.tab-title-input')?.value || '').trim(),
-    desc: readTabDesc(card.querySelector('.tab-desc-input')),
-    videoUrl: (card.querySelector('.tab-video-input')?.value || '').trim(),
-    images: [...(tabImgData[i] || [])]
-  })).filter(t => t.title);
+  return Array.from(wrap.querySelectorAll('.tab-editor-card')).map((card, i) => {
+    const t = {
+      ...(card._orig || {}),
+      title: (card.querySelector('.tab-title-input')?.value || '').trim(),
+      desc: readTabDesc(card.querySelector('.tab-desc-input')),
+      videoUrl: (card.querySelector('.tab-video-input')?.value || '').trim(),
+      tagline: card.querySelector('.tab-tagline-input').value.trim(),
+      demo: card.querySelector('.tab-demo-input').value,
+      highlights: card.querySelector('.tab-highlights-input').value.split('\n').map(l => l.trim()).filter(Boolean),
+      latest: card.querySelector('.tab-latest-input').checked,
+      images: [...(tabImgData[i] || [])]
+    };
+    // drop empty extras so the data file stays tidy
+    ['tagline', 'demo'].forEach(k => { if (!t[k]) delete t[k]; });
+    if (!t.highlights.length) delete t.highlights;
+    if (!t.latest) delete t.latest;
+    return t;
+  }).filter(t => t.title);
 }
 
 // ═══════════════ INTERACTIVE ELEMENTS (settings) ═══════════════
@@ -1118,9 +1160,160 @@ function wireStaticButtons() {
 }
 
 // ═══════════════ INIT ═══════════════
+// ═══════════════ HOMEPAGE: hero, code card, section texts ═══════════════
+const SECTION_FIELDS = [
+  ['about', 'About'], ['projects', 'Projects'], ['experience', 'Experience'],
+  ['skills', 'Skills'], ['terminal', 'Terminal'], ['contact', 'Contact']
+];
+
+function addStatRow(st) {
+  st = st || {};
+  const row = document.createElement('div');
+  row.className = 'home-row stat-row';
+  row.innerHTML = `
+    <input type="text" class="st-value" placeholder="4" style="width:70px">
+    <input type="text" class="st-suffix" placeholder="+" style="width:60px">
+    <input type="text" class="st-label" placeholder="Years shipping code" style="flex:1">
+    <select class="st-auto"><option value="">Fixed number</option><option value="projects">Count projects</option><option value="systems">Count systems</option></select>
+    <button type="button" class="ib ib-del">✕</button>`;
+  row.querySelector('.st-value').value = st.value || '';
+  row.querySelector('.st-suffix').value = st.suffix || '';
+  row.querySelector('.st-label').value = st.label || '';
+  row.querySelector('.st-auto').value = st.auto || '';
+  row.querySelector('.ib-del').addEventListener('click', () => row.remove());
+  document.getElementById('hero-stats-rows').appendChild(row);
+}
+
+function addCodeRow(c) {
+  c = c || { file: '', lang: 'lua', code: '' };
+  const row = document.createElement('div');
+  row.className = 'home-code';
+  row.innerHTML = `
+    <div class="home-row">
+      <input type="text" class="cd-file" placeholder="FileName.lua" style="flex:1">
+      <select class="cd-lang"><option value="lua">Lua / Luau</option><option value="cpp">C++</option></select>
+      <button type="button" class="ib ib-del">✕</button>
+    </div>
+    <textarea class="fta cd-code" spellcheck="false" style="font-family:var(--mono);font-size:12px;min-height:150px" placeholder="Paste code here (keep lines under ~60 characters)"></textarea>`;
+  row.querySelector('.cd-file').value = c.file || '';
+  row.querySelector('.cd-lang').value = c.lang === 'cpp' ? 'cpp' : 'lua';
+  row.querySelector('.cd-code').value = c.code || '';
+  row.querySelector('.ib-del').addEventListener('click', () => row.remove());
+  // Tab inserts a tab instead of leaving the box
+  row.querySelector('.cd-code').addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return;
+    e.preventDefault();
+    document.execCommand('insertText', false, '\t');
+  });
+  document.getElementById('hero-code-rows').appendChild(row);
+}
+
+function renderHomeEditor() {
+  const s = state.settings || {};
+  const h = s.hero || DEFAULT.settings.hero || {};
+  document.getElementById('hero-eyebrow').value = h.eyebrow || '';
+  document.getElementById('hero-bio').value = h.bio || '';
+  document.getElementById('hero-roles').value = (h.roles || []).join('\n');
+  document.getElementById('hero-stats-rows').innerHTML = '';
+  (h.stats || []).forEach(addStatRow);
+  document.getElementById('hero-code-rows').innerHTML = '';
+  (s.heroCode || []).forEach(addCodeRow);
+
+  const sec = s.sections || DEFAULT.settings.sections || {};
+  const wrap = document.getElementById('section-text-rows');
+  wrap.innerHTML = SECTION_FIELDS.map(([k, name]) => `
+    <div class="home-section" data-sec="${k}">
+      <div class="home-section-name">${name}</div>
+      <div class="grid2">
+        <div class="fgroup"><label>Small label</label><input type="text" class="sc-tag"></div>
+        <div class="fgroup"><label>Heading</label><input type="text" class="sc-title"></div>
+      </div>
+      <div class="fgroup"><label>Description</label><input type="text" class="sc-lede"></div>
+    </div>`).join('') + `
+    <div class="home-section" data-sec="footer">
+      <div class="home-section-name">Footer</div>
+      <div class="fgroup"><label>Footer note</label><input type="text" class="sc-note"></div>
+    </div>`;
+  wrap.querySelectorAll('[data-sec]').forEach(box => {
+    const v = sec[box.dataset.sec] || {};
+    ['tag', 'title', 'lede', 'note'].forEach(f => { const el = box.querySelector('.sc-' + f); if (el) el.value = v[f] || ''; });
+  });
+}
+
+function saveHomeEditor() {
+  const s = state.settings = state.settings || {};
+  const val = id => document.getElementById(id).value.trim();
+  s.hero = {
+    ...(s.hero || {}),
+    eyebrow: val('hero-eyebrow'),
+    bio: val('hero-bio'),
+    roles: val('hero-roles').split('\n').map(l => l.trim()).filter(Boolean),
+    stats: Array.from(document.querySelectorAll('#hero-stats-rows .stat-row')).map(r => {
+      const st = { label: r.querySelector('.st-label').value.trim() };
+      const auto = r.querySelector('.st-auto').value;
+      if (auto) st.auto = auto; else st.value = r.querySelector('.st-value').value.trim();
+      const suffix = r.querySelector('.st-suffix').value.trim();
+      if (suffix) st.suffix = suffix;
+      return st;
+    }).filter(st => st.label)
+  };
+  s.heroCode = Array.from(document.querySelectorAll('#hero-code-rows .home-code')).map(r => ({
+    file: r.querySelector('.cd-file').value.trim() || 'snippet',
+    lang: r.querySelector('.cd-lang').value,
+    code: r.querySelector('.cd-code').value.replace(/\s+$/, '')
+  })).filter(c => c.code);
+  s.sections = {};
+  document.querySelectorAll('#section-text-rows [data-sec]').forEach(box => {
+    const v = {};
+    ['tag', 'title', 'lede', 'note'].forEach(f => { const el = box.querySelector('.sc-' + f); if (el && el.value.trim()) v[f] = el.value.trim(); });
+    s.sections[box.dataset.sec] = v;
+  });
+  persist('settings');
+  showToast('✓ Homepage saved');
+}
+
+// ═══════════════ PUBLISH: a complete, ready-to-commit shared-data.js ═══════════════
+// Takes the current shared-data.js from the site and swaps its DEFAULT object
+// for everything edited here, so publishing is "replace the file and push".
+async function publishData() {
+  const data = { projects: state.projects, about: state.about, skills: state.skills, experience: state.experience, contact: state.contact, settings: state.settings, passHash: state.passHash };
+  const block = 'const DEFAULT = ' + JSON.stringify(data, null, 2) + '\n';
+  let src;
+  try {
+    const res = await fetch('js/shared-data.js', { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status);
+    src = await res.text();
+  } catch {
+    showToast('⚠ Open admin through a local server (see README) to publish. Exporting JSON instead.');
+    exportData();
+    return;
+  }
+  const start = src.indexOf('const DEFAULT = {');
+  const end = src.indexOf('\n// keys used across admin and portfolio');
+  if (start < 0 || end < 0) { showToast('⚠ Couldn\'t find DEFAULT in shared-data.js'); return; }
+  const out = src.slice(0, start) + block + src.slice(end);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], { type: 'text/javascript' }));
+  a.download = 'shared-data.js';
+  a.click();
+  const big = JSON.stringify(data).includes('data:image');
+  showToast(big ? '✓ Downloaded. Note: it contains uploaded images, consider using paths instead.' : '✓ Downloaded shared-data.js. Replace js/shared-data.js with it and push.', 4500);
+}
+document.getElementById('publish-btn').addEventListener('click', publishData);
+document.getElementById('home-save-btn').addEventListener('click', saveHomeEditor);
+document.getElementById('hero-add-stat').addEventListener('click', () => addStatRow());
+document.getElementById('hero-add-code').addEventListener('click', () => addCodeRow());
+document.getElementById('pm-add-path-btn').addEventListener('click', () => {
+  const v = (prompt('Image or .mp4 path inside your site, e.g. images/shot.webp') || '').trim();
+  if (!v) return;
+  pmImages.push(v);
+  renderImgGrid();
+  markDirty('pm');
+});
+
 function initApp() {
   renderProjList(); renderAboutList(); renderSkillsList(); renderExpList(); renderContactList();
-  renderInteractiveElements(); render404Settings();
+  renderInteractiveElements(); render404Settings(); renderHomeEditor();
 }
 
 wireStaticButtons();

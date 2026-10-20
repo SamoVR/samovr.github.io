@@ -61,7 +61,11 @@ Hero text, rotating role lines, stats and the code snippets typed out in the her
 
 1. Serve the folder locally (`python -m http.server 8765`) and open `http://localhost:8765/admin.html` and `http://localhost:8765/` side by side.
 2. Edits in the admin show up **live** in the open portfolio tab (BroadcastChannel). Nothing is stored: refreshing either tab goes back to `DEFAULT`.
-3. When you're happy, **Settings → Export JSON**, paste the values into `DEFAULT` in `js/shared-data.js`, and push.
+3. When you're happy, **Settings → Publish (download shared-data.js)**. Replace `js/shared-data.js` with the downloaded file and push. That's it.
+
+Everything visible on the site is editable from the admin: **Homepage** (hero text, rotating lines, stats, code card snippets, every section's label/heading/description, footer note), **Projects** (including each system's tagline, highlights, live demo and "New" flag), About, Skills, Experience, Contact, Interactive toggles and the 404 page.
+
+For images, copy the file into `images/` and use **+ Add by path** in the editor. Uploading through the admin works too, but it embeds the image inside the data file and makes it huge.
 
 ### Admin password
 
