@@ -64,8 +64,8 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/backroomslogo.webp",
       "accentColor": "#fbbf24",
-      "shortDesc": "A Roblox horror experience where I build the game systems: power, doors, protocols, an in-world terminal and a medical system.",
-      "fullDesc": "An ongoing <font color=\"#38bdf8\">Roblox </font>horror game where I serve as <font color=\"#4ade80\">Systems Programmer</font>. I designed and built the backend system architecture: a physics-based <font color=\"#fbbf24\">Generator System</font> with dynamic fuel consumption, fan physics and real-time status screens; a <font color=\"#fbbf24\">LightSystem</font> supporting global and area-specific blackouts via CollectionService; a modular <font color=\"#fbbf24\">TimeDoor System</font>; <font color=\"#fbbf24\">SAM-OS</font>, an in-world terminal on top of CMDR that drives remote door lockdowns and a <font color=\"#fbbf24\">Protocol System</font> with layered authorization; and the <font color=\"#fbbf24\">Medical Examine System</font>, a server-authoritative triage UI. Every system is <font color=\"#f87171\">modular</font>, <font color=\"#f87171\">documented</font>, and <font color=\"#f87171\">built to be extended without touching core logic</font>. Open a system below for the full breakdown, videos, and two of them you can try right here in the browser.",
+      "shortDesc": "A Roblox horror game where I'm the systems programmer. Power, doors, protocols, terminals, medical, all of it.",
+      "fullDesc": "An ongoing <font color=\"#38bdf8\">Roblox </font>horror game where I serve as <font color=\"#4ade80\">Systems Programmer</font>. I designed and built the backend system architecture: a physics-based <font color=\"#fbbf24\">Generator System</font> with dynamic fuel consumption, fan physics and real-time status screens; a <font color=\"#fbbf24\">LightSystem</font> supporting global and area-specific blackouts via CollectionService; a modular <font color=\"#fbbf24\">TimeDoor System</font>; <font color=\"#fbbf24\">SAM-OS</font>, an in-world terminal on top of CMDR that drives remote door lockdowns and a <font color=\"#fbbf24\">Protocol System</font> with layered authorization; and the <font color=\"#fbbf24\">Medical Examine System</font>, a server-authoritative triage UI. Every system is <font color=\"#f87171\">modular</font>, <font color=\"#f87171\">documented</font>, and <font color=\"#f87171\">built to be extended without touching core logic</font>. Click a system below for the details. Two of them you can even try out right here.",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev, UI",
       "status": "wip",
@@ -74,10 +74,10 @@ const DEFAULT = {
       "featured": true,
       "link": "https://www.roblox.com/games/10720776665/The-Backrooms-AdySYNC",
       "highlights": [
-        "3 documented systems, 2 playable in your browser",
-        "Server-authoritative doors, protocols and medical data",
-        "SAM-OS: CMDR-based terminal with live door progress",
-        "Medical Examine System with a live triage UI"
+        "3 documented systems, 2 you can try right here",
+        "Everything checked on the server, no exploits",
+        "SAM-OS terminal built on top of CMDR",
+        "Medical system with a live triage UI"
       ],
       "images": [
         "images/backrooms1.webp",
@@ -90,8 +90,8 @@ const DEFAULT = {
           "title": "Medical Examine System",
           "slug": "medical-examine-system",
           "latest": true,
-          "tagline": "Examine sessions, health data & a live healing UI",
-          "desc": "<p>A player holding the examining clipboard can check another player's injuries limb by limb. The examiner clicks a target, the target accepts, and a live healing UI opens with the patient's health and conditions, updating the moment anything changes.</p><blockquote><b>Server owns everything.</b> Clients never read character data or decide anything on their own. Every request is validated by the server, and the examiner only ever sees what the server sends.</blockquote><h3>Session flow</h3><ol><li>The examiner clicks a highlighted player with the clipboard equipped. The server ignores self-exams, dead targets, a target with a pending request, or an examiner already in a session.</li><li>The target gets an <b>Incoming Request</b> popup with a draining timer; ignored, it declines itself after 15 seconds.</li><li>On accept, the healing UI opens and the patient sees a \"Being examined by …\" label.</li><li>Health and condition changes stream in; anything inside a 0.1 s window is coalesced into one update.</li></ol><p>A session ends on a manual close, death, the patient moving more than 20 studs away (checked every 1.5 s), or either player leaving. Both clients share <b>one teardown path</b>.</p><h3>Health rules</h3><p>Each character carries a <code>Medical</code> folder with one NumberValue per R15 body part, plus a <code>Condition</code> attribute (Bleeding, Burn, Fracture…). New condition types need no code change. Parts are grouped into six R6 zones, and <b>a zone is only as healthy as its weakest part</b>, so one destroyed hand turns the whole arm black. Quick View shows the zone average instead.</p><ul><li><b>81–100%</b> white and <b>61–80%</b> yellow: Stable</li><li><b>31–60%</b> orange: Caution</li><li><b>1–30%</b> red and <b>0%</b> black: Critical</li></ul><h3>The healing UI</h3><p>Four panels re-render from the same payload: a <b>Triage Card</b>, a clickable <b>Body Diagram</b>, an <b>Overview</b> of the selected zone and a <b>Quick View</b> of every zone. The console pops in, limbs thicken their outline on hover and flash red when they lose health, Critical labels pulse, and Quick View bars fill while the percentages count up. Every cosmetic effect runs client-side only.</p>",
+          "tagline": "Check another player's injuries, limb by limb, live",
+          "desc": "<p>Grab the examining clipboard, click another player, and once they accept you get a live readout of their injuries, limb by limb. Think of it as a hospital chart: the character holds the real readings, the server collects them, and the UI just shows what it's sent.</p><blockquote><b>Server owns everything.</b> Clients never read character data or decide anything on their own. Every request is validated by the server, and the examiner only ever sees what the server sends.</blockquote><h3>Session flow</h3><ol><li>The examiner clicks a highlighted player with the clipboard equipped. The server ignores self-exams, dead targets, a target with a pending request, or an examiner already in a session.</li><li>The target gets an <b>Incoming Request</b> popup with a draining timer; ignored, it declines itself after 15 seconds.</li><li>On accept, the healing UI opens and the patient sees a \"Being examined by …\" label.</li><li>Health and condition changes stream in; anything inside a 0.1 s window is coalesced into one update.</li></ol><p>A session ends on a manual close, death, the patient moving more than 20 studs away (checked every 1.5 s), or either player leaving. Both clients share <b>one teardown path</b>.</p><h3>Health rules</h3><p>Each character carries a <code>Medical</code> folder with one NumberValue per R15 body part, plus a <code>Condition</code> attribute (Bleeding, Burn, Fracture…). New condition types need no code change. Parts are grouped into six R6 zones, and <b>a zone is only as healthy as its weakest part</b>, so one destroyed hand turns the whole arm black. Quick View shows the zone average instead.</p><ul><li><b>81–100%</b> white and <b>61–80%</b> yellow: Stable</li><li><b>31–60%</b> orange: Caution</li><li><b>1–30%</b> red and <b>0%</b> black: Critical</li></ul><h3>The healing UI</h3><p>Four panels re-render from the same payload: a <b>Triage Card</b>, a clickable <b>Body Diagram</b>, an <b>Overview</b> of the selected zone and a <b>Quick View</b> of every zone. The console pops in, limbs thicken their outline on hover and flash red when they lose health, Critical labels pulse, and Quick View bars fill while the percentages count up. Every cosmetic effect runs client-side only.</p>",
           "videoUrl": "https://www.youtube.com/watch?v=VGKnKUkq2TM",
           "demo": "medical",
           "highlights": [
@@ -111,8 +111,8 @@ const DEFAULT = {
         {
           "title": "SAM-OS Terminal",
           "slug": "sam-os-terminal",
-          "tagline": "In-world command terminal for doors, protocols & alerts",
-          "desc": "<p>SAM-OS is the in-game admin console used to control facility systems: door lockdowns, security protocols and site-wide alerts. It looks and behaves like a retro amber CRT terminal and is built on <b>CMDR</b>, which I reskinned and extended for the game, including a custom inline progress line.</p><h3>Three layers</h3><ul><li><b>The terminal</b> is purely visual: output, a blinking cursor, an autocomplete dropdown. It doesn't know what a door is.</li><li><b>CMDR</b> validates the typed command and its arguments, then runs the command's code <b>on the server</b>, so nobody can unlock doors by editing their own client.</li><li><b>Door &amp; protocol systems</b> live in the map and know how to change state, with the right animation, sound and checks.</li></ul><blockquote><b>Modular by design.</b> Each layer only talks to the one below it through a tag, an attribute or an event name. Adding a door or a protocol is a data change, not a code change.</blockquote><h3>Remote doors</h3><p>Doors are tagged <code>RemoteDoor</code> and found by their <code>Codename</code> attribute, which also feeds autocomplete. A dispatch table picks a handler by <code>Type</code>: <b>Heavy</b> (a slab that lifts), <b>PPR</b> (slides along its own facing) or <b>EmergencyBlast</b> (two halves, bell, prelocks and flashing alarms). <code>lockdown * true</code> seals the whole facility, each door with its own progress bar; doors that are busy, already in that state or <code>Broken</code> are skipped and summarised. All door state lives on the door itself, so many doors can move in the same frame.</p><h3>Protocols &amp; authorization</h3><p>Site-wide alert levels from Green to Contingency; only one can be active, and activating a new one replaces the old. Access is two-layered: a whitelist gate (username → team → group rank) decides who may run <code>protocol</code> at all, then each protocol has its own minimum rank. Activation just writes a level number, and the directive screens around the map react to it independently.</p><h3>Terminals in the world</h3><p>Any model tagged <code>Terminal</code> gets a proximity prompt automatically, including ones tagged at runtime. The GUI is rebuilt fresh on every client instead of cloned, so each player gets live animations (scan sweep, pulsing status, session clock), and the whole look is driven by a single <code>THEME</code> table.</p>",
+          "tagline": "In-game terminal for doors, protocols & alerts",
+          "desc": "<p>SAM-OS is the in-game terminal used to run the facility: door lockdowns, security protocols and site-wide alerts. It's a retro amber CRT terminal built on <b>CMDR</b>, which I restyled and extended for the game, including a fully custom progress line.</p><h3>Three layers</h3><ul><li><b>The terminal</b> is purely visual: output, a blinking cursor, an autocomplete dropdown. It doesn't know what a door is.</li><li><b>CMDR</b> validates the typed command and its arguments, then runs the command's code <b>on the server</b>, so nobody can unlock doors by editing their own client.</li><li><b>Door &amp; protocol systems</b> live in the map and know how to change state, with the right animation, sound and checks.</li></ul><blockquote><b>Modular by design.</b> Each layer only talks to the one below it through a tag, an attribute or an event name. Adding a door or a protocol is a data change, not a code change.</blockquote><h3>Remote doors</h3><p>Doors are tagged <code>RemoteDoor</code> and found by their <code>Codename</code> attribute, which also feeds autocomplete. A dispatch table picks a handler by <code>Type</code>: <b>Heavy</b> (a slab that lifts), <b>PPR</b> (slides along its own facing) or <b>EmergencyBlast</b> (two halves, bell, prelocks and flashing alarms). <code>lockdown * true</code> seals the whole facility, each door with its own progress bar; doors that are busy, already in that state or <code>Broken</code> are skipped and summarised. All door state lives on the door itself, so many doors can move in the same frame.</p><h3>Protocols &amp; authorization</h3><p>Site-wide alert levels from Green to Contingency; only one can be active, and activating a new one replaces the old. Access is two-layered: a whitelist gate (username → team → group rank) decides who may run <code>protocol</code> at all, then each protocol has its own minimum rank. Activation just writes a level number, and the directive screens around the map react to it independently.</p><h3>Terminals in the world</h3><p>Any model tagged <code>Terminal</code> gets a proximity prompt automatically, including ones tagged at runtime. The GUI is rebuilt fresh on every client instead of cloned, so each player gets live animations (scan sweep, pulsing status, session clock), and the whole look is driven by a single <code>THEME</code> table.</p>",
           "videoUrl": "https://youtu.be/IFKqM6eMltk",
           "demo": "samos",
           "highlights": [
@@ -131,7 +131,7 @@ const DEFAULT = {
         {
           "title": "Generator System",
           "slug": "generator-system",
-          "tagline": "Area power, fuel consumption & fan physics",
+          "tagline": "Area power, fuel & fan physics",
           "desc": "The Generator System manages area-specific power through attribute-tagged generator objects (ID, Area, Enabled, FuelLevel). Dynamic fuel consumption scales with fan activity. Includes real-time status screens with color-coded fuel indicators (Normal / Danger / Critical), smooth fan acceleration physics, gas-can refueling with a polished UI, and a dev dashboard for live monitoring.",
           "videoUrl": "https://youtu.be/K98QBrEiATU",
           "images": [
@@ -212,7 +212,7 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/sspicon.webp",
       "accentColor": "#ff5c6c",
-      "shortDesc": "Systems and experiments I build on Roblox in my free time.",
+      "shortDesc": "Scripts made in my free time on Roblox.",
       "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects.",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev, Tools",
@@ -353,22 +353,22 @@ const DEFAULT = {
       "about": {
         "tag": "About",
         "title": "Who I am",
-        "lede": "Programmer working where gameplay meets engineering: systems that are secure, modular and pleasant to maintain."
+        "lede": "Who I am and what I'm into."
       },
       "projects": {
         "tag": "Selected work",
         "title": "Things I've built",
-        "lede": "Game systems, tools and a render engine. Open any project for the full breakdown, screenshots and videos."
+        "lede": "Stuff I've worked on. Click any of them for the full breakdown, screenshots and videos."
       },
       "experience": {
         "tag": "Experience",
         "title": "Where I've worked",
-        "lede": "Teams and projects I've written systems for, newest first."
+        "lede": "Where I've been programming, newest first."
       },
       "skills": {
         "tag": "Toolbox",
         "title": "Languages & tools",
-        "lede": "What I reach for, and how comfortable I am with it."
+        "lede": "What I use and how well I know it."
       },
       "terminal": {
         "tag": "A little easter egg",
@@ -377,26 +377,26 @@ const DEFAULT = {
       },
       "contact": {
         "tag": "Contact",
-        "title": "Let's build something",
+        "title": "Let's connect",
         "lede": "Open to collaborations, freelance work, or just talking about code."
       },
       "footer": {
-        "note": "Hand-written HTML, CSS & JS, with a GLSL shader in the hero."
+        "note": "Systems & Graphics Programmer"
       }
     },
     "hero": {
       "eyebrow": "Systems & Graphics Programmer",
-      "bio": "I build <strong>game systems in Lua for Roblox</strong> and <strong>real-time graphics in C++ / OpenGL</strong>. From server-authoritative gameplay to a hand-written render engine, I've spent 4+ years shipping real projects, and I don't call something done until it's done properly.",
+      "bio": "I'm a programmer who builds <strong>game systems in Lua</strong> on Roblox and <strong>graphics stuff in C++ / OpenGL</strong>. 4+ years of shipping real projects, from big game systems to my own render engine. I don't ship something until it's done properly &amp; fully.",
       "roles": [
-        "build game systems in Lua.",
-        "write render engines in C++.",
-        "design server-authoritative UI.",
+        "write Lua by day.",
+        "write C++ by night.",
+        "build systems exploiters can't touch.",
         "document everything I ship."
       ],
       "stats": [
-        { "value": "4", "suffix": "+", "label": "Years shipping code" },
-        { "value": "7", "suffix": "M+", "label": "Player visits on my work" },
-        { "auto": "projects", "label": "Featured projects" },
+        { "value": "4", "suffix": "+", "label": "Years of experience" },
+        { "value": "7", "suffix": "M+", "label": "Experience visits" },
+        { "auto": "projects", "label": "Projects" },
         { "auto": "systems", "label": "Systems documented" }
       ]
     },
@@ -406,7 +406,7 @@ const DEFAULT = {
       {
         "file": "MedicalExamineService.lua",
         "lang": "lua",
-        "code": "-- Server owns everything: clients only see what we send.\nRequestExamine.OnServerEvent:Connect(function(examiner, target)\n\tif not isPlayer(target) or target == examiner then return end\n\tif sessions[examiner] or pending[target] then return end\n\tif not isAlive(target) then return end\n\n\tpending[target] = examiner\n\tExamineRequested:FireClient(target, examiner.Name)\nend)"
+        "code": "-- The server decides, clients just get the result.\nRequestExamine.OnServerEvent:Connect(function(examiner, target)\n\tif not isPlayer(target) or target == examiner then return end\n\tif sessions[examiner] or pending[target] then return end\n\tif not isAlive(target) then return end\n\n\tpending[target] = examiner\n\tExamineRequested:FireClient(target, examiner.Name)\nend)"
       },
       {
         "file": "ZoneHealth.lua",

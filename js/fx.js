@@ -179,6 +179,7 @@
     el.className = 'intro';
     el.setAttribute('aria-hidden', 'true');
     el.innerHTML = `
+      <img class="intro-logo" src="images/logo.svg" width="64" height="64" alt="">
       <div class="intro-name"><span class="a">Samo</span><span class="b" style="color:var(--accent)">_VR</span></div>
       <div class="intro-bar"><i></i></div>
       <div class="intro-log"></div>
@@ -280,7 +281,6 @@
     const st = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
     G.to('.hero-copy', { yPercent: -10, opacity: 0.2, ease: 'none', scrollTrigger: st });
     G.to('.hero-visual', { yPercent: -22, ease: 'none', scrollTrigger: { ...st } });
-    G.to('.scroll-cue', { opacity: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: '15% top', scrub: true } });
   }
 
   // ═══════════════ PROGRESS BAR + BACK TO TOP ═══════════════
