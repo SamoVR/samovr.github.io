@@ -89,7 +89,6 @@ const DEFAULT = {
         {
           "title": "Medical Examine System",
           "slug": "medical-examine-system",
-          "latest": true,
           "tagline": "Check another player's injuries, limb by limb, live",
           "desc": "<p>Grab the examining clipboard, click another player, and once they accept you get a live readout of their injuries, limb by limb. Think of it as a hospital chart: the character holds the real readings, the server collects them, and the UI just shows what it's sent.</p><blockquote><b>Server owns everything.</b> Clients never read character data or decide anything on their own. Every request is validated by the server, and the examiner only ever sees what the server sends.</blockquote><h3>Session flow</h3><ol><li>The examiner clicks a highlighted player with the clipboard equipped. The server ignores self-exams, dead targets, a target with a pending request, or an examiner already in a session.</li><li>The target gets an <b>Incoming Request</b> popup with a draining timer; ignored, it declines itself after 15 seconds.</li><li>On accept, the healing UI opens and the patient sees a \"Being examined by …\" label.</li><li>Health and condition changes stream in; anything inside a 0.1 s window is coalesced into one update.</li></ol><p>A session ends on a manual close, death, the patient moving more than 20 studs away (checked every 1.5 s), or either player leaving. Both clients share <b>one teardown path</b>.</p><h3>Health rules</h3><p>Each character carries a <code>Medical</code> folder with one NumberValue per R15 body part, plus a <code>Condition</code> attribute (Bleeding, Burn, Fracture…). New condition types need no code change. Parts are grouped into six R6 zones, and <b>a zone is only as healthy as its weakest part</b>, so one destroyed hand turns the whole arm black. Quick View shows the zone average instead.</p><ul><li><b>81–100%</b> white and <b>61–80%</b> yellow: Stable</li><li><b>31–60%</b> orange: Caution</li><li><b>1–30%</b> red and <b>0%</b> black: Critical</li></ul><h3>The healing UI</h3><p>Four panels re-render from the same payload: a <b>Triage Card</b>, a clickable <b>Body Diagram</b>, an <b>Overview</b> of the selected zone and a <b>Quick View</b> of every zone. The console pops in, limbs thicken their outline on hover and flash red when they lose health, Critical labels pulse, and Quick View bars fill while the percentages count up. Every cosmetic effect runs client-side only.</p>",
           "videoUrl": "https://www.youtube.com/watch?v=VGKnKUkq2TM",
@@ -213,18 +212,21 @@ const DEFAULT = {
       "iconImg": "images/sspicon.webp",
       "accentColor": "#ff5c6c",
       "shortDesc": "Scripts made in my free time on Roblox.",
-      "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects.",
+      "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects. The biggest one right now is the reworked <font color=\"#fbbf24\">Soul System</font>, together with a <font color=\"#fbbf24\">HUD</font> that ties every system in the place together.",
       "langs": "Lua, Roblox Studio",
-      "tags": "Game Dev, Tools",
+      "tags": "Game Dev, Tools, UI",
       "status": "wip",
       "role": "Solo developer",
       "link": "https://www.roblox.com/games/16847910715/Samos-Scripting-Place",
       "highlights": [
-        "Soul & demon possession system",
+        "Reworked soul & demon system with 4 abilities",
+        "Place-wide HUD any script can plug into",
         "Raycast field-of-view visualizer",
         "Personal R&D sandbox"
       ],
       "images": [
+        "images/soulsys3.webp",
+        "images/soulsys2.webp",
         "images/ssp.webp",
         "images/soulsys.mp4",
         "images/vissys.mp4"
@@ -232,14 +234,43 @@ const DEFAULT = {
       "tabs": [
         {
           "title": "Soul System",
-          "desc": "A system that lets you exit your body as a spiritual being. You can exit your body as either a soul or a demon. Where a soul can roam the map with other souls or get to places normal mortals can't. A demon on the other hand can consume these souls and steal their body if left unattended. However, demons are sensitive to sacred objects such as crucifixes and can't get near them or else they will be diminished or forced to get out of possessed bodies.",
+          "slug": "soul-system",
+          "latest": true,
+          "tagline": "Leave your body as a soul or a demon",
+          "desc": "<p>Get torn out of your body as a <b>Soul</b> or a <b>Demon</b>. A glowing path leads back to your body, and the world fogs over the further you stray. Spirits can see each other and anything tagged <code>SoulObject</code>, and only they can stand on it.</p><p>This is a full rewrite of my old soul system: same idea, rebuilt from scratch so the old bugs can't come back.</p><h3>Demons</h3><ul><li><b>Devour</b> (hold R) a soul for Power. The victim gets warned and can run.</li><li><b>Possess</b> (hold Q) a vacant body. Its owner can hold E to tear you back out.</li><li>Four abilities unlock by tier as Power grows: <b>Soul Chains</b> drags a soul to you and roots it, <b>Dread Howl</b> stuns nearby souls and terrifies the living with flickering lights, <b>Desecrate</b> drops a sigil that strips the Level of sacred objects, and <b>Manifest</b> makes you visible and solid with a Rend attack.</li><li>Objects tagged <code>Sacred</code> burn demons and push them away, harder the higher their Level. While possessing, sacred ground loosens your grip on the body instead.</li></ul><h3>Fixed for good</h3><ul><li>Your character is never swapped or respawned during a transition. It becomes the spirit in place and every property is restored exactly; the body left behind is a clone.</li><li>Possession welds the stolen body onto the invisible spirit and mirrors your animation onto it, so leaving a body can't delete it or respawn you.</li><li>The ragdoll works on both Motor6D and the new avatar joint rigs: joints are released (not destroyed), limbs can't sink into the floor, and you're never stuck unable to move after getting up.</li></ul><h3>How it looks</h3><p>Leaving your body, a soft copy of you rises off it with spirals of light. Possessing, the body convulses and is hauled upright like a puppet. The demon aura grows every tier, ending as a burning fallen angel with a halo. Die as a demon and a pentagram opens under you, chains drag you down and hell erupts. Every effect is built from a shared VFX library and recoloured to the theme: demon red, soul blue, holy gold.</p>",
           "videoUrl": "",
+          "highlights": [
+            "Soul or Demon, with a path back to your body",
+            "Devour, possess, and 4 tiered demon abilities",
+            "Sacred objects that burn and repel demons",
+            "No character swaps, so the old bugs are gone"
+          ],
           "images": [
+            "images/soulsys3.webp",
+            "images/soulsys2.webp",
             "images/soulsys.mp4"
           ]
         },
         {
+          "title": "Place HUD",
+          "slug": "place-hud",
+          "tagline": "One HUD for every system in the place",
+          "desc": "<p>An always-on HUD for the whole place, built from one config module so every system can plug into it.</p><ul><li><b>Title panel</b> (top-left) with the place name and a tag chip.</li><li><b>Status list</b> (top-right): Vision, Spirit, and anything else that registers.</li><li><b>Notifications</b>: a shared feed under the status list, which the server can push to everyone.</li><li><b>Vitals</b> (bottom-centre): health, plus Power and tier while you're a demon. Replaces the default Roblox health bar.</li><li><b>Keybind bar</b>: system keys like Vision and Reality Rift, with the demon abilities and their cooldowns added while you're a demon.</li></ul><p>Out of your body, the accent colour follows your form and the soul system's hold prompts sit right above the bar. Any script can use it with one line, e.g. <code>PlaceHud.notify(\"Saved!\", \"Success\")</code> or <code>Hud.notifyAll(\"Event starting!\", \"Warning\")</code> from the server.</p>",
+          "videoUrl": "",
+          "highlights": [
+            "Status list, notifications, vitals & keybind bar",
+            "Follows your soul / demon form",
+            "One-line API from any client or server script"
+          ],
+          "images": [
+            "images/soulsys3.webp",
+            "images/soulsys2.webp"
+          ]
+        },
+        {
           "title": "Vision System",
+          "slug": "vision-system",
+          "tagline": "See exactly what another player sees",
           "desc": "By pressing V on your keyboard, and hovering your mouse over players, you can click on them to initiate raycast visualization from their camera. This essentially visualizes the exact field of players vision. This system is in its raw form and could have many uses, such as detecting whether a player is able to see you, or detecting if a players vision is obstructed. Supports both first person and third person mode.",
           "videoUrl": "",
           "images": [
