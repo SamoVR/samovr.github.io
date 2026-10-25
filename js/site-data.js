@@ -86,7 +86,7 @@ const DEFAULT = {
         "images/backrooms4.webp"
       ],
       "tabs": [
-        {
+        /*{
           "title": "Medical Examine System",
           "slug": "medical-examine-system",
           "tagline": "Check another player's injuries, limb by limb, live",
@@ -106,7 +106,7 @@ const DEFAULT = {
             "images/medical3.webp",
             "images/medical4.webp"
           ]
-        },
+        },*/
         {
           "title": "SAM-OS Terminal",
           "slug": "sam-os-terminal",
@@ -487,7 +487,7 @@ const DEFAULT = {
       }
     ],
     "cursorEffect": true,
-    "lockdown": true,
+    "lockdown": false,
     "lockdownMsg": "This portfolio is currently private. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
