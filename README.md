@@ -1,6 +1,6 @@
 # Samo_VR Portfolio
 
-A static portfolio site (GitHub Pages) with a local admin dashboard. No build step: plain HTML, CSS and JavaScript, plus two small vendored libraries.
+A static portfolio site (GitHub Pages) with a local admin dashboard. No build step: plain HTML, CSS and JavaScript, plus two small vendored libraries. 
 
 ## File Structure
 
