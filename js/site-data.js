@@ -244,8 +244,7 @@ const DEFAULT = {
           "highlights": [
             "Soul or Demon, with a path back to your body",
             "Devour, possess, and 4 tiered demon abilities",
-            "Sacred objects that burn and repel demons",
-            "No character swaps, so the old bugs are gone"
+            "Sacred objects that burn and repel demons"
           ],
           "images": [
             "images/soulsys3.webp",
