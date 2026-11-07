@@ -117,6 +117,8 @@ function linkLabel(url) {
     return 'Visit ' + h;
   } catch { return 'View project'; }
 }
+// "The Backrooms | AdySYNC" never breaks right before the bar
+const nameHTML = n => esc(n).replace(/ \| /g, '\u00a0| ');
 const statusInfo = p => (p.status === 'complete' ? { cls: 'status-complete', text: 'Complete' } : { cls: 'status-wip', text: 'In progress' });
 const splitList = s => String(s || '').split(',').map(t => t.trim()).filter(Boolean);
 const systemsCount = () => state.projects.reduce((n, p) => n + (p.tabs || []).length, 0);
@@ -161,6 +163,34 @@ function renderHero() {
     return `<div class="hero-stat"><dt>${esc(st.label)}</dt><dd><span class="count" data-to="${esc(value)}">${esc(value)}</span>${suffix ? `<span>${esc(suffix)}</span>` : ''}</dd></div>`;
   });
   $('#hero-stats').innerHTML = stats.join('');
+  renderHeroProps();
+}
+
+
+// The first tab of the hero code card: me as a selected object, laid out
+// like Roblox Studio's Properties window. It holds what the stats row
+// doesn't (what I work in, how to reach me), so nothing is said twice.
+function renderHeroProps() {
+  const s = state.settings || {};
+  const h = s.hero || {};
+  const row = (k, v) => `<div class="cp-row"><dt>${k}</dt><dd>${v}</dd></div>`;
+  const top = (gi, n) => ((state.skills[gi] || {}).skills || []).slice().sort((a, b) => (b.level || 0) - (a.level || 0)).slice(0, n).map(k => k.name).join(', ');
+  const data = [];
+  if (h.eyebrow) data.push(row('Role', esc(h.eyebrow)));
+  data.push(row('Open to', 'Freelance, collabs'));
+  if (top(0, 3)) data.push(row('Languages', esc(top(0, 3))));
+  if (top(1, 2)) data.push(row('Engines', esc(top(1, 2))));
+  const contacts = state.contact.map((c, i) => {
+    const href = c.action === 'open' ? contactHref(c.value) : null;
+    const shown = esc(String(c.value || '').replace(/^https?:\/\/(www\.)?/i, '').replace(/^mailto:/i, ''));
+    return row(esc(c.label), href
+      ? `<a class="cp-val" href="${esc(href)}"${/^https?:/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : ''}><span>${shown}</span>${extIcon}</a>`
+      : `<button type="button" class="cp-val" data-copy-contact="${i}" aria-label="Copy ${esc(c.label)}: ${esc(c.value)}"><span>${shown}</span>${copyIcon}</button>`);
+  });
+  const group = (name, rows) => rows.length ? `<div class="cp-group">${name}</div><dl>${rows.join('')}</dl>` : '';
+  $('#code-props').innerHTML = `
+    <div class="cp-obj"><img src="images/logo.svg" width="16" height="16" alt=""><b>Samo_VR</b><span>Player</span></div>
+    ${group('Data', data)}${group('Contact', contacts)}`;
 }
 
 // ═══════════════ RENDER: MARQUEE ═══════════════
@@ -235,7 +265,7 @@ function renderExperience() {
         <div class="exp-when"><div class="exp-years">${esc(e.years)}</div>${now ? '<span class="exp-now">Current</span>' : ''}</div>
         <span class="exp-dot" aria-hidden="true"></span>
         <div class="exp-card">
-          <h3 class="exp-company">${esc(e.company)}</h3>
+          <h3 class="exp-company">${nameHTML(e.company)}</h3>
           <div class="exp-role">${esc(e.role)}</div>
           <p class="exp-desc">${esc(e.desc)}</p>
           <div class="exp-tags">${splitList(e.tags).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
@@ -290,7 +320,7 @@ function projectCardHTML(p, i) {
       <div class="project-body">
         <div class="project-icon">${renderIconMarkup(p, '💻')}</div>
         <div class="project-meta"><span class="featured-kicker">Featured</span>${p.year ? `<span>${esc(p.year)}</span>` : ''}${p.role ? `<span>${esc(p.role)}</span>` : ''}</div>
-        <h3 class="project-name">${esc(p.name)}</h3>
+        <h3 class="project-name">${nameHTML(p.name)}</h3>
         <p class="project-desc">${esc(p.shortDesc || '')}</p>
         ${(p.tabs || []).length ? `
         <div class="featured-systems">
@@ -318,7 +348,7 @@ function projectCardHTML(p, i) {
       <div class="project-body">
         <div class="project-icon"${showMedia ? '' : ' style="position:static;margin-bottom:1rem"'}>${renderIconMarkup(p, '💻')}</div>
         <div class="project-meta">${meta}</div>
-        <h3 class="project-name">${esc(p.name)}</h3>
+        <h3 class="project-name">${nameHTML(p.name)}</h3>
         <p class="project-desc">${esc(p.shortDesc || '')}</p>
         <div class="project-footer">
           <div class="project-langs">${langs}</div>
@@ -898,7 +928,7 @@ function renderCmdk() {
     .sort((a, b) => (q ? b.score - a.score : 0))
     .map(x => x.it);
   cmdkSel = Math.min(cmdkSel, Math.max(0, cmdkItems.length - 1));
-  if (!cmdkItems.length) { list.innerHTML = '<div class="cmdk-empty">No results. Try "medical", "github" or "skills".</div>'; return; }
+  if (!cmdkItems.length) { list.innerHTML = '<div class="cmdk-empty">Nothing matches that. Try "terminal", "github" or "soul".</div>'; return; }
   let html = '', group = '';
   cmdkItems.forEach((it, i) => {
     if (!q && it.group !== group) { group = it.group; html += `<div class="cmdk-group">${esc(group)}</div>`; }
@@ -1095,6 +1125,14 @@ function wireStaticControls() {
   const kbd = isMac ? '⌘ K' : 'Ctrl K';
   $('#cmdk-kbd').textContent = kbd;
   $$('#footer-cmdk kbd').forEach(k => { k.textContent = kbd; });
+
+  // copy buttons in the hero Properties pane
+  $('#code-props').addEventListener('click', e => {
+    const b = e.target.closest('[data-copy-contact]');
+    if (!b) return;
+    const c = state.contact[parseInt(b.dataset.copyContact, 10)];
+    if (c) copyText(c.value, c.label);
+  });
 
   // "open project" buttons anywhere (bento card, featured card)
   document.addEventListener('click', e => {

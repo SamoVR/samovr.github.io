@@ -7,9 +7,9 @@
 // ── DEFAULT CONTENT ──
 // Project fields: name, slug, icon / iconType / iconImg, accentColor, shortDesc,
 // fullDesc (HTML), langs, tags, status ('complete' | 'wip'), link, images,
-// tabs (systems). Optional extras used by the redesigned site: year, role,
-// featured, videoUrl (YouTube showcase), highlights (bullet list),
-// demo ('medical' | 'samos' mounts an interactive replica).
+// tabs (systems). Optional extras: year, role, featured, videoUrl (YouTube
+// showcase), highlights (bullet list), demo ('medical' | 'samos' mounts an
+// interactive replica).
 // Systems (tabs) take: title, desc, images, videoUrl, and optionally slug,
 // tagline, highlights, demo, latest (shown as "Latest release" on the page).
 // Image paths may also point at .mp4 clips; they play inline, muted and looped.
@@ -22,8 +22,8 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/riftlogo.webp",
       "accentColor": "#7f77dd",
-      "shortDesc": "A custom 3D scene editor and real-time renderer built entirely in C++ using OpenGL.",
-      "fullDesc": "Originally started as a school project, <font color=\"#7f77dd\">RIFT </font>grew into a fully-featured render engine and scene editor. Built solo in <font color=\"#38bdf8\">C++</font> using <font color=\"#38bdf8\">OpenGL</font>, <font color=\"#38bdf8\">ImGui</font>, <font color=\"#38bdf8\">json</font>, and <font color=\"#38bdf8\">stbimage</font>. Features include a scene hierarchy, transform controls (position/rotation/scale), texture mapping, animation timeline with keyframe curves, scene save/load, and a property inspector panel. Every system was written from scratch, this was about understanding how engines work, not just using one.",
+      "shortDesc": "My own 3D scene editor and real-time renderer, written from scratch in C++ and OpenGL.",
+      "fullDesc": "<p>RIFT started as a school project and kept growing until it was a full render engine with its own scene editor. I built it alone in C++, with OpenGL for rendering, ImGui for the interface, json for scene files and stb_image for textures.</p><p>It has a scene hierarchy, transform controls for position, rotation and scale, texture mapping, an animation timeline with keyframe curves, a property inspector, and scene saving and loading. I wrote every system myself, because the whole point was to learn how an engine works on the inside.</p>",
       "langs": "C++, OpenGL, GLSL, ImGui",
       "tags": "Graphics, Tools",
       "status": "complete",
@@ -31,9 +31,9 @@ const DEFAULT = {
       "link": "https://github.com/SamoVR/SamosCircus2/tree/master/RenderEngine",
       "highlights": [
         "Every system written from scratch in C++",
-        "Scene hierarchy, inspector & transform tools",
+        "Scene hierarchy, inspector and transform tools",
         "Keyframe animation timeline with curves",
-        "Scene save / load"
+        "Saves and loads whole scenes"
       ],
       "images": [
         "images/rift5.webp",
@@ -43,14 +43,16 @@ const DEFAULT = {
       "tabs": [
         {
           "title": "Scene Editor",
-          "desc": "The editor exposes a full scene hierarchy with an object list panel, a 3D viewport, and a property inspector. Objects can be added, duplicated, or removed at runtime. Each object holds its own transform, texture reference, and name, all editable live.",
+          "tagline": "Hierarchy, viewport and inspector",
+          "desc": "<p>The editor has an object list that shows the scene hierarchy, a 3D viewport and a property inspector. You can add, duplicate or remove objects while it runs, and each object keeps its own name, transform and texture, all editable live.</p>",
           "images": [
             "images/rift2.webp"
           ]
         },
         {
           "title": "Animation Timeline",
-          "desc": "A keyframe-based animation timeline sits below the viewport. Position, rotation, and scale curves (X/Y/Z) can be authored and previewed in real time. Curves are displayed as coloured splines with draggable keyframe handles.",
+          "tagline": "Keyframes and curves for every transform",
+          "desc": "<p>The animation timeline sits under the viewport. You key position, rotation and scale on X, Y and Z and preview the result in real time. Each curve is drawn as a coloured spline with keyframe handles you can drag.</p>",
           "images": [
             "images/rift1.webp"
           ]
@@ -64,19 +66,19 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/backroomslogo.webp",
       "accentColor": "#fbbf24",
-      "shortDesc": "A Roblox horror game where I'm the systems programmer. Power, doors, protocols, terminals, medical, all of it.",
-      "fullDesc": "An ongoing <font color=\"#38bdf8\">Roblox </font>horror game where I serve as <font color=\"#4ade80\">Systems Programmer</font>. I designed and built the backend system architecture: a physics-based <font color=\"#fbbf24\">Generator System</font> with dynamic fuel consumption, fan physics and real-time status screens; a <font color=\"#fbbf24\">LightSystem</font> supporting global and area-specific blackouts via CollectionService; a modular <font color=\"#fbbf24\">TimeDoor System</font>; <font color=\"#fbbf24\">SAM-OS</font>, an in-world terminal on top of CMDR that drives remote door lockdowns and a <font color=\"#fbbf24\">Protocol System</font> with layered authorization; and the <font color=\"#fbbf24\">Medical Examine System</font>, a server-authoritative triage UI. Every system is <font color=\"#f87171\">modular</font>, <font color=\"#f87171\">documented</font>, and <font color=\"#f87171\">built to be extended without touching core logic</font>. Click a system below for the details. Two of them you can even try out right here.",
+      "shortDesc": "A Roblox horror game where I'm the systems programmer: power, doors, protocols, terminals, medical, all of it.",
+      "fullDesc": "<p>An ongoing Roblox horror game where I'm the systems programmer. I designed and built the backend:</p><ul><li>a physics-based generator system with fuel consumption, fan physics and live status screens</li><li>a light system for global and area-specific blackouts, driven by CollectionService</li><li>a modular time door system</li><li>SAM-OS, an in-world terminal built on CMDR that runs remote door lockdowns and a protocol system with layered authorization</li><li>the Medical Examine System, a server-authoritative triage UI</li></ul><p>Every system is modular and documented, and new features plug in without touching the core logic. The write-ups below explain how they work, and you can try SAM-OS right here in your browser.</p>",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev, UI",
       "status": "wip",
-      "year": "2025 – Now",
+      "year": "2025 – now",
       "role": "Systems Programmer",
       "featured": true,
       "link": "https://www.roblox.com/games/10720776665/The-Backrooms-AdySYNC",
       "highlights": [
-        "3 documented systems, 2 you can try right here",
-        "Everything checked on the server, no exploits",
-        "SAM-OS terminal built on top of CMDR",
+        "SAM-OS runs in your browser, so you can try it",
+        "Every action is checked on the server, so exploiters can't fake it",
+        "SAM-OS terminal built on CMDR",
         "Medical system with a live triage UI"
       ],
       "images": [
@@ -91,14 +93,14 @@ const DEFAULT = {
           "title": "Medical Examine System",
           "slug": "medical-examine-system",
           "tagline": "Check another player's injuries, limb by limb, live",
-          "desc": "<p>Grab the examining clipboard, click another player, and once they accept you get a live readout of their injuries, limb by limb. Think of it as a hospital chart: the character holds the real readings, the server collects them, and the UI just shows what it's sent.</p><blockquote><b>Server owns everything.</b> Clients never read character data or decide anything on their own. Every request is validated by the server, and the examiner only ever sees what the server sends.</blockquote><h3>Session flow</h3><ol><li>The examiner clicks a highlighted player with the clipboard equipped. The server ignores self-exams, dead targets, a target with a pending request, or an examiner already in a session.</li><li>The target gets an <b>Incoming Request</b> popup with a draining timer; ignored, it declines itself after 15 seconds.</li><li>On accept, the healing UI opens and the patient sees a \"Being examined by …\" label.</li><li>Health and condition changes stream in; anything inside a 0.1 s window is coalesced into one update.</li></ol><p>A session ends on a manual close, death, the patient moving more than 20 studs away (checked every 1.5 s), or either player leaving. Both clients share <b>one teardown path</b>.</p><h3>Health rules</h3><p>Each character carries a <code>Medical</code> folder with one NumberValue per R15 body part, plus a <code>Condition</code> attribute (Bleeding, Burn, Fracture…). New condition types need no code change. Parts are grouped into six R6 zones, and <b>a zone is only as healthy as its weakest part</b>, so one destroyed hand turns the whole arm black. Quick View shows the zone average instead.</p><ul><li><b>81–100%</b> white and <b>61–80%</b> yellow: Stable</li><li><b>31–60%</b> orange: Caution</li><li><b>1–30%</b> red and <b>0%</b> black: Critical</li></ul><h3>The healing UI</h3><p>Four panels re-render from the same payload: a <b>Triage Card</b>, a clickable <b>Body Diagram</b>, an <b>Overview</b> of the selected zone and a <b>Quick View</b> of every zone. The console pops in, limbs thicken their outline on hover and flash red when they lose health, Critical labels pulse, and Quick View bars fill while the percentages count up. Every cosmetic effect runs client-side only.</p>",
+          "desc": "<p>Grab the clipboard, click another player, and once they accept you get a live readout of their injuries, limb by limb. It works like a hospital chart: the character holds the real readings, the server collects them, and the UI only shows what the server sends.</p><blockquote>The server owns everything. Clients never read character data or make decisions on their own; the server validates every request, and the examiner only ever sees what it sends.</blockquote><h3>How a session runs</h3><ol><li>The examiner clicks a highlighted player with the clipboard equipped. The server ignores self-exams, dead targets, a target who already has a pending request, and an examiner who's already in a session.</li><li>The target gets an <b>Incoming Request</b> popup with a draining timer. If they ignore it, it declines itself after 15 seconds.</li><li>Once they accept, the healing UI opens and the patient sees a \"Being examined by …\" label.</li><li>Health and condition changes stream in, and anything inside a 0.1 s window gets merged into one update.</li></ol><p>A session ends when someone closes it, either player dies or leaves, or the patient moves more than 20 studs away (checked every 1.5 s). Both clients go through the same single teardown path.</p><h3>Health rules</h3><p>Each character carries a <code>Medical</code> folder with one NumberValue per R15 body part, plus a <code>Condition</code> attribute (Bleeding, Burn, Fracture…), so new condition types need no code changes. The parts are grouped into six R6 zones, and a zone is only as healthy as its weakest part: one destroyed hand turns the whole arm black. Quick View shows the zone average instead.</p><ul><li><b>81–100%</b> white and <b>61–80%</b> yellow: Stable</li><li><b>31–60%</b> orange: Caution</li><li><b>1–30%</b> red and <b>0%</b> black: Critical</li></ul><h3>The healing UI</h3><p>Four panels re-render from the same payload: a <b>Triage Card</b>, a clickable <b>Body Diagram</b>, an <b>Overview</b> of the selected zone and a <b>Quick View</b> of every zone. The console pops in, limbs get a thicker outline on hover and flash red when they lose health, Critical labels pulse, and the Quick View bars fill while the percentages count up. All the cosmetic effects run on the client only.</p>",
           "videoUrl": "https://www.youtube.com/watch?v=VGKnKUkq2TM",
           "demo": "medical",
           "highlights": [
-            "Every remote call validated by the server",
-            "Updates coalesced into 0.1 s batches",
-            "4 live panels · 6 body zones · 15 tracked parts",
-            "Shipped with full maintenance documentation"
+            "The server validates every remote call",
+            "Updates merged into 0.1 s batches",
+            "4 live panels, 6 body zones, 15 tracked parts",
+            "Shipped with full maintenance docs"
           ],
           "images": [
             "images/medical5.webp",
@@ -112,14 +114,14 @@ const DEFAULT = {
         {
           "title": "SAM-OS Terminal",
           "slug": "sam-os-terminal",
-          "tagline": "In-game terminal for doors, protocols & alerts",
-          "desc": "<p>SAM-OS is the in-game terminal used to run the facility: door lockdowns, security protocols and site-wide alerts. It's a retro amber CRT terminal built on <b>CMDR</b>, which I restyled and extended for the game, including a fully custom progress line.</p><h3>Three layers</h3><ul><li><b>The terminal</b> is purely visual: output, a blinking cursor, an autocomplete dropdown. It doesn't know what a door is.</li><li><b>CMDR</b> validates the typed command and its arguments, then runs the command's code <b>on the server</b>, so nobody can unlock doors by editing their own client.</li><li><b>Door &amp; protocol systems</b> live in the map and know how to change state, with the right animation, sound and checks.</li></ul><blockquote><b>Modular by design.</b> Each layer only talks to the one below it through a tag, an attribute or an event name. Adding a door or a protocol is a data change, not a code change.</blockquote><h3>Remote doors</h3><p>Doors are tagged <code>RemoteDoor</code> and found by their <code>Codename</code> attribute, which also feeds autocomplete. A dispatch table picks a handler by <code>Type</code>: <b>Heavy</b> (a slab that lifts), <b>PPR</b> (slides along its own facing) or <b>EmergencyBlast</b> (two halves, bell, prelocks and flashing alarms). <code>lockdown * true</code> seals the whole facility, each door with its own progress bar; doors that are busy, already in that state or <code>Broken</code> are skipped and summarised. All door state lives on the door itself, so many doors can move in the same frame.</p><h3>Protocols &amp; authorization</h3><p>Site-wide alert levels from Green to Contingency; only one can be active, and activating a new one replaces the old. Access is two-layered: a whitelist gate (username → team → group rank) decides who may run <code>protocol</code> at all, then each protocol has its own minimum rank. Activation just writes a level number, and the directive screens around the map react to it independently.</p><h3>Terminals in the world</h3><p>Any model tagged <code>Terminal</code> gets a proximity prompt automatically, including ones tagged at runtime. The GUI is rebuilt fresh on every client instead of cloned, so each player gets live animations (scan sweep, pulsing status, session clock), and the whole look is driven by a single <code>THEME</code> table.</p>",
+          "tagline": "The in-game terminal for doors, protocols and alerts",
+          "desc": "<p>SAM-OS is the in-game terminal that runs the facility: door lockdowns, security protocols and site-wide alerts. It's a retro amber CRT terminal built on <b>CMDR</b>, which I restyled and extended for the game, down to a fully custom progress line.</p><h3>Three layers</h3><ul><li><b>The terminal</b> only draws things: output, a blinking cursor, an autocomplete dropdown. It has no idea what a door is.</li><li><b>CMDR</b> checks the typed command and its arguments, then runs the command's code on the server, so nobody can unlock doors by editing their own client.</li><li><b>The door and protocol systems</b> live in the map and know how to change state, with the right animation, sound and checks.</li></ul><blockquote>Each layer only talks to the one below it, through a tag, an attribute or an event name. Adding a door or a protocol is a data change; the code stays as it is.</blockquote><h3>Remote doors</h3><p>Doors are tagged <code>RemoteDoor</code> and looked up by their <code>Codename</code> attribute, which also feeds autocomplete. A dispatch table picks the handler from the door's <code>Type</code>: <b>Heavy</b> is a slab that lifts, <b>PPR</b> slides along its own facing, and <b>EmergencyBlast</b> splits into two halves with a bell, prelocks and flashing alarms.</p><p><code>lockdown * true</code> seals the whole facility, and every door gets its own progress bar. Doors that are busy, already in that state or marked <code>Broken</code> are skipped and listed in a summary. Each door keeps its state on itself, so any number of them can move in the same frame.</p><h3>Protocols and authorization</h3><p>Protocols are site-wide alert levels from Green to Contingency. Only one can be active, so activating a new one replaces the old one. Access has two layers: a whitelist (username, then team, then group rank) decides who can run <code>protocol</code> at all, and each protocol sets its own minimum rank on top of that. Activating one just writes a level number, and the directive screens around the map react to it on their own.</p><h3>Terminals in the world</h3><p>Any model tagged <code>Terminal</code> gets a proximity prompt automatically, even if it's tagged at runtime. The GUI is built fresh on every client instead of cloned, so each player gets live animations (scan sweep, pulsing status, session clock), and a single <code>THEME</code> table drives the whole look.</p>",
           "videoUrl": "https://youtu.be/IFKqM6eMltk",
           "demo": "samos",
           "highlights": [
-            "Commands validated by CMDR, executed on the server",
-            "3 door types behind one Open/Close dispatch table",
-            "Facility-wide lockdown with per-door progress",
+            "CMDR validates every command, the server runs it",
+            "Three door types behind one Open/Close dispatch table",
+            "Facility-wide lockdown with a progress bar per door",
             "Two-layer protocol authorization"
           ],
           "images": [
@@ -132,8 +134,8 @@ const DEFAULT = {
         {
           "title": "Generator System",
           "slug": "generator-system",
-          "tagline": "Area power, fuel & fan physics",
-          "desc": "The Generator System manages area-specific power through attribute-tagged generator objects (ID, Area, Enabled, FuelLevel). Dynamic fuel consumption scales with fan activity. Includes real-time status screens with color-coded fuel indicators (Normal / Danger / Critical), smooth fan acceleration physics, gas-can refueling with a polished UI, and a dev dashboard for live monitoring.",
+          "tagline": "Area power, fuel and fan physics",
+          "desc": "<p>Each area gets its power from generator objects tagged with attributes (<code>ID</code>, <code>Area</code>, <code>Enabled</code>, <code>FuelLevel</code>). Fuel burns faster the harder the fans are working, and the fans speed up and slow down smoothly instead of snapping.</p><p>Status screens show the fuel level in real time, colour-coded Normal, Danger or Critical. Players refuel with gas cans through their own refuel UI, and there's a dev dashboard for watching every generator live.</p>",
           "videoUrl": "https://youtu.be/K98QBrEiATU",
           "images": [
             "images/backrooms9.webp"
@@ -148,8 +150,8 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/artemislogo.webp",
       "accentColor": "#d4a017",
-      "shortDesc": "Actor developer and programmer on a large-scale SCP Foundation Roblox experience.",
-      "fullDesc": "Contributed to <font color=\"#7f77dd\">Vistrim's SCPF: Artemis</font> as both an <font color=\"#4ade80\">Actor Developer</font> and a <font color=\"#4ade80\">core programmer</font>. Scripted and integrated a large roster of <font color=\"#fbbf24\">SCP entities</font>, including<font color=\"#fbbf24\"> SCP-610-1 (\"Flesh that Hates\")</font> and several others, and built or contributed to systems including <font color=\"#fbbf24\">Mining</font>, <font color=\"#fbbf24\">Infection</font>, <font color=\"#fbbf24\">Fire</font>, <font color=\"#fbbf24\">Fall Damage</font>, <font color=\"#fbbf24\">Ambience</font>, <font color=\"#fbbf24\">Area</font>, and <font color=\"#fbbf24\">Cloak</font>. The <font color=\"#fbbf24\">Fall Damage</font> system uses Y-coordinate delta tracking with configurable thresholds (15–110 studs), a <font color=\"#f87171\">server-authoritative architecture to prevent exploits</font>, and a client-side kneeling animation trigger for major impacts.",
+      "shortDesc": "Actor developer and one of the main programmers on a large SCP Foundation game on Roblox.",
+      "fullDesc": "<p>I worked on Vistrim's SCPF: Artemis as an actor developer and one of the core programmers. I scripted and integrated a long list of SCP entities, SCP-610-1 (\"Flesh that Hates\") among them, and built or worked on the mining, infection, fire, fall damage, ambience, area and cloak systems.</p><p>Fall damage tracks how far your character drops on the Y axis, against configurable thresholds between 15 and 110 studs. The server decides the damage so exploiters can't get around it, and a hard landing triggers a kneeling animation on the client.</p>",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "complete",
@@ -157,9 +159,9 @@ const DEFAULT = {
       "role": "Actor Developer & Programmer",
       "link": "https://www.roblox.com/communities/16228589/Artemis-Special-Containment-Procedures-Foundation",
       "highlights": [
-        "8 SCP entities scripted & integrated",
+        "8 SCP entities scripted and integrated",
         "Server-authoritative fall damage",
-        "Mining, infection, fire & cloak systems"
+        "Mining, infection, fire and cloak systems"
       ],
       "images": [
         "images/artemis1.webp",
@@ -170,7 +172,7 @@ const DEFAULT = {
       "tabs": [
         {
           "title": "SCP-610",
-          "desc": "SCP-610's main abilities such as roar, or attack. \nNote: models and animations for these entities were not created by me.",
+          "desc": "<p>SCP-610's main abilities, like its roar and its attack.</p><p>The models and animations for these entities were made by other people. The scripting is mine.</p>",
           "images": [
             "images/scp1.webp",
             "images/scp2.webp",
@@ -186,18 +188,18 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/innohqlogo.webp",
       "accentColor": "#38bdf8",
-      "shortDesc": "Lead Programmer on an ongoing Roblox project spanning scripted events through full game systems.",
-      "fullDesc": "Serving as <font color=\"#4ade80\">Lead Programmer</font> on<font color=\"#7f77dd\"> Innovation HQ 3.0 </font>since May 2024. Responsible for the scripting architecture across the project, ranging from simple scripted events to complete systems including the <font color=\"#fbbf24\">Door System</font>, <font color=\"#fbbf24\">Infection System</font>, and <font color=\"#fbbf24\">Nametag System</font>. The project is actively in development, systems are built with <font color=\"#f87171\">modularity </font>and <font color=\"#f87171\">extensibility </font>as a priority.",
+      "shortDesc": "Lead programmer on an ongoing Roblox project, from small scripted events up to full game systems.",
+      "fullDesc": "<p>I've been the lead programmer on Innovation HQ 3.0 since May 2024. I'm in charge of the scripting architecture for the whole project, from simple scripted events to complete systems like doors, infection and nametags.</p><p>The game is still in active development, so everything is built to be modular and easy to extend.</p>",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev",
       "status": "wip",
-      "year": "2024 – Now",
+      "year": "2024 – now",
       "role": "Lead Programmer",
       "link": "https://www.roblox.com/games/18489578811/Innovation-Inc-Reimagined-HQ-3-0",
       "highlights": [
         "Lead programmer since May 2024",
-        "Door, infection & nametag systems",
-        "Modular, extensible architecture"
+        "Door, infection and nametag systems",
+        "Modular systems that are easy to extend"
       ],
       "images": [
         "images/innohq3.webp",
@@ -213,15 +215,15 @@ const DEFAULT = {
       "iconType": "image",
       "iconImg": "images/sspicon.webp",
       "accentColor": "#ff5c6c",
-      "shortDesc": "Scripts made in my free time on Roblox.",
-      "fullDesc": "A personal <font color=\"#7f77dd\">Roblox </font>project where I showcase various <font color=\"#fbbf24\">systems </font>and <font color=\"#fbbf24\">experiments </font>I've built in my free time, ranging from <font color=\"#fbbf24\">gameplay mechanics</font> to <font color=\"#f87171\">technical scripting</font> projects. The biggest one right now is the reworked <font color=\"#fbbf24\">Soul System</font>, together with a <font color=\"#fbbf24\">HUD</font> that ties every system in the place together.",
+      "shortDesc": "My Roblox sandbox for the systems I build in my free time.",
+      "fullDesc": "<p>My personal Roblox place, where I put the systems and experiments I build in my free time, from gameplay mechanics to the more technical scripting stuff.</p><p>The biggest thing in it right now is the reworked Soul System, plus a HUD that ties every system in the place together.</p>",
       "langs": "Lua, Roblox Studio",
       "tags": "Game Dev, Tools, UI",
       "status": "wip",
       "role": "Solo developer",
       "link": "https://www.roblox.com/games/16847910715/Samos-Scripting-Place",
       "highlights": [
-        "Reworked soul & demon system with 4 abilities",
+        "Reworked soul and demon system with 4 abilities",
         "Place-wide HUD any script can plug into",
         "Raycast field-of-view visualizer",
         "Personal R&D sandbox"
@@ -239,7 +241,7 @@ const DEFAULT = {
           "slug": "soul-system",
           "latest": true,
           "tagline": "Leave your body as a soul or a demon",
-          "desc": "<p>Get torn out of your body as a <b>Soul</b> or a <b>Demon</b>. A glowing path leads back to your body, and the world fogs over the further you stray. Spirits can see each other and anything tagged <code>SoulObject</code>, and only they can stand on it.</p><p>This is a full rewrite of my old soul system: same idea, rebuilt from scratch so the old bugs can't come back.</p><h3>Demons</h3><ul><li><b>Devour</b> (hold R) a soul for Power. The victim gets warned and can run.</li><li><b>Possess</b> (hold Q) a vacant body. Its owner can hold E to tear you back out.</li><li>Four abilities unlock by tier as Power grows: <b>Soul Chains</b> drags a soul to you and roots it, <b>Dread Howl</b> stuns nearby souls and terrifies the living with flickering lights, <b>Desecrate</b> drops a sigil that strips the Level of sacred objects, and <b>Manifest</b> makes you visible and solid with a Rend attack.</li><li>Objects tagged <code>Sacred</code> burn demons and push them away, harder the higher their Level. While possessing, sacred ground loosens your grip on the body instead.</li></ul><h3>Fixed for good</h3><ul><li>Your character is never swapped or respawned during a transition. It becomes the spirit in place and every property is restored exactly; the body left behind is a clone.</li><li>Possession welds the stolen body onto the invisible spirit and mirrors your animation onto it, so leaving a body can't delete it or respawn you.</li><li>The ragdoll works on both Motor6D and the new avatar joint rigs: joints are released (not destroyed), limbs can't sink into the floor, and you're never stuck unable to move after getting up.</li></ul><h3>How it looks</h3><p>Leaving your body, a soft copy of you rises off it with spirals of light. Possessing, the body convulses and is hauled upright like a puppet. The demon aura grows every tier, ending as a burning fallen angel with a halo. Die as a demon and a pentagram opens under you, chains drag you down and hell erupts. Every effect is built from a shared VFX library and recoloured to the theme: demon red, soul blue, holy gold.</p>",
+          "desc": "<p>Get torn out of your body as a <b>Soul</b> or a <b>Demon</b>. A glowing path leads back to your body, and the world fogs over the further you stray. Spirits can see each other and anything tagged <code>SoulObject</code>, and only they can stand on it.</p><p>This is a full rewrite of my old soul system: same idea, rebuilt from scratch so the old bugs can't come back.</p><h3>Demons</h3><ul><li><b>Devour</b> (hold R) a soul for Power. The victim gets a warning and can run.</li><li><b>Possess</b> (hold Q) an empty body. Its owner can hold E to tear you back out.</li><li>Four abilities unlock by tier as your Power grows. <b>Soul Chains</b> drags a soul to you and roots it, <b>Dread Howl</b> stuns nearby souls and scares the living with flickering lights, <b>Desecrate</b> drops a sigil that strips sacred objects of their Level, and <b>Manifest</b> makes you visible and solid, with a Rend attack.</li><li>Objects tagged <code>Sacred</code> burn demons and push them away, harder the higher their Level. While you're possessing someone, sacred ground loosens your grip on the body instead.</li></ul><h3>Fixed for good</h3><ul><li>Your character is never swapped or respawned during a transition. It turns into the spirit in place and gets every property back exactly; the body left behind is a clone.</li><li>Possession welds the stolen body onto the invisible spirit and mirrors your animation onto it, so leaving a body can't delete it or respawn you.</li><li>The ragdoll works on both Motor6D and the new avatar joint rigs. Joints are released instead of destroyed, limbs can't sink into the floor, and you never get stuck unable to move after getting up.</li></ul><h3>How it looks</h3><p>When you leave your body, a soft copy of you rises off it with spirals of light. When you possess one, the body convulses and gets hauled upright like a puppet. The demon aura grows with every tier and ends as a burning fallen angel with a halo. Die as a demon and a pentagram opens under you, chains drag you down and hell erupts. Every effect comes from a shared VFX library, recoloured to the theme: demon red, soul blue, holy gold.</p>",
           "videoUrl": "",
           "highlights": [
             "Soul or Demon, with a path back to your body",
@@ -256,11 +258,11 @@ const DEFAULT = {
           "title": "Place HUD",
           "slug": "place-hud",
           "tagline": "One HUD for every system in the place",
-          "desc": "<p>An always-on HUD for the whole place, built from one config module so every system can plug into it.</p><ul><li><b>Title panel</b> (top-left) with the place name and a tag chip.</li><li><b>Status list</b> (top-right): Vision, Spirit, and anything else that registers.</li><li><b>Notifications</b>: a shared feed under the status list, which the server can push to everyone.</li><li><b>Vitals</b> (bottom-centre): health, plus Power and tier while you're a demon. Replaces the default Roblox health bar.</li><li><b>Keybind bar</b>: system keys like Vision and Reality Rift, with the demon abilities and their cooldowns added while you're a demon.</li></ul><p>Out of your body, the accent colour follows your form and the soul system's hold prompts sit right above the bar. Any script can use it with one line, e.g. <code>PlaceHud.notify(\"Saved!\", \"Success\")</code> or <code>Hud.notifyAll(\"Event starting!\", \"Warning\")</code> from the server.</p>",
+          "desc": "<p>An always-on HUD for the whole place, built from one config module so every system can plug into it.</p><ul><li><b>Title panel</b> (top left) with the place name and a tag chip.</li><li><b>Status list</b> (top right): Vision, Spirit, and anything else that registers itself.</li><li><b>Notifications</b>: a shared feed under the status list, which the server can push to everyone.</li><li><b>Vitals</b> (bottom centre): health, plus Power and tier while you're a demon. It replaces the default Roblox health bar.</li><li><b>Keybind bar</b>: system keys like Vision and Reality Rift, plus the demon abilities and their cooldowns while you're a demon.</li></ul><p>When you're out of your body, the accent colour follows your form and the soul system's hold prompts sit right above the bar. Any script can use it with one line, like <code>PlaceHud.notify(\"Saved!\", \"Success\")</code>, or <code>Hud.notifyAll(\"Event starting!\", \"Warning\")</code> from the server.</p>",
           "videoUrl": "",
           "highlights": [
-            "Status list, notifications, vitals & keybind bar",
-            "Follows your soul / demon form",
+            "Status list, notifications, vitals and a keybind bar",
+            "Follows your soul or demon form",
             "One-line API from any client or server script"
           ],
           "images": [
@@ -272,7 +274,7 @@ const DEFAULT = {
           "title": "Vision System",
           "slug": "vision-system",
           "tagline": "See exactly what another player sees",
-          "desc": "By pressing V on your keyboard, and hovering your mouse over players, you can click on them to initiate raycast visualization from their camera. This essentially visualizes the exact field of players vision. This system is in its raw form and could have many uses, such as detecting whether a player is able to see you, or detecting if a players vision is obstructed. Supports both first person and third person mode.",
+          "desc": "<p>Press V, hover over a player and click them, and the system raycasts from their camera to draw exactly what they can see. It works in first and third person.</p><p>It's still a raw prototype, but it has plenty of possible uses, like checking whether a player can see you or whether something is blocking their view.</p>",
           "videoUrl": "",
           "images": [
             "images/vissys.mp4"
@@ -284,17 +286,17 @@ const DEFAULT = {
   "about": [
     {
       "label": "Background",
-      "content": "I'm a software developer with 4+ years of experience across two domains: native C++ application development with OpenGL, and Lua scripting on the Roblox platform. I'm currently studying Computer Science, where C++ is my primary language, with Kotlin on the horizon. I care deeply about writing clean, performant, well-documented code, and I don't ship something until it's done properly &amp; fully.",
+      "content": "I've been programming for more than four years, in two worlds: native C++ applications with OpenGL, and Lua scripting on Roblox. I'm studying Computer Science, where C++ is my main language and Kotlin is next on the list. I like code that's clean, fast and documented, and I don't ship anything until it's done properly.",
       "width": "full"
     },
     {
-      "label": "Core Focus",
-      "content": "Game systems architecture for <font color=\"#38bdf8\">Roblox </font>projects (<font color=\"#38bdf8\">Lua </font>development), real-time graphics programming, modular framework design, and low-level <font color=\"#38bdf8\">C++</font> development.",
+      "label": "What I focus on",
+      "content": "Game systems architecture for Roblox in Lua, real-time graphics, modular frameworks, and low-level C++.",
       "width": "normal"
     },
     {
-      "label": "Currently Working With",
-      "content": "C++ with OpenGL, Lua in Roblox Studio, Git, Visual Studio, and VS Code.",
+      "label": "What I use day to day",
+      "content": "C++ with OpenGL, Lua in Roblox Studio, Git, Visual Studio and VS Code.",
       "width": "normal"
     }
   ],
@@ -305,13 +307,13 @@ const DEFAULT = {
         { "name": "Lua", "level": 92, "color": "#7f77dd" },
         { "name": "C++", "level": 82, "color": "#7f77dd" },
         { "name": "PHP", "level": 77, "color": "#7f77dd" },
-        { "name": "Javascript", "level": 67, "color": "#7f77dd" },
+        { "name": "JavaScript", "level": 67, "color": "#7f77dd" },
         { "name": "GLSL", "level": 65, "color": "#7f77dd" },
         { "name": "C#", "level": 62, "color": "#7f77dd" }
       ]
     },
     {
-      "title": "Graphics & Engines",
+      "title": "Graphics and engines",
       "skills": [
         { "name": "Roblox Studio", "level": 95, "color": "#7f77dd" },
         { "name": "OpenGL", "level": 82, "color": "#7f77dd" },
@@ -320,7 +322,7 @@ const DEFAULT = {
       ]
     },
     {
-      "title": "Dev Tools & Software",
+      "title": "Tools",
       "skills": [
         { "name": "Visual Studio", "level": 90, "color": "#7f77dd" },
         { "name": "VS Code", "level": 86, "color": "#7f77dd" },
@@ -332,39 +334,39 @@ const DEFAULT = {
   "experience": [
     {
       "company": "The Backrooms | AdySYNC",
-      "years": "2025 - Now",
-      "role": "Programmer - Roblox",
-      "desc": "Serving as a programmer on an ambitious Roblox horror experience. Designed and built a suite of core game systems from the ground up, including a physics-based Generator System with dynamic fuel consumption and fan mechanics, a modular LightSystem for area-specific blackout events, a TimeDoor System, a Protocol System with layered authorization, a terminal framework integrated with the CMDR command library, and a server-authoritative Medical Examine System with a live triage UI. Each system is designed to be modular, well-documented, and easily extendable.",
+      "years": "2025 – now",
+      "role": "Systems programmer, Roblox",
+      "desc": "I design and build the core systems for a Roblox horror game, from the ground up: a physics-based generator system with fuel consumption and fan mechanics, a modular light system for area blackouts, time doors, a protocol system with layered authorization, a terminal framework on top of the CMDR command library, and a server-authoritative medical examine system with a live triage UI. Every one of them is modular, documented and easy to extend.",
       "tags": "Lua,Roblox Studio,Game Systems,CMDR,UI,Modular Architecture"
     },
     {
       "company": "Innovation HQ 3.0",
-      "years": "May 2024 - Now",
-      "role": "Lead Programmer - Roblox",
-      "desc": "Working as Lead Programmer on an ongoing Roblox project, responsible for a wide range of systems including Door Systems, Infection Systems, Nametag Systems, and more. Overseeing the scripting architecture from simple scripted events through to full game subsystems.",
+      "years": "May 2024 – now",
+      "role": "Lead programmer, Roblox",
+      "desc": "Lead programmer on an ongoing Roblox project. I'm responsible for the scripting architecture, from simple scripted events to full systems like doors, infection and nametags.",
       "tags": "Lua,Roblox Studio,Game Systems,Scripting"
     },
     {
       "company": "SCPF | Artemis",
-      "years": "Jul 2023 - Mar 2024",
-      "role": "Actor Developer & Programmer - Roblox",
-      "desc": "Worked as an Actor Developer and one of the main programmers on Vistrim's SCPF: Artemis. Scripted and integrated a wide range of SCP entities, including SCP-457, SCP-662, SCP-610-1, SCP-610-2, SCP-610-4, SCP-963, SCP-034, and SCP-504, alongside core gameplay systems: Mining, Infection, Fire, Anomaly Actor, Ambience, Area, Fall Damage, and Cloak Systems.",
+      "years": "Jul 2023 – Mar 2024",
+      "role": "Actor developer and programmer, Roblox",
+      "desc": "Actor developer and one of the main programmers on Vistrim's SCPF: Artemis. I scripted and integrated SCP-457, SCP-662, SCP-610-1, SCP-610-2, SCP-610-4, SCP-963, SCP-034 and SCP-504, and worked on the core gameplay systems: mining, infection, fire, anomaly actors, ambience, areas, fall damage and cloaking.",
       "tags": "Lua,Roblox Studio,Actor Development,Game Systems"
     },
     {
-      "company": "C++ / OpenGL / Lua - Personal Projects",
-      "years": "2022 - Now",
-      "role": "Systems & Graphics Programmer",
-      "desc": "Building native C++ applications with a focus on real-time 3D graphics via OpenGL. The biggest is the RIFT Render Engine, a custom scene editor and renderer that started as a school project and grew into a full-featured tool with scene save/load, animation timelines, an object hierarchy, texture mapping, and a built-in property inspector. Alongside it sit lighter projects like Samo's Scripting Place, a sandbox of Roblox systems built for fun.",
+      "company": "Personal projects",
+      "years": "2022 – now",
+      "role": "Systems and graphics programmer",
+      "desc": "Native C++ applications, mostly real-time 3D graphics with OpenGL. The biggest is RIFT, my own scene editor and renderer. It started as a school project and grew into a proper tool with scene saving and loading, animation timelines, an object hierarchy, texture mapping and a property inspector. Next to it sit lighter projects like Samo's Scripting Place, my sandbox of Roblox systems built for fun.",
       "tags": "C++,OpenGL,GLSL,ImGui,Visual Studio,Git,Lua,Roblox Studio"
     }
   ],
   "contact": [
     {
-      "label": "GitHub",
-      "value": "https://github.com/SamoVR",
-      "icon": "🐙",
-      "action": "open"
+      "label": "Discord",
+      "value": "samo_vr",
+      "icon": "💬",
+      "action": "copy"
     },
     {
       "label": "Email",
@@ -373,10 +375,10 @@ const DEFAULT = {
       "action": "copy"
     },
     {
-      "label": "Discord",
-      "value": "samo_vr",
-      "icon": "💬",
-      "action": "copy"
+      "label": "GitHub",
+      "value": "https://github.com/SamoVR",
+      "icon": "🐙",
+      "action": "open"
     }
   ],
   "settings": {
@@ -390,16 +392,16 @@ const DEFAULT = {
       "projects": {
         "tag": "Selected work",
         "title": "Things I've built",
-        "lede": "Stuff I've worked on. Click any of them for the full breakdown, screenshots and videos."
+        "lede": "Open any project for the full breakdown, with screenshots and videos. You can even try SAM-OS right here in your browser."
       },
       "experience": {
         "tag": "Experience",
         "title": "Where I've worked",
-        "lede": "Where I've been programming, newest first."
+        "lede": "Teams and projects I've written systems for, newest first."
       },
       "skills": {
         "tag": "Toolbox",
-        "title": "Languages & tools",
+        "title": "Languages and tools",
         "lede": "What I use and how well I know it."
       },
       "terminal": {
@@ -409,8 +411,8 @@ const DEFAULT = {
       },
       "contact": {
         "tag": "Contact",
-        "title": "Let's connect",
-        "lede": "Open to collaborations, freelance work, or just talking about code."
+        "title": "Get in touch",
+        "lede": "I'm open to collaborations and freelance work, and always happy to talk code."
       },
       "footer": {
         "note": "Systems & Graphics Programmer"
@@ -418,7 +420,7 @@ const DEFAULT = {
     },
     "hero": {
       "eyebrow": "Systems & Graphics Programmer",
-      "bio": "I'm a programmer who builds <strong>game systems in Lua</strong> on Roblox and <strong>graphics stuff in C++ / OpenGL</strong>. 4+ years of shipping real projects, from big game systems to my own render engine. I don't ship something until it's done properly &amp; fully.",
+      "bio": "I build game systems in Lua for Roblox and graphics code in C++ with OpenGL. I've been shipping real projects for more than four years, from big game systems to my own render engine, and nothing ships until it's done properly.",
       "roles": [
         "write Lua by day.",
         "write C++ by night.",
@@ -427,9 +429,9 @@ const DEFAULT = {
       ],
       "stats": [
         { "value": "4", "suffix": "+", "label": "Years of experience" },
-        { "value": "7", "suffix": "M+", "label": "Experience visits" },
+        { "value": "7", "suffix": "M+", "label": "Game visits" },
         { "auto": "projects", "label": "Projects" },
-        { "auto": "systems", "label": "Systems documented" }
+        { "auto": "systems", "label": "Systems written up" }
       ]
     },
     // Snippets typed out by the editor card in the hero. Short, illustrative
@@ -460,7 +462,7 @@ const DEFAULT = {
       },
       {
         "type": "out",
-        "text": "Samo_VR - Programmer. Lua by day, C++ by night."
+        "text": "Samo_VR, programmer. Lua by day, C++ by night."
       },
       {
         "type": "comment",
@@ -489,7 +491,7 @@ const DEFAULT = {
     ],
     "cursorEffect": true,
     "lockdown": false,
-    "lockdownMsg": "This portfolio is currently private. Check back soon.",
+    "lockdownMsg": "This portfolio is private for now. Check back soon.",
     "scrollReveal": true,
     "heroReveal": true,
     "progressBar": true,
@@ -500,8 +502,8 @@ const DEFAULT = {
     "notFound": {
       "title": "404",
       "heading": "Lost in the build folder.",
-      "message": "The page you're looking for doesn't exist, it might have been moved, renamed, or never built in the first place.",
-      "buttonText": "← Back to Home",
+      "message": "There's nothing at this address. It might have been moved or renamed, or it never got built in the first place.",
+      "buttonText": "Back to the homepage",
       "buttonLink": "/"
     }
   },

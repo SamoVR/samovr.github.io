@@ -48,10 +48,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shared.css?v=20261021i">
-<link rel="stylesheet" href="css/portfolio.css?v=20261021i">
-<link rel="stylesheet" href="css/medical-demo.css?v=20261021i">
-<link rel="stylesheet" href="css/samos-demo.css?v=20261021i">
+<link rel="stylesheet" href="css/shared.css?v=20261108a">
+<link rel="stylesheet" href="css/portfolio.css?v=20261108a">
+<link rel="stylesheet" href="css/medical-demo.css?v=20261108a">
+<link rel="stylesheet" href="css/samos-demo.css?v=20261108a">
 <script>
   document.documentElement.classList.add('js', 'js-reveal', 'js-hero');
   // if any script fails, never leave content hidden waiting for an animation
@@ -129,17 +129,18 @@
       <dl class="hero-stats" id="hero-stats" data-hero></dl>
     </div>
 
-    <div class="hero-visual" data-hero aria-hidden="true">
-      <div class="code-card" id="code-card">
+    <div class="hero-visual" data-hero>
+      <div class="code-card" id="code-card" aria-label="Editor: my properties and some code">
         <div class="code-head">
           <span class="code-dots"><i></i><i></i><i></i></span>
-          <div class="code-tabs" id="code-tabs"></div>
+          <div class="code-tabs" id="code-tabs" role="tablist" aria-label="Open files"></div>
         </div>
-        <pre class="code-body"><code id="code-body"></code></pre>
+        <div class="code-props" id="code-props" role="tabpanel" aria-label="Properties"></div>
+        <pre class="code-body" id="code-pre" aria-hidden="true" hidden><code id="code-body"></code></pre>
         <div class="code-foot">
           <span id="code-lang">Lua</span>
           <span id="code-pos">Ln 1, Col 1</span>
-          <span class="code-foot-ok">● Ready</span>
+          <span class="code-foot-ok" id="code-ok">● Ready</span>
         </div>
       </div>
       <div class="float-chip"><span class="chip-mono">{ }</span>Modular by design</div>
@@ -364,9 +365,9 @@
   </div>
 </div>
 
-<script src="vendor/gsap.min.js?v=20261021i" defer></script>
-<script src="vendor/ScrollTrigger.min.js?v=20261021i" defer></script>
-<script src="vendor/lenis.min.js?v=20261021i" defer></script>
+<script src="vendor/gsap.min.js?v=20261108a" defer></script>
+<script src="vendor/ScrollTrigger.min.js?v=20261108a" defer></script>
+<script src="vendor/lenis.min.js?v=20261108a" defer></script>
 <!-- site data: fresh URL on every load, so a pushed change shows up on the next refresh (never cached) -->
 <script>document.write('<script src="js/site-data.js?t=' + Date.now() + '"><\/script>');</script>
 <script>
@@ -375,13 +376,13 @@
     document.write('<style>body > *:not(#lockdown-wall){visibility:hidden !important}</style>');
   }
 </script>
-<script src="js/shared-data.js?v=20261021i" defer></script>
-<script src="js/tab-format.js?v=20261021i" defer></script>
-<script src="js/hero-shader.js?v=20261021i" defer></script>
-<script src="js/medical-demo.js?v=20261021i" defer></script>
-<script src="js/samos-demo.js?v=20261021i" defer></script>
-<script src="js/terminal.js?v=20261021i" defer></script>
-<script src="js/portfolio.js?v=20261021i" defer></script>
-<script src="js/fx.js?v=20261021i" defer></script>
+<script src="js/shared-data.js?v=20261108a" defer></script>
+<script src="js/tab-format.js?v=20261108a" defer></script>
+<script src="js/hero-shader.js?v=20261108a" defer></script>
+<script src="js/medical-demo.js?v=20261108a" defer></script>
+<script src="js/samos-demo.js?v=20261108a" defer></script>
+<script src="js/terminal.js?v=20261108a" defer></script>
+<script src="js/portfolio.js?v=20261108a" defer></script>
+<script src="js/fx.js?v=20261108a" defer></script>
 </body>
 </html>

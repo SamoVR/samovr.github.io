@@ -21,7 +21,7 @@ A static portfolio site (GitHub Pages) with a local admin dashboard. No build st
 │   ├── shared-data.js    ← Helpers shared by every page
 │   ├── portfolio.js      ← Renders sections, project detail, lightbox, Ctrl K menu
 │   ├── fx.js             ← Motion: smooth scroll, reveals, intro, hero, marquee
-│   ├── hero-shader.js    ← Raw WebGL/GLSL background in the hero
+│   ├── hero-shader.js    ← Raw WebGL/GLSL hero background: the fbm field plus an engine-style grid floor
 │   ├── medical-demo.js   ← In-browser replica of the Medical Examine System UI
 │   ├── samos-demo.js     ← In-browser replica of the SAM-OS terminal
 │   ├── terminal.js       ← The interactive "Poking around" shell
@@ -57,6 +57,10 @@ Project fields:
 | `demo` | Project-level replica (same values as on systems); usually you'll put demos on a system instead |
 
 Hero text, rotating role lines, stats and the code snippets typed out in the hero live under `settings.hero` and `settings.heroCode`. The hero snippets are short illustrative excerpts; swap in real code any time.
+
+The code card always opens on a **Properties** tab (laid out like Roblox Studio's Properties window). It's built automatically from `settings.hero.eyebrow` (Role), your top skills in the first two skill groups, and your contact links, which copy or open on click. After a few seconds the card cycles into the code files; clicking any tab stops the cycling.
+
+The grid floor in the hero background puts its origin (where the red X and cyan Z axes cross) under your name, and re-aims itself on resize.
 
 ### Using the admin
 
@@ -116,7 +120,7 @@ GitHub Pages serves `404.html` for any URL that doesn't exist, at any depth. All
 
 ## Updating code (not just content)
 
-Every CSS/JS link in `index.html`, `admin.html` and `404.html` ends in `?v=…`. When you change any CSS or JS file, change that value (e.g. `?v=20261021c` → `?v=20261102`) in all three pages. Otherwise visitors' browsers can keep old cached files for a few minutes and mix them with the new page, which breaks the layout. Replacing only `site-data.js` doesn't need this.
+Every CSS/JS link in `index.html`, `admin.html` and `404.html` ends in `?v=…`. When you change any CSS or JS file, change that value (e.g. `?v=20261108a` → `?v=20261115a`) in all three pages. Otherwise visitors' browsers can keep old cached files for a few minutes and mix them with the new page, which breaks the layout. Replacing only `site-data.js` doesn't need this.
 
 ## Deploying
 

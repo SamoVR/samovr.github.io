@@ -136,13 +136,18 @@
     return out + esc(line.slice(last));
   }
 
+  // Tab 0 is the Properties pane (rendered by portfolio.js); the rest are
+  // snippets that type themselves out. It cycles on its own until someone
+  // clicks a tab, then it stays wherever they put it.
+  let cardTimer = 0;
   function codeCard() {
-    const snippets = (S.heroCode || []).filter(s => s && s.code);
-    const visual = $('.hero-visual');
-    if (!snippets.length) { if (visual) visual.hidden = true; return; }
-    const tabs = $('#code-tabs'), body = $('#code-body'), langEl = $('#code-lang'), posEl = $('#code-pos');
-    tabs.innerHTML = snippets.map(s => `<span class="code-tab" data-lang="${esc(s.lang)}"><i></i>${esc(s.file)}</span>`).join('');
-    let visible = true;
+    clearTimeout(cardTimer);
+    const snippets = ((state.settings || {}).heroCode || []).filter(s => s && s.code);
+    const tabs = $('#code-tabs'), body = $('#code-body'), pre = $('#code-pre'), props = $('#code-props');
+    const langEl = $('#code-lang'), posEl = $('#code-pos'), okEl = $('#code-ok');
+    const files = [{ file: 'Properties', props: true }].concat(snippets);
+    tabs.innerHTML = files.map((s, i) => `<button type="button" class="code-tab${s.props ? ' code-tab-props' : ''}" role="tab" data-i="${i}" data-lang="${esc(s.lang || '')}" aria-selected="false">${s.props ? '<img src="images/logo.svg" width="12" height="12" alt="">' : '<i></i>'}${esc(s.file)}</button>`).join('');
+    let visible = true, manual = false, cur = -1;
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe($('#code-card'));
 
     const render = (code, lang, cursor) => {
@@ -150,20 +155,53 @@
       body.innerHTML = lines.map((l, i) => `<span class="code-line">${highlight(l, lang) || ' '}${cursor && i === lines.length - 1 ? '<span class="code-cursor"></span>' : ''}</span>`).join('');
       posEl.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
     };
+    const later = (fn, ms) => { clearTimeout(cardTimer); cardTimer = setTimeout(fn, ms); };
+    const next = () => { if (!manual) show((cur + 1) % files.length); };
     const show = si => {
-      const s = snippets[si];
-      $$('.code-tab', tabs).forEach((t, i) => t.classList.toggle('active', i === si));
+      cur = si;
+      const s = files[si];
+      $$('.code-tab', tabs).forEach((t, i) => { const on = i === si; t.classList.toggle('active', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+      const active = $$('.code-tab', tabs)[si];
+      // keep the active tab visible by scrolling the tab strip only, never the page
+      if (active) {
+        const l = active.offsetLeft, r = l + active.offsetWidth;
+        if (l < tabs.scrollLeft) tabs.scrollLeft = l;
+        else if (r > tabs.scrollLeft + tabs.clientWidth) tabs.scrollLeft = r - tabs.clientWidth;
+      }
+      props.hidden = !s.props;
+      pre.hidden = !!s.props;
+      if (s.props) {
+        langEl.textContent = 'Inspector';
+        posEl.textContent = `${$$('.cp-row', props).length} properties`;
+        okEl.textContent = '● Selected';
+        return later(next, 6500);
+      }
+      okEl.textContent = '● Ready';
       langEl.textContent = s.lang === 'cpp' ? 'C++' : 'Luau';
-      const next = () => show((si + 1) % snippets.length);
+      if (reduced) { render(s.code, s.lang, false); return later(next, 6000); }
       let n = 0;
       const tick = () => {
-        if (!visible || document.hidden) { setTimeout(tick, 400); return; }
+        if (cur !== si) return;
+        if (!visible || document.hidden) return later(tick, 400);
         n = Math.min(s.code.length, n + 1 + (Math.random() < 0.35 ? 1 : 0));
         render(s.code.slice(0, n), s.lang, true);
-        if (n < s.code.length) setTimeout(tick, s.code[n - 1] === '\n' ? 110 : 16 + Math.random() * 28);
-        else setTimeout(next, 3600);
+        if (n < s.code.length) later(tick, s.code[n - 1] === '\n' ? 110 : 16 + Math.random() * 28);
+        else later(next, 3600);
       };
       tick();
+    };
+    tabs.onclick = e => {
+      const b = e.target.closest('.code-tab');
+      if (!b) return;
+      manual = true;
+      show(parseInt(b.dataset.i, 10));
+    };
+    tabs.onkeydown = e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      manual = true;
+      show((cur + (e.key === 'ArrowRight' ? 1 : -1) + files.length) % files.length);
+      $$('.code-tab', tabs)[cur].focus();
     };
     show(0);
   }
@@ -218,6 +256,7 @@
       if (status && !status.hidden) status.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 800, easing: EASE, fill: 'backwards' });
       $$('[data-scramble]').forEach((el, i) => setTimeout(() => scramble(el, el.dataset.scramble, 950), 120 + i * 120));
       countUp();
+      if (viewport) viewport.restartIntro();
     }
     roleLoop();
     codeCard();
@@ -350,7 +389,9 @@
   }
 
   // ═══════════════ BOOT ═══════════════
-  if (typeof HeroShader !== 'undefined') HeroShader.init($('#hero-canvas'));
+  // the grid origin sits under my name; its camera settles in with the hero entrance
+  const viewport = typeof HeroShader !== 'undefined' ? HeroShader.init($('#hero-canvas'), { anchor: $('.hero-name'), intro: false }) : null;
+  SVR.viewport = viewport;
   observeReveals();
   scrollUI();
   cursorGlow();
@@ -362,7 +403,7 @@
   runIntro(played => heroEnter(S.heroReveal !== false && (played || !SVR.deepLinked)));
 
   const refreshTriggers = () => { if (G) ScrollTrigger.refresh(); };
-  if (document.fonts) document.fonts.ready.then(refreshTriggers);
+  if (document.fonts) document.fonts.ready.then(() => { refreshTriggers(); if (viewport) viewport.reaim(); });
   window.addEventListener('load', refreshTriggers);
 
   // called by portfolio.js after it re-renders (admin live preview)
@@ -372,6 +413,7 @@
       cardFX();
       scrollLinked();
       if (SVR.remeasureMarquee) SVR.remeasureMarquee();
+      if (viewport) viewport.reaim();
       refreshTriggers();
     }
   };
